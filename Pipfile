@@ -12,6 +12,8 @@ dynaconf = ">=2.0.3,<3.0"
 [dev-packages]
 flake8 = "*"
 pytest = "*"
+dynaconf = ">=2.0.2,<3.0"
+drf-yasg = ">=1.16.0"
 
 [requires]
 python_version = "3.6"
