@@ -43,6 +43,10 @@ ROOT_URLCONF = 'galaxy_api.urls'
 
 AUTH_USER_MODEL = 'galaxy_auth.user'
 
+SWAGGER_SETTINGS = {
+   'DEFAULT_INFO': 'galaxy_api.urls.api_info',
+}
+
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',

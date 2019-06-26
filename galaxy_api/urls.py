@@ -10,13 +10,16 @@ from rest_framework import permissions
 api_prefix = settings.API_PATH_PREFIX.strip('/')
 schema_view = get_schema_view(
    openapi.Info(
+api_info = openapi.Info(
       title="GalaxyApi",
       default_version='v1',
       description="Test description",
       terms_of_service="https://www.google.com/policies/terms/",
       contact=openapi.Contact(email="alikins@redhat.com"),
       license=openapi.License(name="GPL3"),
-   ),
+   )
+
+schema_view = get_schema_view(
    public=True,
    permission_classes=(permissions.AllowAny,),
 )
@@ -25,7 +28,8 @@ prefix = settings.API_PATH_PREFIX
 
 urlpatterns = [
     path(f'{api_prefix}/', include('galaxy_api.api.urls', namespace='api')),
-    path(f'{prefix}/v1/', include('galaxy_api.api.v1.urls')),
+    path(f'{prefix}/v1/', include('galaxy_api.api.v1.urls'),
+         name='api'),
     re_path(r'^swagger(?P<format>\.json|\.yaml)$',
             schema_view.without_ui(cache_timeout=0),
             name='schema-json'),
