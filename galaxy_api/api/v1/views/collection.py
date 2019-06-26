@@ -67,8 +67,10 @@ class CollectionDetailView(base.RetrieveUpdateDestroyAPIView):
 
         if pk:
             return get_object_or_404(models.Collection, pk=pk)
-        ns = get_object_or_404(models.Namespace, name=ns_name)
-        return get_object_or_404(models.Collection, namespace=ns, name=name)
+        # ns = get_object_or_404(models.Namespace, name=ns_name)
+        return get_object_or_404(models.Collection,
+                                 namespace=ns_name,
+                                 name=name)
 
 
 class CollectionListView(base.ListCreateAPIView):
