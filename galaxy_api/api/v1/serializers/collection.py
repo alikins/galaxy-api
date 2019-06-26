@@ -117,10 +117,10 @@ class VersionDetailSerializer(serializers.ModelSerializer):
 
 
 class CollectionSerializer(serializers.ModelSerializer):
-    namespace = fields.NamespaceObjectField()
+    # namespace = fields.NamespaceObjectField()
     href = serializers.SerializerMethodField()
-    versions_url = serializers.SerializerMethodField()
-    latest_version = VersionSummarySerializer()
+    versions_url = serializers.SerializerMethodField(read_only=True)
+    latest_version = VersionSummarySerializer(read_only=True)
 
     class Meta:
         model = models.Collection
@@ -138,23 +138,27 @@ class CollectionSerializer(serializers.ModelSerializer):
 
     def get_href(self, obj):
         return reverse(
-            'api:v2:collection-detail',
-            kwargs={
-                'namespace': obj.namespace.name,
-                'name': obj.name,
-            },
+            # 'api:v2:collection-detail',
+            'api:collection-detail',
+            kwargs={'pk': obj.id},
+            # kwargs={
+            #     'namespace': obj.namespace,
+            #     'name': obj.name,
+            # },
             request=self.context.get('request'),
         )
 
     def get_versions_url(self, obj):
-        return reverse(
-            'api:v2:version-list',
-            kwargs={
-                'namespace': obj.namespace.name,
-                'name': obj.name,
-            },
-            request=self.context.get('request'),
-        )
+        # FIXME: akl return /namespace/name/ url when path/view is added
+        return f'/api/v1/collections/{obj.id}/versions'
+        # return reverse(
+        #     'api:version-list',
+        #     kwargs={
+        #         'namespace': obj.namespace.name,
+        #         'name': obj.name,
+        #     },
+        #     request=self.context.get('request'),
+        # )
 
 
 class _MessageSerializer(serializers.Serializer):
