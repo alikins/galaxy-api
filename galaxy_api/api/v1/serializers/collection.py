@@ -17,12 +17,12 @@
 
 from pathlib import PurePath
 
-from rest_framework import exceptions as drf_exc
+# from rest_framework import exceptions as drf_exc
 from rest_framework import serializers
 from rest_framework.reverse import reverse
 
-from galaxy.common.schema import CollectionFilename
-from galaxy_api import fields
+# from galaxy.common.schema import CollectionFilename
+from galaxy_api.api import fields
 from galaxy_common import models
 
 
@@ -178,10 +178,10 @@ class CollectionUploadSerializer(serializers.Serializer):
     def validate(self, data):
         super().validate(data)
 
-        try:
-            data['filename'] = CollectionFilename.parse(
-                data['file'].name)
-        except ValueError as e:
-            raise drf_exc.ValidationError(str(e))
+        # try:
+        #     data['filename'] = CollectionFilename.parse(
+        #         data['file'].name)
+        # except ValueError as e:
+        #     raise drf_exc.ValidationError(str(e))
 
         return data
