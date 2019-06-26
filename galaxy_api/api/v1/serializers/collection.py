@@ -150,15 +150,15 @@ class CollectionSerializer(serializers.ModelSerializer):
 
     def get_versions_url(self, obj):
         # FIXME: akl return /namespace/name/ url when path/view is added
-        return f'/api/v1/collections/{obj.id}/versions'
-        # return reverse(
-        #     'api:version-list',
-        #     kwargs={
-        #         'namespace': obj.namespace.name,
-        #         'name': obj.name,
-        #     },
-        #     request=self.context.get('request'),
-        # )
+        # return f'/api/v1/collections/{obj.id}/versions'
+        return reverse(
+            'api:version-list',
+            kwargs={
+                'namespace': obj.namespace,
+                'name': obj.name,
+            },
+            request=self.context.get('request'),
+        )
 
 
 class _MessageSerializer(serializers.Serializer):
