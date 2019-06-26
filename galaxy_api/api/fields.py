@@ -16,9 +16,28 @@
 # You should have received a copy of the Apache License
 # along with Galaxy.  If not, see <http://www.apache.org/licenses/>.
 
+import datetime as dt
 
 from rest_framework import serializers
 from rest_framework.reverse import reverse
+
+
+class NativeTimestampField(serializers.DateTimeField):
+    """Represents internal timestamp value as date time string."""
+
+    def to_representation(self, value):
+        if value is None:
+            return None
+
+        value = dt.datetime.utcfromtimestamp(value).replace(
+            tzinfo=dt.timezone.utc)
+        return super().to_representation(value)
+
+    def to_internal_value(self, value):
+        if value is None:
+            return None
+        value = super().to_internal_value(value)
+        return value.astimezone(dt.timezone.utc).timestamp()
 
 
 class NamespaceObjectField(serializers.Field):
