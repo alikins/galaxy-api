@@ -28,4 +28,12 @@ urlpatterns = [
     path('collections/<str:namespace>/<str:name>/versions/<str:version>/',
          VersionDetailView.as_view(),
          name='version-detail'),
+
+    # Collection Version list URLs
+    path('collections/<int:pk>/versions/',
+         VersionListView.as_view(),
+         name='version-list'),
+    path('collections/<str:namespace>/<str:name>/versions/',
+         VersionListView.as_view(),
+         name='version-list'),
 ]
