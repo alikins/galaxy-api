@@ -71,7 +71,7 @@ class VersionDetailSerializer(serializers.ModelSerializer):
     href = fields.VersionUrlField(source='*')
     download_url = serializers.SerializerMethodField()
     artifact = serializers.SerializerMethodField()
-    namespace = fields.NamespaceObjectField(source='collection.namespace')
+    # namespace = fields.NamespaceObjectField(source='collection.namespace')
     collection = serializers.SerializerMethodField()
     metadata = serializers.JSONField(binary=False)
 
@@ -102,13 +102,14 @@ class VersionDetailSerializer(serializers.ModelSerializer):
         return BaseArtifactSerializer(ca).data
 
     def get_collection(self, obj):
-        ns_name = obj.collection.namespace.name
+        ns_name = obj.collection.namespace
         name = obj.collection.name
         result = {
             'id': obj.collection.pk,
             'href': reverse(
-                'api:v2:collection-detail',
-                kwargs={'namespace': ns_name, 'name': name},
+                'api:collection-detail',
+                kwargs={'namespace': ns_name,
+                        'name': name},
                 request=self.context.get('request'),
             ),
             'name': name,
