@@ -3,6 +3,7 @@ from django.urls import path
 from .views import TestView
 from .views import CollectionDetailView
 from .views import CollectionDetailView, CollectionListView
+from .views import VersionDetailView, VersionListView
 
 
 app_name = 'api'
@@ -17,4 +18,14 @@ urlpatterns = [
     path('collections/<int:pk>/',
          CollectionDetailView.as_view(),
          name='collection-detail'),
+    path('collections/<str:namespace>/<str:name>/',
+         CollectionDetailView.as_view(),
+         name='collection-detail'),
+
+    path('collection-versions/<int:version_pk>/',
+         VersionDetailView.as_view(),
+         name='version-detail'),
+    path('collections/<str:namespace>/<str:name>/versions/<str:version>/',
+         VersionDetailView.as_view(),
+         name='version-detail'),
 ]
