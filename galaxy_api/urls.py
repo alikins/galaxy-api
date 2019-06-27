@@ -32,6 +32,8 @@ urlpatterns = [
          name='api'),
     path(f'{prefix}/v2/', include('galaxy_api.api.v2.urls'),
          name='api'),
+    path(f'{prefix}/', include('galaxy_api.api.urls')),
+         name='api'),
     re_path(r'^swagger(?P<format>\.json|\.yaml)$',
             schema_view.without_ui(cache_timeout=0),
             name='schema-json'),
