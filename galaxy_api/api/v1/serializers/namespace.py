@@ -17,7 +17,7 @@
 
 from django.urls import reverse
 from galaxy_common import models
-from . import base_serializers
+from . import base_serializer
 
 
 __all__ = [
@@ -25,10 +25,10 @@ __all__ = [
 ]
 
 
-class NamespaceSerializer(base_serializers.BaseSerializer):
+class NamespaceSerializer(base_serializer.BaseSerializer):
     class Meta:
         model = models.Namespace
-        fields = base_serializers.BASE_FIELDS + (
+        fields = base_serializer.BASE_FIELDS + (
             'id',
             'description',
             'avatar_url',

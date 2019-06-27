@@ -12,6 +12,8 @@ SUMMARIZABLE_FK_FIELDS = {
     'role': ('id', 'url', 'name',),
 }
 
+BASE_FIELDS = ('id', 'url', 'related', 'summary_fields',
+               'created', 'modified', 'name')
 
 User = get_user_model()
 
