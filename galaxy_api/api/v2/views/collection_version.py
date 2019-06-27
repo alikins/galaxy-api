@@ -80,11 +80,15 @@ class VersionListView(base.ListAPIView):
 
     def get_queryset(self):
         """Return list of versions for a specific collection."""
+        if getattr(self, 'swagger_fake_view', False):
+            return []
+
         collection = self._get_collection()
         return models.CollectionVersion.objects.filter(collection=collection)
 
     def list(self, request, *args, **kwargs):
         """Override drf ListModelMixin to sort versions by semver."""
+
         queryset = self.filter_queryset(self.get_queryset())
 
         data = sorted(queryset,
