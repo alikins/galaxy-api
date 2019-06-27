@@ -1,17 +1,11 @@
 from django.shortcuts import get_object_or_404
 
-from rest_framework import generics
-from rest_framework import mixins
-from rest_framework import exceptions as exc
 from rest_framework.response import Response
-from rest_framework.reverse import reverse
-from rest_framework import status as http_codes
-from rest_framework.views import APIView
 
 from galaxy_common import models
 from galaxy_common import exceptions
 from galaxy_api.api import base
-from galaxy_api.api.v1 import serializers
+from galaxy_api.api.v2 import serializers
 
 __all__ = (
     'CollectionView'

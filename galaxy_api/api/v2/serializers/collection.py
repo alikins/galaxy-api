@@ -92,7 +92,7 @@ class VersionDetailSerializer(serializers.ModelSerializer):
     def get_download_url(self, obj):
         ca = obj.get_content_artifact()
         return reverse(
-            'api:artifact-download',
+            'api:v2:artifact-download',
             kwargs={'filename': ca.relative_path},
             request=self.context.get('request'),
         )
@@ -107,7 +107,7 @@ class VersionDetailSerializer(serializers.ModelSerializer):
         result = {
             'id': obj.collection.pk,
             'href': reverse(
-                'api:collection-detail',
+                'api:v2:collection-detail',
                 kwargs={'namespace': ns_name,
                         'name': name},
                 request=self.context.get('request'),
@@ -140,7 +140,7 @@ class CollectionSerializer(serializers.ModelSerializer):
     def get_href(self, obj):
         return reverse(
             # 'api:v2:collection-detail',
-            'api:collection-detail',
+            'api:v2:collection-detail',
             kwargs={'pk': obj.id},
             # kwargs={
             #     'namespace': obj.namespace,
@@ -153,7 +153,7 @@ class CollectionSerializer(serializers.ModelSerializer):
         # FIXME: akl return /namespace/name/ url when path/view is added
         # return f'/api/v1/collections/{obj.id}/versions'
         return reverse(
-            'api:version-list',
+            'api:v2:version-list',
             kwargs={
                 'namespace': obj.namespace,
                 'name': obj.name,
