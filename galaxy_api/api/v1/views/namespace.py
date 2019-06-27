@@ -290,6 +290,13 @@ class NamespaceDetail(base_views.RetrieveUpdateDestroyAPIView):
     # excludes ActiveOnly
     filter_backends = (FieldLookupBackend, SearchFilter, OrderByBackend)
 
+    def get_queryset(self):
+        if getattr(self, 'swagger_fake_view', False):
+            return []
+        return super(NamespaceDetail, self).get_queryset()
+#        qs = models.Namespace.objects.all()
+#        return qs
+
     def update(self, request, *args, **kwargs):
         data = request.data
         instance = self.get_object()
@@ -358,6 +365,10 @@ class NamespaceProviderNamespacesList(base_views.SubListAPIView):
     parent_model = models.Namespace
     relationship = "provider_namespaces"
 
+    def get_queryset(self):
+        if getattr(self, 'swagger_fake_view', False):
+            return []
+        return super(NamespaceProviderNamespacesList, self).get_queryset()
 
 # class NamespaceContentList(base_views.SubListAPIView):
 #     view_name = "Namespace Content"
