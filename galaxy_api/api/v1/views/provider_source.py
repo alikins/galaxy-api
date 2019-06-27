@@ -19,7 +19,7 @@ import logging
 
 from rest_framework import status
 from rest_framework.authentication import SessionAuthentication
-from rest_framework.permissions import IsAuthenticated
+from rest_framework.permissions import IsAuthenticated, AllowAny
 from rest_framework.response import Response
 
 from django.core.exceptions import ObjectDoesNotExist
@@ -41,7 +41,14 @@ class ProviderSourceList(base_views.ListAPIView):
 
     model = ProviderNamespace
     authentication_classes = (SessionAuthentication,)
-    permission_classes = (IsAuthenticated,)
+
+
+
+    # FIXME: rm AllowAny
+    permission_classes = (IsAuthenticated, AllowAny)
+
+
+
     serializer_class = ProviderSourceSerializer
 
     def get(self, request, *args, **kwargs):

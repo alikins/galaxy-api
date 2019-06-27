@@ -218,6 +218,12 @@ class NamespaceList(base_views.ListCreateAPIView):
     # excludes ActiveOnly
     filter_backends = (FieldLookupBackend, SearchFilter, OrderByBackend)
 
+    # FIXME: wrong?
+    def get_queryset(self):
+        if getattr(self, 'swagger_fake_view', False):
+            return []
+        return models.Namespace.objects.all()
+
     def post(self, request, *args, **kwargs):
         data = request.data
         errors = {}
