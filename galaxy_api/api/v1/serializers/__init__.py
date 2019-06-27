@@ -1,3 +1,3 @@
 from .namespace import NamespaceSerializer
 from .provider_namespace import ProviderNamespaceSerializer
-from .provider_source import ProvierSourceSerializer
+from .provider_source import ProviderSourceSerializer

@@ -21,21 +21,23 @@ from django.core.exceptions import ObjectDoesNotExist
 
 # filter backends
 from rest_framework.filters import SearchFilter
-from ..filters import FieldLookupBackend, OrderByBackend
+from galaxy_api.api.filters import FieldLookupBackend, OrderByBackend
 
 from rest_framework import status
 from rest_framework.exceptions import ValidationError, APIException
 from rest_framework.response import Response
 
-from galaxy.api import serializers
-from galaxy.main import models
-from . import base_views
-from ..githubapi import GithubAPI
+from galaxy_common import models
+
+# from galaxy_api.api import serializers
+from galaxy_api.api.v1 import serializers
+from galaxy_api.api import base as base_views
+# from ..githubapi import GithubAPI
 
 __all__ = [
     'ProviderNamespaceList',
     'ProviderNamespaceDetail',
-    'ProviderNamespaceRepositoriesList'
+#    'ProviderNamespaceRepositoriesList'
 ]
 
 logger = logging.getLogger(__name__)
@@ -43,7 +45,13 @@ logger = logging.getLogger(__name__)
 
 def check_provider_access(provider, user, name):
     if provider.name.lower() == 'github':
-        user_namespaces = GithubAPI(user=user).user_namespaces()
+
+
+        # FIXME: plugin in rhsso namespace provider
+        # user_namespaces = GithubAPI(user=user).user_namespaces()
+        user_namespaces = [{'name': name}]  # Everyone gets a free namespace!
+
+
         match = False
         for ns in user_namespaces:
             if ns['name'] == name:
@@ -195,9 +203,9 @@ class ProviderNamespaceDetail(base_views.RetrieveUpdateDestroyAPIView):
         return Response(status=status.HTTP_204_NO_CONTENT)
 
 
-class ProviderNamespaceRepositoriesList(base_views.SubListAPIView):
-    view_name = "Provider Namespace Repositories"
-    model = models.Repository
-    serializer_class = serializers.RepositorySerializer
-    parent_model = models.ProviderNamespace
-    relationship = "repositories"
+# class ProviderNamespaceRepositoriesList(base_views.SubListAPIView):
+#     view_name = "Provider Namespace Repositories"
+#     model = models.Repository
+#     serializer_class = serializers.RepositorySerializer
+#     parent_model = models.ProviderNamespace
+#     relationship = "repositories"
