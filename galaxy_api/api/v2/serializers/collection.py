@@ -71,6 +71,7 @@ class VersionDetailSerializer(serializers.ModelSerializer):
     href = fields.VersionUrlField(source='*')
     download_url = serializers.SerializerMethodField()
     artifact = serializers.SerializerMethodField()
+    namespace = serializers.CharField()
     # namespace = fields.NamespaceObjectField(source='collection.namespace')
     collection = serializers.SerializerMethodField()
     metadata = serializers.JSONField(binary=False)
