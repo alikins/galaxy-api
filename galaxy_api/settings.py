@@ -67,6 +67,8 @@ WSGI_APPLICATION = 'galaxy_api.wsgi.application'
 
 # Database
 
+AUTH_USER_MODEL = 'galaxy_accounts.CustomUser'
+
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
