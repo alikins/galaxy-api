@@ -1,17 +1,16 @@
-from django.urls import path
 
-from .views import TestView
-from .views import CollectionDetailView
+from django.urls import path, re_path
+
 from .views import CollectionDetailView, CollectionListView
 from .views import VersionDetailView, VersionListView
 
+from galaxy_api.api.v2.views import ApiV2RootView
 
-# app_name = 'api'
+app_name = 'api'
+
 urlpatterns = [
-    path('test', TestView.as_view(), name='test')
-        path('collections/<int:pk>/',
-        CollectionDetailView.as_view(),
-        name='collection-detail'),
+    re_path(r'^$', ApiV2RootView.as_view(), name='api_root_v2_view'),
+
     path('collections/',
          CollectionListView.as_view(),
          name='collection-list'),

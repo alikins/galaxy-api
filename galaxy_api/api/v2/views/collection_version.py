@@ -23,7 +23,7 @@ import semantic_version
 
 from galaxy_api.api import base
 from galaxy_common import models
-from galaxy_api.api.v1 import serializers
+from galaxy_api.api.v2 import serializers
 # from galaxy_api.api.v1.pagination import DefaultPagination
 
 
