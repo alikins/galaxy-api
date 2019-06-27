@@ -22,12 +22,13 @@ from .views import (
     ProviderSourceList,
 )
 
-# app_name = 'api'
+app_name = 'api'
+urlpatterns = [
     path('test', TestView.as_view(), name='test')
         path('collections/<int:pk>/',
         CollectionDetailView.as_view(),
         name='collection-detail'),
-    path('ping', PingView.as_view()),
+
     path('namespaces', NamespaceList.as_view(), name='namespace_list'),
     path('namespaces/<int:pk>/',
          NamespaceDetail.as_view(),
@@ -45,7 +46,7 @@ from .views import (
          ProviderNamespaceDetail.as_view(),
          name='provider_namespace_detail'),
 
-    path('providers/sources',
+    path('providers/sources/',
          ProviderSourceList.as_view(),
          name='provider_source_list'),
 ]

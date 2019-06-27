@@ -74,13 +74,13 @@ class NamespaceSerializer(base_serializer.BaseSerializer):
     def get_related(self, instance):
         related = {
             'provider_namespaces': reverse(
-                'api:namespace_provider_namespaces_list',
+                'api:v1:namespace_provider_namespaces_list',
                 args=(instance.pk,)),
             'content': reverse(
-                'api:namespace_content_list',
+                'api:v1:namespace_content_list',
                 args=(instance.pk,)),
             'owners': reverse(
-                'api:namespace_owners_list',
+                'api:v1:namespace_owners_list',
                 args=(instance.pk,))
         }
         return related
