@@ -141,6 +141,11 @@ class ProviderNamespaceDetail(base_views.RetrieveUpdateDestroyAPIView):
     # excludes ActiveOnly
     filter_backends = (FieldLookupBackend, SearchFilter, OrderByBackend)
 
+    def get_queryset(self):
+        if getattr(self, 'swagger_fake_view', False):
+            return []
+        return super(ProviderNamespaceDetail, self).get_queryset()
+
     def update(self, request, *args, **kwargs):
         data = request.data
         partial = kwargs.pop('partial', False)
