@@ -40,7 +40,7 @@ __all__ = [
 #    'ProviderNamespaceRepositoriesList'
 ]
 
-logger = logging.getLogger(__name__)
+log = logging.getLogger(__name__)
 
 
 def check_provider_access(provider, user, name):
@@ -65,6 +65,7 @@ def check_provider_access(provider, user, name):
 
 
 def check_namespace_access(user, namespace_id):
+
     try:
         namespace = user.namespaces.get(pk=namespace_id, active=True)
     except ObjectDoesNotExist:
@@ -91,6 +92,7 @@ class ProviderNamespaceList(base_views.ListCreateAPIView):
         if not data.get('provider'):
             raise ValidationError(detail={"provider": "a value is required"})
 
+        # FIXME:
         try:
             namespace = check_namespace_access(request.user, data['namespace'])
         except APIException:

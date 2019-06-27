@@ -18,6 +18,10 @@ from .views import (
     ProviderNamespaceDetail,
 )
 
+from .views import (
+    ProviderSourceList,
+)
+
 # app_name = 'api'
     path('test', TestView.as_view(), name='test')
         path('collections/<int:pk>/',
@@ -40,4 +44,8 @@ from .views import (
     path('provider_namespaces/<int:pk>/',
          ProviderNamespaceDetail.as_view(),
          name='provider_namespace_detail'),
+
+    path('providers/sources',
+         ProviderSourceList.as_view(),
+         name='provider_source_list'),
 ]
