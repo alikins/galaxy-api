@@ -29,6 +29,8 @@ INSTALLED_APPS = [
     'drf_yasg',
 
     'galaxy_api.db',
+    'galaxy_common.apps.AppConfig',
+    'galaxy_common.accounts.apps.AppConfig',
 ]
 
 MIDDLEWARE = [

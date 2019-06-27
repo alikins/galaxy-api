@@ -18,7 +18,7 @@
 from django.urls import reverse
 
 from galaxy_common.models import ProviderNamespace
-from . import base_serializers
+from . import base_serializer
 
 
 __all__ = [
@@ -26,11 +26,11 @@ __all__ = [
 ]
 
 
-class ProviderNamespaceSerializer(base_serializers.BaseSerializer):
+class ProviderNamespaceSerializer(base_serializer.BaseSerializer):
 
     class Meta:
         model = ProviderNamespace
-        fields = base_serializers.BASE_FIELDS + (
+        fields = base_serializer.BASE_FIELDS + (
             'id',
             'description',
             'display_name',

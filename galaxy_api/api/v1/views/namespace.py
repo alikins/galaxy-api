@@ -22,7 +22,7 @@ from django.core.exceptions import ObjectDoesNotExist
 
 # filter backends
 from rest_framework.filters import SearchFilter
-from ..filters import FieldLookupBackend, OrderByBackend
+from galaxy_api.api.filters import FieldLookupBackend, OrderByBackend
 
 from rest_framework import status
 from rest_framework.exceptions import (
@@ -30,18 +30,18 @@ from rest_framework.exceptions import (
 )
 from rest_framework.response import Response
 
-from galaxy.accounts.models import CustomUser as User
+from galaxy_common.accounts.models import CustomUser as User
 from galaxy_api.api.v1 import serializers
 from galaxy_common import models
-from . import base_views
+from galaxy_api.api import base as base_views
+
 
 __all__ = [
     'NamespaceList',
     'NamespaceDetail',
     'NamespaceProviderNamespacesList',
-    'NamespaceProviderNamespacesList',
-    'NamespaceContentList',
-    'NamespaceOwnersList',
+    # 'NamespaceContentList',
+    # 'NamespaceOwnersList',
 ]
 
 logger = logging.getLogger(__name__)
@@ -221,7 +221,7 @@ class NamespaceList(base_views.ListCreateAPIView):
     def post(self, request, *args, **kwargs):
         data = request.data
         errors = {}
-        owners = []
+        # owners = []
 
         check_basic(data, errors)
 
@@ -242,17 +242,19 @@ class NamespaceList(base_views.ListCreateAPIView):
                 if provider_errors:
                     errors['provider_namespaces'] = provider_errors
 
-        if data.get('owners'):
-            owner_errors, owners = check_owners(data['owners'])
-            if owner_errors:
-                errors['owners'] = owner_errors
+        # FIXME
+        # if data.get('owners'):
+        #     owner_errors, owners = check_owners(data['owners'])
+        #     if owner_errors:
+        #         errors['owners'] = owner_errors
 
         if errors:
             raise ValidationError(detail=errors)
 
-        if not request.user.is_staff and not can_update(
-                data['id'], request.user.id):
-            owners.append(request.user.id)
+        # FIXME
+        # if not request.user.is_staff and not can_update(
+        #         data['id'], request.user.id):
+        #     owners.append(request.user.id)
 
         sanitized_name = data['name'].lower().replace('-', '_')
 
@@ -273,7 +275,8 @@ class NamespaceList(base_views.ListCreateAPIView):
                 'Error creating namespace: {0}'.format(exc)
             )
 
-        update_owners(namespace, owners)
+        # FIXME
+        # update_owners(namespace, owners)
         update_provider_namespaces(namespace, data['provider_namespaces'])
 
         serializer = self.get_serializer(instance=namespace)
@@ -305,10 +308,11 @@ class NamespaceDetail(base_views.RetrieveUpdateDestroyAPIView):
             if provider_errors:
                 errors['provider_namespaces'] = provider_errors
 
-        if data.get('owners'):
-            owner_errors, owners = check_owners(data['owners'])
-            if owner_errors:
-                errors['owners'] = owner_errors
+        # FIXME
+        # if data.get('owners'):
+        #     owner_errors, owners = check_owners(data['owners'])
+        #     if owner_errors:
+        #         errors['owners'] = owner_errors
 
         if errors:
             raise ValidationError(detail=errors)
@@ -320,8 +324,9 @@ class NamespaceDetail(base_views.RetrieveUpdateDestroyAPIView):
                 "Namespace {0}".format(data.get('name', ''))
             )
 
-        if data.get('owners'):
-            update_owners(instance, owners)
+        # FIXME
+        # if data.get('owners'):
+        #     update_owners(instance, owners)
 
         to_update = ['description', 'avatar_url', 'location',
                      'company', 'email', 'html_url', 'active', 'is_vendor']
@@ -354,17 +359,17 @@ class NamespaceProviderNamespacesList(base_views.SubListAPIView):
     relationship = "provider_namespaces"
 
 
-class NamespaceContentList(base_views.SubListAPIView):
-    view_name = "Namespace Content"
-    model = models.Content
-    serializer_class = serializers.ContentSerializer
-    parent_model = models.Namespace
-    relationship = "content_objects"
+# class NamespaceContentList(base_views.SubListAPIView):
+#     view_name = "Namespace Content"
+#     model = models.Content
+#     serializer_class = serializers.ContentSerializer
+#     parent_model = models.Namespace
+#     relationship = "content_objects"
 
 
-class NamespaceOwnersList(base_views.SubListAPIView):
-    view_name = "Namespace Owners"
-    model = User
-    serializer_class = serializers.UserSerializer
-    parent_model = models.Namespace
-    relationship = "owners"
+# class NamespaceOwnersList(base_views.SubListAPIView):
+#     view_name = "Namespace Owners"
+#     model = User
+#     serializer_class = serializers.UserSerializer
+#     parent_model = models.Namespace
+#     relationship = "owners"

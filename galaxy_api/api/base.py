@@ -17,6 +17,9 @@
 
 from django.core import exceptions as dj_exc
 from django import http as dj_http
+
+from django.shortcuts import get_object_or_404
+
 from rest_framework import exceptions as drf_exc
 from rest_framework import generics
 from rest_framework import mixins
@@ -159,6 +162,61 @@ class ListCreateAPIView(mixins.ListModelMixin,
 
     def post(self, request, *args, **kwargs):
         return self.create(request, *args, **kwargs)
+
+
+class SubListAPIView(ListAPIView):
+    """Base class for a read-only sublist view.
+
+    Subclasses should define at least:
+      model = ModelClass
+      serializer_class = SerializerClass
+      parent_model = ModelClass
+      relationship = 'rel_name_from_parent_to_model'
+    And optionally (user must have given access permission on parent object
+    to view sublist):
+      parent_access = 'read'
+    """
+
+    def get_description_context(self):
+        d = super().get_description_context()
+        d.update({
+            'parent_model_verbose_name':
+                str(self.parent_model._meta.verbose_name),
+            'parent_model_verbose_name_plural':
+                str(self.parent_model._meta.verbose_name_plural),
+        })
+        return d
+
+    def get_parent_object(self):
+        parent_filter = {
+            self.lookup_field: self.kwargs.get(self.lookup_field, None),
+        }
+        return get_object_or_404(self.parent_model, **parent_filter)
+
+    def check_parent_access(self, parent=None):
+        parent = parent or self.get_parent_object()
+
+        # FIXME:
+        return True
+
+        # parent_access = getattr(self, 'parent_access', 'read')
+        # if parent_access in ('read', 'delete'):
+        #     args = (parent_access, parent)
+        # else:
+        #     args = (parent_access, parent, None)
+
+        # FIXME:
+        # if notcheck_user_access(self.request.user, self.parent_model, *args):
+        #     # logger.debug('check_parent_access: parent_access=%s parent=%s',
+        #     # parent_access, parent.__class__.__name__)
+        #     raise PermissionDenied()
+
+    def get_queryset(self):
+        parent = self.get_parent_object()
+        self.check_parent_access(parent)
+        qs = self.model.objects.all().distinct()
+        sublist_qs = getattr(parent, self.relationship).distinct()
+        return qs & sublist_qs
 
 
 class RetrieveUpdateAPIView(mixins.RetrieveModelMixin,
