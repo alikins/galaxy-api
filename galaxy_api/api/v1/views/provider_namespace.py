@@ -66,8 +66,11 @@ def check_provider_access(provider, user, name):
 
 def check_namespace_access(user, namespace_id):
 
-    log.warning('NOT ACTUALLY CHECKING NAMESPACE ACCESS FOR user=%s namespace_id=%s', user, namespace_id)
-    return namespace_id
+    # log.warning('NOT ACTUALLY CHECKING NAMESPACE ACCESS FOR user=%s namespace_id=%s', user, namespace_id)
+    # return namespace_id
+    log.debug('user=%r', user)
+    log.debug('namespace_id=%s', namespace_id)
+
     try:
         namespace = user.namespaces.get(pk=namespace_id, active=True)
     except ObjectDoesNotExist:
@@ -78,20 +81,20 @@ def check_namespace_access(user, namespace_id):
 class ProviderNamespaceList(base_views.ListCreateAPIView):
     model = models.ProviderNamespace
     serializer_class = serializers.ProviderNamespaceSerializer
-
+    queryset = models.ProviderNamespace.objects.all()
     # excludes ActiveOnly
     filter_backends = (FieldLookupBackend, SearchFilter, OrderByBackend)
 
-    def get_queryset(self):
-        if getattr(self, 'swagger_fake_view', False):
-            return []
+    # def get_queryset(self):
+    #     if getattr(self, 'swagger_fake_view', False):
+    #         return []
 
 
-        # FIXME:
-        return models.ProviderNamespace.objects.all()
+    #     # FIXME:
+    #     return models.ProviderNamespace.objects.all()
 
 
-        # return super(ProviderNamespaceList, self).get_queryset()
+    #     # return super(ProviderNamespaceList, self).get_queryset()
 
     def post(self, request, *args, **kwargs):
         data = request.data
@@ -152,14 +155,14 @@ class ProviderNamespaceList(base_views.ListCreateAPIView):
 class ProviderNamespaceDetail(base_views.RetrieveUpdateDestroyAPIView):
     model = models.ProviderNamespace
     serializer_class = serializers.ProviderNamespaceSerializer
-
+    queryset = models.ProviderNamespace.objects.all()
     # excludes ActiveOnly
     filter_backends = (FieldLookupBackend, SearchFilter, OrderByBackend)
 
-    def get_queryset(self):
-        if getattr(self, 'swagger_fake_view', False):
-            return []
-        return super(ProviderNamespaceDetail, self).get_queryset()
+    # def get_queryset(self):
+    #     if getattr(self, 'swagger_fake_view', False):
+    #         return []
+    #     return super(ProviderNamespaceDetail, self).get_queryset()
 
     def update(self, request, *args, **kwargs):
         data = request.data
