@@ -214,20 +214,14 @@ def update_owners(instance, owners):
 class NamespaceList(base_views.ListCreateAPIView):
     model = models.Namespace
     serializer_class = serializers.NamespaceSerializer
-
+    queryset = models.Namespace.objects.all()
     # excludes ActiveOnly
     filter_backends = (FieldLookupBackend, SearchFilter, OrderByBackend)
-
-    # FIXME: wrong?
-    def get_queryset(self):
-        if getattr(self, 'swagger_fake_view', False):
-            return []
-        return models.Namespace.objects.all()
 
     def post(self, request, *args, **kwargs):
         data = request.data
         errors = {}
-        # owners = []
+        owners = []
 
         check_basic(data, errors)
 
@@ -249,18 +243,18 @@ class NamespaceList(base_views.ListCreateAPIView):
                     errors['provider_namespaces'] = provider_errors
 
         # FIXME
-        # if data.get('owners'):
-        #     owner_errors, owners = check_owners(data['owners'])
-        #     if owner_errors:
-        #         errors['owners'] = owner_errors
+        if data.get('owners'):
+            owner_errors, owners = check_owners(data['owners'])
+            if owner_errors:
+                errors['owners'] = owner_errors
 
         if errors:
             raise ValidationError(detail=errors)
 
         # FIXME
-        # if not request.user.is_staff and not can_update(
-        #         data['id'], request.user.id):
-        #     owners.append(request.user.id)
+        if not request.user.is_staff and not can_update(
+                data['id'], request.user.id):
+            owners.append(request.user.id)
 
         sanitized_name = data['name'].lower().replace('-', '_')
 
@@ -282,7 +276,7 @@ class NamespaceList(base_views.ListCreateAPIView):
             )
 
         # FIXME
-        # update_owners(namespace, owners)
+        update_owners(namespace, owners)
         update_provider_namespaces(namespace, data['provider_namespaces'])
 
         serializer = self.get_serializer(instance=namespace)
@@ -292,16 +286,10 @@ class NamespaceList(base_views.ListCreateAPIView):
 class NamespaceDetail(base_views.RetrieveUpdateDestroyAPIView):
     model = models.Namespace
     serializer_class = serializers.NamespaceSerializer
+    queryset = models.Namespace.objects.all()
 
     # excludes ActiveOnly
     filter_backends = (FieldLookupBackend, SearchFilter, OrderByBackend)
-
-    def get_queryset(self):
-        if getattr(self, 'swagger_fake_view', False):
-            return []
-        return super(NamespaceDetail, self).get_queryset()
-#        qs = models.Namespace.objects.all()
-#        return qs
 
     def update(self, request, *args, **kwargs):
         data = request.data
