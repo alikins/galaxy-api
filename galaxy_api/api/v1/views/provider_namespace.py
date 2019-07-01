@@ -80,6 +80,17 @@ class ProviderNamespaceList(base_views.ListCreateAPIView):
     # excludes ActiveOnly
     filter_backends = (FieldLookupBackend, SearchFilter, OrderByBackend)
 
+    def get_queryset(self):
+        if getattr(self, 'swagger_fake_view', False):
+            return []
+
+
+        # FIXME:
+        return models.ProviderNamespace.objects.all()
+
+
+        # return super(ProviderNamespaceList, self).get_queryset()
+
     def post(self, request, *args, **kwargs):
         data = request.data
 
