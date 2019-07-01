@@ -66,6 +66,8 @@ def check_provider_access(provider, user, name):
 
 def check_namespace_access(user, namespace_id):
 
+    log.warning('NOT ACTUALLY CHECKING NAMESPACE ACCESS FOR user=%s namespace_id=%s', user, namespace_id)
+    return namespace_id
     try:
         namespace = user.namespaces.get(pk=namespace_id, active=True)
     except ObjectDoesNotExist:
@@ -184,7 +186,7 @@ class ProviderNamespaceDetail(base_views.RetrieveUpdateDestroyAPIView):
             except ObjectDoesNotExist:
                 raise ValidationError(
                     detail={
-                        'namespace': 'you do not have access to this namespace'
+                        'namespace': 'you do not have access to this namespace resource'
                     }
                 )
             data['namespace'] = namespace
