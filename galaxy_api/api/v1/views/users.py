@@ -38,6 +38,7 @@ class UserDetail(base_views.RetrieveUpdateAPIView):
 class UserList(base_views.ListAPIView):
     model = User
     serializer_class = serializers.UserSerializer
+    queryset = User.objects.filter(is_active=True)
 
     def get_queryset(self):
         qs = super().get_queryset()
