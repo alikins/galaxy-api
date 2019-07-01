@@ -19,16 +19,27 @@ from .provider_source import (
     ProviderSourceList
 )
 
+from .users import (
+    UserDetail,
+    UserList,
+    ActiveUserView,
+)
 __all__ = (
     'TestView'
     'NamespaceList',
     'NamespaceDetail',
     'NamespaceProviderNamespacesList',
     # 'NamespaceContentList',
+
     'ProviderNamespaceList',
     'ProviderNamespaceDetail',
     # 'ProviderNamespaceRepositoriesList',
+
     'ProviderSourceList',
+
+    'UserDetail',
+    'UserList',
+    'ActiveUserView',
 )
 
 

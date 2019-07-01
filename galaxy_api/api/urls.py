@@ -14,7 +14,7 @@ urlpatterns = [
     # path('v2/', include('galaxy_api.api.v2.urls'),
     #      name='v2'),
     path('v1/', include('galaxy_api.api.v1.urls',
-                        # namespace='v1'
+                        namespace='v1'
                         )),
     path('v2/', include('galaxy_api.api.v2.urls',
                         namespace='v2'
