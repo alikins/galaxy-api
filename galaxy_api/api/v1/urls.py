@@ -22,6 +22,12 @@ from .views import (
     ProviderSourceList,
 )
 
+from .views import (
+    UserList,
+    UserDetail,
+    ActiveUserView,
+)
+
 app_name = 'api'
 urlpatterns = [
     path('test', TestView.as_view(), name='test')
@@ -49,4 +55,23 @@ urlpatterns = [
     path('providers/sources/',
          ProviderSourceList.as_view(),
          name='provider_source_list'),
+
+    path('users',
+         UserList.as_view(),
+         name='user_list'),
+
+    path('users/<int:pk>',
+         UserDetail.as_view(),
+         name='user_detail'),
+
+    # if False:
+    #     user_urls = [
+    #         url(r'^$', views.UserList.as_view(), name='user_list'),
+    #         url(r'^(?P<pk>[0-9]+)/$', views.UserDetail.as_view(), name='user_detail'),
+    #         # url(r'^(?P<pk>[0-9]+)/token/$',
+    #         #     views.UserTokenView.as_view(),
+    #         #     name='user_token_view')
+    #     ]
+
+
 ]

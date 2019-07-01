@@ -60,9 +60,11 @@ class NamespaceSerializer(base_serializer.BaseSerializer):
             'provider_name': pn.provider.name.lower()
         } for pn in instance.provider_namespaces.all()]
 
+        # content_count_list = instance.content_counts
+        content_count_list = []
         content_counts = {
             c['content_type__name']: c['count']
-            for c in instance.content_counts
+            for c in content_count_list
         }
 
         return {
@@ -76,11 +78,11 @@ class NamespaceSerializer(base_serializer.BaseSerializer):
             'provider_namespaces': reverse(
                 'api:v1:namespace_provider_namespaces_list',
                 args=(instance.pk,)),
-            'content': reverse(
-                'api:v1:namespace_content_list',
-                args=(instance.pk,)),
-            'owners': reverse(
-                'api:v1:namespace_owners_list',
-                args=(instance.pk,))
+            # 'content': reverse(
+            #     'api:v1:namespace_content_list',
+            #     args=(instance.pk,)),
+            # 'owners': reverse(
+            #     'api:v1:namespace_owners_list',
+            #     args=(instance.pk,))
         }
         return related
