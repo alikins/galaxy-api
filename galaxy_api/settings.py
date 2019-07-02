@@ -29,6 +29,7 @@ INSTALLED_APPS = [
     'drf_yasg',
 
     'galaxy_api.db',
+    # 'galaxy_api.db.accounts',
     # 'galaxy_common.apps.AppConfig',
     # 'galaxy_common.accounts.apps.AppConfig',
 ]
@@ -66,7 +67,7 @@ WSGI_APPLICATION = 'galaxy_api.wsgi.application'
 
 # Database
 
-AUTH_USER_MODEL = 'galaxy_accounts.CustomUser'
+# AUTH_USER_MODEL = 'galaxy_api.CustomUser'
 
 DATABASES = {
     'default': {
