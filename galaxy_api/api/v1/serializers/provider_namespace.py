@@ -17,7 +17,7 @@
 
 from django.urls import reverse
 
-from galaxy_common.models import ProviderNamespace
+from galaxy_api.db.models import ProviderNamespace
 from . import base_serializer
 
 
@@ -61,7 +61,8 @@ class ProviderNamespaceSerializer(base_serializer.BaseSerializer):
         result = {}
         # if instance.provider:
         #     result['provider'] = reverse(
-        #         'api:v1:active_provider_detail', args=(instance.provider.pk,))
+        #         'api:v1:active_provider_detail',
+        #          args=(instance.provider.pk,))
         if instance.namespace:
             result['namespace'] = reverse(
                 'api:v1:namespace_detail', args=(instance.namespace.pk,))
