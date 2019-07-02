@@ -15,12 +15,12 @@
 # You should have received a copy of the Apache License
 # along with Galaxy.  If not, see <http://www.apache.org/licenses/>.
 
-from django.db import models
-
-from galaxy_common import fields
-from .mixins import DirtyMixin
 from django.core.validators import MinValueValidator, MaxValueValidator
 from django.conf import settings
+from django.db import models
+
+from .. import fields
+from .mixins import DirtyMixin
 
 
 class BaseModel(models.Model, DirtyMixin):
