@@ -24,7 +24,7 @@ from django.utils.translation import ugettext_lazy as _
 from django.utils.http import urlquote
 from django.utils import timezone
 
-from galaxy_common.models import mixins
+from . import mixins
 
 
 class CustomUser(auth_models.AbstractBaseUser,
