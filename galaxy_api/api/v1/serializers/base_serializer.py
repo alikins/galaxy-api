@@ -8,7 +8,8 @@ from django.contrib.auth.models import AnonymousUser
 from rest_framework import serializers
 
 SUMMARIZABLE_FK_FIELDS = {
-    'owner': ('id', 'url', 'username', 'full_name', 'avatar_url'),
+    # 'owner': ('id', 'url', 'username', 'full_name', 'avatar_url'),
+    'owner': ('id', 'username',),
     'role': ('id', 'url', 'name',),
 }
 

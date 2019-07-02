@@ -16,9 +16,13 @@ logger = logging.getLogger(__name__)
 
 User = get_user_model()
 
+# USER_FIELDS = (
+#     'id', 'url', 'related', 'summary_fields', 'created', 'modified',
+#     'username', 'staff', 'full_name', 'date_joined', 'avatar_url'
+# )
 USER_FIELDS = (
-    'id', 'url', 'related', 'summary_fields', 'created', 'modified',
-    'username', 'staff', 'full_name', 'date_joined', 'avatar_url'
+    'id',
+    'username', 'staff', 'date_joined',
 )
 
 __all__ = [
