@@ -30,9 +30,9 @@ from rest_framework.exceptions import (
 )
 from rest_framework.response import Response
 
-from galaxy_common.accounts.models import CustomUser as User
+from galaxy_api.db.models import CustomUser as User
 from galaxy_api.api.v1 import serializers
-from galaxy_common import models
+from galaxy_api.db import models
 from galaxy_api.api import base as base_views
 
 

@@ -6,8 +6,6 @@ from django.core.exceptions import ObjectDoesNotExist
 from django.contrib.auth.models import AnonymousUser
 from django.contrib.auth import get_user_model
 
-from galaxy_common import models
-
 from galaxy_api.api import base as base_views
 from galaxy_api.api.v1 import serializers
 
@@ -56,4 +54,3 @@ class ActiveUserView(base_views.RetrieveAPIView):
         except ObjectDoesNotExist:
             obj = AnonymousUser()
         return obj
-
