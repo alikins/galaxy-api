@@ -33,7 +33,7 @@ from rest_framework.exceptions import ParseError
 from rest_framework.filters import BaseFilterBackend
 
 # Galaxy
-from galaxy_common.models import UserAlias
+from galaxy_api.db.models import UserAlias
 
 GalaxyUser = get_user_model()
 
