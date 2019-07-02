@@ -65,13 +65,13 @@ class UserPreferences(BaseModel):
     )
 
     collections_followed = models.ManyToManyField(
-        'galaxy.Collection',
+        'Collection',
         editable=True,
         blank=True
     )
 
     namespaces_followed = models.ManyToManyField(
-        'galaxy.Namespace',
+        'Namespace',
         editable=True,
         blank=True
     )
