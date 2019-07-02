@@ -24,8 +24,9 @@ from .users import (
     UserList,
     ActiveUserView,
 )
+
 __all__ = (
-    'TestView'
+    'TestView',
     'NamespaceList',
     'NamespaceDetail',
     'NamespaceProviderNamespacesList',

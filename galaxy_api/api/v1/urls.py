@@ -2,17 +2,12 @@ from django.urls import path
 
 from .views import TestView
 
-from .views import PingView
 from .views import (
     NamespaceList,
     NamespaceDetail,
     NamespaceProviderNamespacesList,
 )
 
-from .views import (
-    ProviderNamespaceList,
-    ProviderNamespaceDetail,
-)
 from .views import (
     ProviderNamespaceList,
     ProviderNamespaceDetail,
@@ -25,15 +20,12 @@ from .views import (
 from .views import (
     UserList,
     UserDetail,
-    ActiveUserView,
+    # ActiveUserView,
 )
 
 app_name = 'api'
 urlpatterns = [
-    path('test', TestView.as_view(), name='test')
-        path('collections/<int:pk>/',
-        CollectionDetailView.as_view(),
-        name='collection-detail'),
+    path('test', TestView.as_view(), name='test'),
 
     path('namespaces', NamespaceList.as_view(), name='namespace_list'),
     path('namespaces/<int:pk>/',
@@ -63,15 +55,5 @@ urlpatterns = [
     path('users/<int:pk>',
          UserDetail.as_view(),
          name='user_detail'),
-
-    # if False:
-    #     user_urls = [
-    #         url(r'^$', views.UserList.as_view(), name='user_list'),
-    #         url(r'^(?P<pk>[0-9]+)/$', views.UserDetail.as_view(), name='user_detail'),
-    #         # url(r'^(?P<pk>[0-9]+)/token/$',
-    #         #     views.UserTokenView.as_view(),
-    #         #     name='user_token_view')
-    #     ]
-
 
 ]

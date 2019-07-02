@@ -67,7 +67,7 @@ WSGI_APPLICATION = 'galaxy_api.wsgi.application'
 
 # Database
 
-AUTH_USER_MODEL = 'galaxy_accounts.CustomUser'
+# AUTH_USER_MODEL = 'galaxy_api.CustomUser'
 
 DATABASES = {
     'default': {
