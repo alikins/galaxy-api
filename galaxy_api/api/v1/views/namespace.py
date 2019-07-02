@@ -19,6 +19,7 @@ import logging
 import re
 
 from django.core.exceptions import ObjectDoesNotExist
+from django.contrib.auth import get_user_model
 
 # filter backends
 from rest_framework.filters import SearchFilter
@@ -30,7 +31,6 @@ from rest_framework.exceptions import (
 )
 from rest_framework.response import Response
 
-from galaxy_api.db.models import CustomUser as User
 from galaxy_api.api.v1 import serializers
 from galaxy_api.db import models
 from galaxy_api.api import base as base_views
@@ -43,6 +43,8 @@ __all__ = [
     # 'NamespaceContentList',
     # 'NamespaceOwnersList',
 ]
+
+GalaxyUser = get_user_model()
 
 logger = logging.getLogger(__name__)
 
@@ -86,7 +88,7 @@ def check_owners(data_owners):
             errors[i] = "Attribute 'id' id required"
             continue
         try:
-            User.objects.get(pk=owner['id'])
+            GalaxyUser.objects.get(pk=owner['id'])
         except ObjectDoesNotExist:
             errors[i] = "A user does not exist for this 'id'"
             continue
@@ -200,7 +202,7 @@ def update_owners(instance, owners):
         # add new owners
         if not instance.owners.filter(pk=owner_pk):
             try:
-                owner = User.objects.get(pk=owner_pk)
+                owner = GalaxyUser.objects.get(pk=owner_pk)
             except ObjectDoesNotExist:
                 pass
             else:
