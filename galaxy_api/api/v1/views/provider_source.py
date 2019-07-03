@@ -24,7 +24,7 @@ from rest_framework.response import Response
 
 from django.core.exceptions import ObjectDoesNotExist
 
-from galaxy_api.db.models import Provider, ProviderNamespace
+from galaxy_api.models import Provider, ProviderNamespace
 from galaxy_api.api import base as base_views
 
 # from ..githubapi import GithubAPI

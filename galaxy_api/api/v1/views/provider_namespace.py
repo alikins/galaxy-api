@@ -27,7 +27,7 @@ from rest_framework import status
 from rest_framework.exceptions import ValidationError, APIException
 from rest_framework.response import Response
 
-from galaxy_api.db import models
+from galaxy_api import models
 
 # from galaxy_api.api import serializers
 from galaxy_api.api.v1 import serializers

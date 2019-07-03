@@ -2,7 +2,7 @@ from django.shortcuts import get_object_or_404
 
 from rest_framework.response import Response
 
-from galaxy_api.db import models
+from galaxy_api import models
 from galaxy_api.api import exceptions
 from galaxy_api.api import base
 from galaxy_api.api.v2 import serializers
