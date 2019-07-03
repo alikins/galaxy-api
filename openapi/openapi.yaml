@@ -65,22 +65,222 @@ paths:
               schema:
                 $ref: '#/components/schemas/APIEndpoints'
 
-  '/search/':
-    get:
-      summary: 'Get info about the search API'
-      operationId: GetApiSearch
+  '/collections/':
+    post:
+      summary: 'Create a new CollectionVersion by importing a collection artifact'
+      operationId: ImportCollectionVersionArtifact
       tags:
-        - search
-        - introspection
-        - v1
+        - collections
+        - v2
+        - client_mazer
+      security:
+        - TokenApiKey: []
+        - BasicAuth: []
       parameters: []
+      requestBody:
+        $ref: '#/components/requestBodies/CollectionVersionArtifactBody'
       responses:
-        '200':
-          description: 'A map of endpoints in the search API'
+        '202':
+          $ref: '#/components/responses/CreateCollectionResult'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '409':
+          $ref: '#/components/responses/Conflict'
+        default:
+          description: 'Unexpected Error'
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/APIEndpoints'
+                $ref: '#/components/schemas/Error'
+
+  '/collections/{id}/':
+    get:
+      summary: 'Get a Collection by id'
+      operationId: GetCollectionById
+      tags:
+        - collections
+        - v2
+      parameters:
+        - $ref: '#/components/parameters/CollectionId'
+      responses:
+        '200':
+          description: 'A Collection'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Collection'
+
+  '/collections/{id}/versions/':
+    get:
+      summary: 'Get list of versions for a collection id'
+      operationId: ListCollectionVersionsById
+      tags:
+        - collections
+        - v2
+      parameters:
+        - $ref: '#/components/parameters/CollectionId'
+        - $ref: '#/components/parameters/Page'
+        - $ref: '#/components/parameters/PageSize'
+        - $ref: '#/components/parameters/Search'
+      responses:
+        '200':
+          $ref: '#/components/responses/CollectionVersions'
+
+  '/collections/{namespace}/{name}/':
+    parameters:
+      - $ref: '#/components/parameters/CollectionNamespace'
+      - $ref: '#/components/parameters/CollectionName'
+    get:
+      summary: 'Get a Collection by namespace and name'
+      operationId: GetCollectionByNamespaceName
+      tags:
+        - collections
+        - v2
+        - client_mazer
+      responses:
+        '200':
+          description: 'A Collection'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Collection'
+
+  '/collections/{namespace}/{name}/versions/':
+    parameters:
+      - $ref: '#/components/parameters/CollectionNamespace'
+      - $ref: '#/components/parameters/CollectionName'
+    get:
+      summary: 'Get a list of CollectionVersions for a Collection by namespace and name'
+      operationId: ListCollectionVersionsByNamespaceName
+      tags:
+        - collections
+        - v2
+        - client_mazer
+      parameters:
+        - $ref: '#/components/parameters/Page'
+        - $ref: '#/components/parameters/PageSize'
+        - $ref: '#/components/parameters/Search'
+      responses:
+        '200':
+          $ref: '#/components/responses/CollectionVersions'
+
+  '/collections/{namespace}/{name}/versions/{version}/':
+    parameters:
+      - $ref: '#/components/parameters/CollectionNamespace'
+      - $ref: '#/components/parameters/CollectionName'
+      - $ref: '#/components/parameters/CollectionVersion'
+    get:
+      summary: 'Get a CollectionVersion by namespace, name, and version'
+      operationId: GetCollectionVersion
+      tags:
+        - collections
+        - v2
+        - client_mazer
+      responses:
+        '200':
+          $ref: '#/components/responses/CollectionVersion'
+
+  '/collections/{namespace}/{name}/versions/{version}/artifact/':
+    parameters:
+      - $ref: '#/components/parameters/CollectionNamespace'
+      - $ref: '#/components/parameters/CollectionName'
+      - $ref: '#/components/parameters/CollectionVersion'
+    get:
+      summary: 'Get Artifact details for a Collection by namespace, name, and version'
+      operationId: GetCollectionVersionArtifact
+      tags:
+        - collections
+        - v2
+        - client_mazer
+      parameters:
+        - $ref: '#/components/parameters/Search'
+      responses:
+        '200':
+          $ref: '#/components/responses/CollectionVersionArtifact'
+
+
+  '/collection-imports/{id}/':
+    get:
+      summary: 'Get a Collection-Import (import task) by id'
+      operationId: GetCollectionImportById
+      tags:
+        - collection-imports
+        - v2
+      parameters:
+        - description: 'A unique integer value identifying this collection import.'
+          in: path
+          name: id
+          required: true
+          schema:
+            type: string
+        - $ref: '#/components/parameters/Search'
+      responses:
+        '200':
+          description: 'The result of a collection import'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CollectionImportResult'
+
+  '/collection-versions/{id}/artifact/':
+    get:
+      summary: 'Get a CollectionVersionArtifact'
+      operationId: GetCollectionVersionArtifactById
+      tags:
+        - collection-versions
+        - v2
+      parameters:
+        - description: 'The CollectionVersion id'
+          in: path
+          name: id
+          required: true
+          schema:
+            type: string
+        - $ref: '#/components/parameters/Search'
+      responses:
+        '200':
+          $ref: '#/components/responses/CollectionVersionArtifact'
+
+  '/collection-versions/{version_pk}/':
+    get:
+      summary: 'Get a CollectionVersion by version_pk'
+      operationId: GetCollectionVersionByVersionPk
+      tags:
+        - collection-versions
+        - v2
+      parameters:
+        - description: 'The CollectionVersion version_pk'
+          in: path
+          name: version_pk
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          $ref: '#/components/responses/CollectionVersion'
+
+  '/download/{filename}':
+    get:
+      summary: 'Download the collection artifact'
+      operationId: DownloadArtifactByFilename
+      tags:
+        - download
+        - client_mazer
+      parameters:
+        - description: 'CollectionVersion artifact filename'
+          in: path
+          name: filename
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: 'The collection artifact file binary contents'
+          content:
+            application/octet-stream:
+              schema:
+                type: string
+                format: binary
 
   '/me/':
     get:
@@ -232,6 +432,23 @@ paths:
         - provider_namespaces
         - v3
 
+  '/search/':
+    get:
+      summary: 'Get info about the search API'
+      operationId: GetApiSearch
+      tags:
+        - search
+        - introspection
+        - v1
+      parameters: []
+      responses:
+        '200':
+          description: 'A map of endpoints in the search API'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/APIEndpoints'
+
   '/search/content/':
     get:
       summary: 'Get a list of Contents by searching'
@@ -369,222 +586,6 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/User'
-
-  '/collection-imports/{id}/':
-    get:
-      summary: 'Get a Collection-Import (import task) by id'
-      operationId: GetCollectionImportById
-      tags:
-        - collection-imports
-        - v2
-      parameters:
-        - description: 'A unique integer value identifying this collection import.'
-          in: path
-          name: id
-          required: true
-          schema:
-            type: string
-        - $ref: '#/components/parameters/Search'
-      responses:
-        '200':
-          description: 'The result of a collection import'
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/CollectionImportResult'
-
-  '/collection-versions/{id}/artifact/':
-    get:
-      summary: 'Get a CollectionVersionArtifact'
-      operationId: GetCollectionVersionArtifactById
-      tags:
-        - collection-versions
-        - v2
-      parameters:
-        - description: 'The CollectionVersion id'
-          in: path
-          name: id
-          required: true
-          schema:
-            type: string
-        - $ref: '#/components/parameters/Search'
-      responses:
-        '200':
-          $ref: '#/components/responses/CollectionVersionArtifact'
-
-  '/collection-versions/{version_pk}/':
-    get:
-      summary: 'Get a CollectionVersion by version_pk'
-      operationId: GetCollectionVersionByVersionPk
-      tags:
-        - collection-versions
-        - v2
-      parameters:
-        - description: 'The CollectionVersion version_pk'
-          in: path
-          name: version_pk
-          required: true
-          schema:
-            type: string
-      responses:
-        '200':
-          $ref: '#/components/responses/CollectionVersion'
-
-  '/collections/':
-    post:
-      summary: 'Create a new CollectionVersion by importing a collection artifact'
-      operationId: ImportCollectionVersionArtifact
-      tags:
-        - collections
-        - v2
-        - client_mazer
-      security:
-        - TokenApiKey: []
-        - BasicAuth: []
-      parameters: []
-      requestBody:
-        $ref: '#/components/requestBodies/CollectionVersionArtifactBody'
-      responses:
-        '202':
-          $ref: '#/components/responses/CreateCollectionResult'
-        '401':
-          $ref: '#/components/responses/Unauthorized'
-        '409':
-          $ref: '#/components/responses/Conflict'
-        default:
-          description: 'Unexpected Error'
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-
-  '/collections/{id}/':
-    get:
-      summary: 'Get a Collection by id'
-      operationId: GetCollectionById
-      tags:
-        - collections
-        - v2
-      parameters:
-        - $ref: '#/components/parameters/CollectionId'
-      responses:
-        '200':
-          description: 'A Collection'
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Collection'
-
-  '/collections/{id}/versions/':
-    get:
-      summary: 'Get list of versions for a collection id'
-      operationId: ListCollectionVersionsById
-      tags:
-        - collections
-        - v2
-      parameters:
-        - $ref: '#/components/parameters/CollectionId'
-        - $ref: '#/components/parameters/Page'
-        - $ref: '#/components/parameters/PageSize'
-        - $ref: '#/components/parameters/Search'
-      responses:
-        '200':
-          $ref: '#/components/responses/CollectionVersions'
-
-  '/collections/{namespace}/{name}/':
-    parameters:
-      - $ref: '#/components/parameters/CollectionNamespace'
-      - $ref: '#/components/parameters/CollectionName'
-    get:
-      summary: 'Get a Collection by namespace and name'
-      operationId: GetCollectionByNamespaceName
-      tags:
-        - collections
-        - v2
-        - client_mazer
-      responses:
-        '200':
-          description: 'A Collection'
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Collection'
-
-  '/collections/{namespace}/{name}/versions/':
-    parameters:
-      - $ref: '#/components/parameters/CollectionNamespace'
-      - $ref: '#/components/parameters/CollectionName'
-    get:
-      summary: 'Get a list of CollectionVersions for a Collection by namespace and name'
-      operationId: ListCollectionVersionsByNamespaceName
-      tags:
-        - collections
-        - v2
-        - client_mazer
-      parameters:
-        - $ref: '#/components/parameters/Page'
-        - $ref: '#/components/parameters/PageSize'
-        - $ref: '#/components/parameters/Search'
-      responses:
-        '200':
-          $ref: '#/components/responses/CollectionVersions'
-
-  '/collections/{namespace}/{name}/versions/{version}/':
-    parameters:
-      - $ref: '#/components/parameters/CollectionNamespace'
-      - $ref: '#/components/parameters/CollectionName'
-      - $ref: '#/components/parameters/CollectionVersion'
-    get:
-      summary: 'Get a CollectionVersion by namespace, name, and version'
-      operationId: GetCollectionVersion
-      tags:
-        - collections
-        - v2
-        - client_mazer
-      responses:
-        '200':
-          $ref: '#/components/responses/CollectionVersion'
-
-  '/collections/{namespace}/{name}/versions/{version}/artifact/':
-    parameters:
-      - $ref: '#/components/parameters/CollectionNamespace'
-      - $ref: '#/components/parameters/CollectionName'
-      - $ref: '#/components/parameters/CollectionVersion'
-    get:
-      summary: 'Get Artifact details for a Collection by namespace, name, and version'
-      operationId: GetCollectionVersionArtifact
-      tags:
-        - collections
-        - v2
-        - client_mazer
-      parameters:
-        - $ref: '#/components/parameters/Search'
-      responses:
-        '200':
-          $ref: '#/components/responses/CollectionVersionArtifact'
-
-  '/download/{filename}':
-    get:
-      summary: 'Download the collection artifact'
-      operationId: DownloadArtifactByFilename
-      tags:
-        - download
-        - client_mazer
-      parameters:
-        - description: 'CollectionVersion artifact filename'
-          in: path
-          name: filename
-          required: true
-          schema:
-            type: string
-      responses:
-        '200':
-          description: 'The collection artifact file binary contents'
-          content:
-            application/octet-stream:
-              schema:
-                type: string
-                format: binary
 
 components:
   schemas:
@@ -737,7 +738,6 @@ components:
 
     CollectionImportMessage:
       description: 'Message from collection importer including lint results'
-
       type: object
       properties:
         level:
