@@ -1,24 +1,20 @@
 info:
-  description: 'Galaxy 3.2 API (wip)'
-  title: 'Galaxy 3.2 API (wip)'
+  description: 'Galaxy autohub API (wip)'
+  title: 'Galaxy autohub API (wip)'
   version: "1.2.0"
   contact:
     url: https://github.com/ansible/galaxy/issues
     name: 'Ansible Galaxy Issues'
-    
+
 openapi: 3.0.0
 
 servers:
-  - url: https://galaxy.ansible.com/
-    description: 'Production server (uses live data)'
-  - url: https://galaxy-dev.ansible.com/
-    description: 'shared public dev server'
-  - url: http://localhost:5001
+  - url: http://localhost:5001/api/v3/
     description: 'local dev server'
-    
+
 externalDocs:
   url: https://galaxy.ansible.com/docs/
-  
+
 tags:
   - name: 'collections'
     externalDocs:
@@ -43,9 +39,9 @@ tags:
   - name: 'users'
   - name: 'v1'
     description: 'API endpoints from the v1 API.'
-    
+
 paths:
-  '/api/':
+  '/':
     get:
       summary: 'Get info about the API'
       operationId: GetAPI
@@ -59,27 +55,11 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/APIEndpoints'
- 
-  '/api/v1/':
+
+  '/search/':
     get:
-      summary: 'Get info about the v1 API'
-      operationId: GetApiV1
-      tags:
-        - introspection
-        - v1
-      parameters: []
-      responses:
-        '200':
-          description: 'A map of endpoints in the v1 API'
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/APIEndpoints'
-                
-  '/api/v1/search/':
-    get:
-      summary: 'Get info about the v1 search API'
-      operationId: GetApiV1Search
+      summary: 'Get info about the search API'
+      operationId: GetApiSearch
       tags:
         - search
         - introspection
@@ -87,13 +67,13 @@ paths:
       parameters: []
       responses:
         '200':
-          description: 'A map of endpoints in the v1 search API'
+          description: 'A map of endpoints in the search API'
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/APIEndpoints'
-                  
-  '/api/v1/me/':
+
+  '/me/':
     get:
       summary: 'Get the User info for the current user'
       operationId: GetMeDetail
@@ -114,7 +94,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/User'
 
-  '/api/v1/namespaces/':
+  '/namespaces/':
     get:
       summary: 'Get a list of Namespaces'
       operationId: ListNamespaces
@@ -128,8 +108,8 @@ paths:
       responses:
         '200':
           $ref: '#/components/responses/Namespaces'
-          
-  '/api/v1/search/content/':
+
+  '/search/content/':
     get:
       summary: 'Get a list of Contents by searching'
       operationId: ListContentBySearch
@@ -143,7 +123,7 @@ paths:
         '200':
           $ref: '#/components/responses/Contents'
 
-  '/api/v1/search/roles/':
+  '/search/roles/':
     get:
       operationId: ListRoleBySearch
       tags:
@@ -155,8 +135,8 @@ paths:
       responses:
         '200':
           $ref: '#/components/responses/Roles'
-          
-  '/api/v1/search/tags/':
+
+  '/search/tags/':
     get:
       summary: 'Get a list of Tags by searching'
       operationId: ListTagBySearch
@@ -170,8 +150,8 @@ paths:
       responses:
         '200':
           $ref: '#/components/responses/Tags'
-          
-  '/api/v1/tags/':
+
+  '/tags/':
     get:
       summary: 'Get a list of Galaxy Tags'
       operationId: ListTags
@@ -185,8 +165,8 @@ paths:
       responses:
         '200':
           $ref: '#/components/responses/Tags'
-          
-  '/api/v1/tags/{id}/':
+
+  '/tags/{id}/':
     get:
       summary: 'Get a Galaxy Tag'
       operationId: GetTagById
@@ -208,8 +188,8 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Tag'
-  
-  '/api/v1/users/':
+
+  '/users/':
     get:
       summary: 'Get a list of Users'
       operationId: ListUsers
@@ -224,7 +204,7 @@ paths:
         '200':
           $ref: '#/components/responses/Users'
 
-  '/api/v1/users/{id}/':
+  '/users/{id}/':
     get:
       summary: 'Get an User by id'
       operationId: GetUserById
@@ -266,7 +246,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/User'
 
-  '/api/v2/collection-imports/{id}/':
+  '/collection-imports/{id}/':
     get:
       summary: 'Get a Collection-Import (import task) by id'
       operationId: GetCollectionImportById
@@ -288,8 +268,8 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/CollectionImportResult'
-                
-  '/api/v2/collection-versions/{id}/artifact/':
+
+  '/collection-versions/{id}/artifact/':
     get:
       operationId: GetCollectionVersionArtifactById
       tags:
@@ -307,7 +287,7 @@ paths:
         '200':
           $ref: '#/components/responses/CollectionVersionArtifact'
 
-  '/api/v2/collection-versions/{version_pk}/':
+  '/collection-versions/{version_pk}/':
     get:
       summary: 'Get a CollectionVersion by version_pk'
       operationId: GetCollectionVersionByVersionPk
@@ -324,8 +304,8 @@ paths:
       responses:
         '200':
           $ref: '#/components/responses/CollectionVersion'
-                
-  '/api/v2/collections/':
+
+  '/collections/':
     post:
       summary: 'Create a new CollectionVersion by importing a collection artifact'
       operationId: ImportCollectionVersionArtifact
@@ -353,8 +333,8 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Error'
-          
-  '/api/v2/collections/{id}/':
+
+  '/collections/{id}/':
     get:
       summary: 'Get a Collection by id'
       operationId: GetCollectionById
@@ -371,7 +351,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/Collection'
 
-  '/api/v2/collections/{id}/versions/':
+  '/collections/{id}/versions/':
     get:
       summary: 'Get list of versions for a collection id'
       operationId: ListCollectionVersionsById
@@ -386,8 +366,8 @@ paths:
       responses:
         '200':
           $ref: '#/components/responses/CollectionVersions'
-          
-  '/api/v2/collections/{namespace}/{name}/':
+
+  '/collections/{namespace}/{name}/':
     parameters:
       - $ref: '#/components/parameters/CollectionNamespace'
       - $ref: '#/components/parameters/CollectionName'
@@ -405,8 +385,8 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Collection'
-                
-  '/api/v2/collections/{namespace}/{name}/versions/':
+
+  '/collections/{namespace}/{name}/versions/':
     parameters:
       - $ref: '#/components/parameters/CollectionNamespace'
       - $ref: '#/components/parameters/CollectionName'
@@ -424,8 +404,8 @@ paths:
       responses:
         '200':
           $ref: '#/components/responses/CollectionVersions'
-          
-  '/api/v2/collections/{namespace}/{name}/versions/{version}/':
+
+  '/collections/{namespace}/{name}/versions/{version}/':
     parameters:
       - $ref: '#/components/parameters/CollectionNamespace'
       - $ref: '#/components/parameters/CollectionName'
@@ -440,8 +420,8 @@ paths:
       responses:
         '200':
           $ref: '#/components/responses/CollectionVersion'
-                
-  '/api/v2/collections/{namespace}/{name}/versions/{version}/artifact/':
+
+  '/collections/{namespace}/{name}/versions/{version}/artifact/':
     parameters:
       - $ref: '#/components/parameters/CollectionNamespace'
       - $ref: '#/components/parameters/CollectionName'
@@ -502,7 +482,7 @@ components:
       required:
         - code
         - message
-        
+
     APIException:
       type: object
       description: 'API Exception'
@@ -522,42 +502,42 @@ components:
       required:
         - code
         - message
-        
+
     ConflictError:
       allOf:
         - $ref: '#/components/schemas/APIException'
-        
+
     ConflictCollectionExistsError:
       allOf:
         - $ref: '#/components/schemas/ConflictError'
-        
+
     RepositoryNameError:
       allOf:
         - $ref: '#/components/schemas/ConflictError'
-        
+
     ArtifactExistsError:
       allOf:
         - $ref: '#/components/schemas/ConflictError'
-        
+
     ValidationError:
       allOf:
         - $ref: '#/components/schemas/APIException'
-        
+
     APIEndpoints:
       description: 'Map of API endpoint names to URLS'
       type: object
       additionalProperties:
         type: string
-        
+
     PageCount:
       type: integer
-      
+
     PageNext:
       type: string
-      
+
     PagePrevious:
       type: string
-      
+
     CollectionVersionLink:
       type: object
       properties:
@@ -581,19 +561,19 @@ components:
           type: string
         size:
           type: integer
-          
+
     CollectionName:
       description: 'The name of a Collection'
       type: string
       example: 'my_collection'
       pattern: '^(?!.*__)[a-z]+[0-9a-z_]*$'
-      
+
     CollectionNamespaceName:
       description: 'The Collection namespace'
       type: string
       example: 'my_namespace'
       pattern: '^(?!.*__)[a-z]+[0-9a-z_]*$'
-      
+
     Collection:
       description: 'An Ansible Collection'
       type: object
@@ -620,7 +600,7 @@ components:
           format: uri
         versions_url:
           type: string
-          
+
     CollectionImportError:
       type: object
       properties:
@@ -630,7 +610,7 @@ components:
           type: string
         traceback:
           type: string
-          
+
     CollectionImportMessage:
       description: 'Message from collection importer including lint results'
 
@@ -647,7 +627,7 @@ components:
         - level
         - message
         - time
-          
+
     CollectionImportLintRecord:
       description: 'Records from collection linters'
       type: object
@@ -672,7 +652,7 @@ components:
           description: 'The url for the queued collection import task. Check it for progress and status.'
           type: string
           format: uri
-          
+
     CollectionImportResult:
       description: 'Collection import result'
       type: object
@@ -723,7 +703,7 @@ components:
         - started_at
         - state
         - version
-          
+
     CollectionNamespace:
       type: object
       properties:
@@ -735,7 +715,7 @@ components:
           description: 'link to the Namespace'
           type: string
           format: uri
-          
+
     CollectionVersionDetailCollection:
       type: object
       properties:
@@ -747,7 +727,7 @@ components:
           description: 'link to the Collection'
           type: string
           format: uri
-          
+
     CollectionVersionDetailArtifact:
       type: object
       properties:
@@ -757,41 +737,41 @@ components:
           type: integer
         sha256:
           type: string
-          
+
     SemanticVersion:
       description: 'A version string in the Semantic Version form'
       type: string
       example: '1.0.1'
-      
+
     SemanticVersionSpec:
       description: 'A string to match against SemanticVersion'
       type: string
       example: '>=1.0.0'
-      
+
     CollectionVersionDependencies:
       description: 'A map of collection namespace.name to a semantic version'
       type: object
       additionalProperties:
         $ref: '#/components/schemas/SemanticVersionSpec'
-      
+
     CollectionVersionLicense:
       description: 'A SPDX license id'
       type: string
       # TODO: This could in theory be an enum
-        
+
     GalaxyTag:
       description: 'A Galaxy Tag'
       type: string
       pattern: '^[a-z0-9]+$'
       example: 'development'
-        
+
     Author:
       description: 'Author of a collection or role'
       type: string
       format: email
       # TODO: add author validation pattern
       example: 'Adrian Likins <alikins@redhat.com>'
-      
+
     CollectionVersionDetailMetadata:
       description: "The Collection Version metadata from collections galaxy.yml or MANIFEST.JSON"
       type: object
@@ -853,12 +833,12 @@ components:
         - namespace
         - name
         - version
-        
+
     CollectionVersion:
       type: object
       properties:
         artifact:
-          $ref: '#/components/schemas/CollectionVersionDetailArtifact'   
+          $ref: '#/components/schemas/CollectionVersionDetailArtifact'
         metadata:
           $ref: '#/components/schemas/CollectionVersionDetailMetadata'
         hidden:
@@ -878,7 +858,7 @@ components:
 
     CollectionVersionArtifactData:
       description: 'CollectionVersionArtifact archive file binary and sha256 checksum. Used for importing collection artifacts'
-      type: object 
+      type: object
       properties:
         sha256:
           description: 'The sha256sum of the collection artifact file'
@@ -887,9 +867,9 @@ components:
           description: 'The binary contents of a collection artifact'
           type: string
           format: binary
-                
+
     V1BaseModel:
-      description: 'Base for common v1 shared model attributes' 
+      description: 'Base for common v1 shared model attributes'
       type: object
       properties:
         id:
@@ -927,8 +907,8 @@ components:
           type: string
       required:
         - id
-        
-      
+
+
     Content:
       allOf:
         - $ref: '#/components/schemas/V1BaseModel'
@@ -981,11 +961,11 @@ components:
             - relevance
             - search_rank
             - download_rank
-          
+
     Namespace:
       description: 'A Namespace'
       allOf:
-        - $ref: '#/components/schemas/V1BaseModel'      
+        - $ref: '#/components/schemas/V1BaseModel'
         - type: object
           properties:
             avatar_url:
@@ -1018,11 +998,11 @@ components:
               type: string
           required:
             - name
-        
+
     Role:
       description: 'An Ansible Role'
       allOf:
-        - $ref: '#/components/schemas/V1BaseModel'  
+        - $ref: '#/components/schemas/V1BaseModel'
         - type: object
           properties:
             company:
@@ -1074,9 +1054,9 @@ components:
             - download_rank
 
     Tag:
-      description: 'A v1 galaxy Tag'
+      description: 'A Galaxy Tag'
       allOf:
-        - $ref: '#/components/schemas/V1BaseModel'  
+        - $ref: '#/components/schemas/V1BaseModel'
         - type: object
           properties:
             name:
@@ -1084,11 +1064,11 @@ components:
               type: string
           required:
             - name
-        
+
     User:
-      description: 'A v1 User'
+      description: 'A User'
       allOf:
-        - $ref: '#/components/schemas/V1BaseModel' 
+        - $ref: '#/components/schemas/V1BaseModel'
         - type: object
           properties:
             avatar_url:
@@ -1112,7 +1092,7 @@ components:
               type: string
           required:
             - username
-        
+
     UserUpdate:
       description: 'User data to update'
       properties:
@@ -1156,7 +1136,7 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/CollectionVersionLink'
-            
+
     ContentsPage:
       description: "A page of a list of Contents"
       type: object
@@ -1172,7 +1152,7 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/Content'
-            
+
     NamespacesPage:
       description: "A Page of a list of Namespaces"
       type: object
@@ -1187,8 +1167,8 @@ components:
           description: 'List of Namespaces for this Page'
           type: array
           items:
-            $ref: '#/components/schemas/Namespace' 
-            
+            $ref: '#/components/schemas/Namespace'
+
     RolesPage:
       description: "A Page of a list of Roles"
       type: object
@@ -1203,8 +1183,8 @@ components:
           description: 'List of Roles for this Page'
           type: array
           items:
-            $ref: '#/components/schemas/Role' 
-            
+            $ref: '#/components/schemas/Role'
+
     TagsPage:
       description: "A page of a list of Galaxy Tags"
       type: object
@@ -1220,7 +1200,7 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/Tag'
-            
+
     UsersPage:
       description: "A page of a list of Users"
       type: object
@@ -1253,7 +1233,7 @@ components:
                 conflict.collection_exists: '#/components/schemas/ConflictCollectionExistsError'
                 conflict.repository_name_conflict: '#/compontents/schemas/RepositoryNameError'
                 conflict.artifact_exists: '#/compontents/schemas/ArtifactExistsError'
-                
+
     Unauthorized:
       description: 'Authorization error'
       headers:
@@ -1292,7 +1272,7 @@ components:
             id: '$response.body#/id'
           description: >
             The `id` value returned in the response can be used as
-            the `id` parameter in `{method} GET /api/v2/collection-versions/{id}`.
+            the `id` parameter in `{method} GET /collection-versions/{id}`.
         GetCollectionById:
           operationId: GetCollectionById
           parameters:
@@ -1318,35 +1298,35 @@ components:
         application/json:
           schema:
             $ref: '#/components/schemas/CollectionCreationResult'
-            
+
     Contents:
       description: 'Response containing a Page of Content search results'
       content:
         application/json:
           schema:
             $ref: '#/components/schemas/ContentsPage'
-            
+
     Users:
       description: 'Response containing a Page of a list of Users'
       content:
         application/json:
           schema:
             $ref: '#/components/schemas/UsersPage'
-            
+
     Namespaces:
       description: 'Response containing a Page of a list of Namespaces'
       content:
         application/json:
           schema:
             $ref: '#/components/schemas/NamespacesPage'
-            
+
     Roles:
       description: 'Response containing a Page of a list of Roles'
       content:
         application/json:
           schema:
             $ref: '#/components/schemas/RolesPage'
-     
+
     Tags:
       description: 'Response containing a Page of a list of Tags'
       content:
@@ -1363,7 +1343,7 @@ components:
       schema:
         type: integer
         default: 1
-        
+
     PageSize:
       description: 'Number of results to return per page.'
       in: query
@@ -1374,7 +1354,7 @@ components:
         default: 10
         minimum: 0
         maximum: 1000
-        
+
     Search:
       description: 'Term to search for'
       in: query
@@ -1382,7 +1362,7 @@ components:
       required: false
       schema:
         type: string
-        
+
     CollectionId:
       description: 'The Collection id'
       in: path
@@ -1390,7 +1370,7 @@ components:
       required: true
       schema:
         type: string
-        
+
     CollectionNamespace:
       description: 'The collection namespace'
       in: path
@@ -1398,7 +1378,7 @@ components:
       required: true
       schema:
         type: string
-        
+
     CollectionName:
       description: 'The collection name'
       in: path
@@ -1407,7 +1387,7 @@ components:
       schema:
         type: string
         pattern: ^(?!.*__)[a-z]+[0-9a-z_]*$'
-        
+
     CollectionVersion:
       description: 'A Semantic Version string'
       in: path
@@ -1416,7 +1396,7 @@ components:
       schema:
         type: string
         pattern: ^((([0-9]+)\.([0-9]+)\.([0-9]+)(?:-([0-9a-zA-Z-]+(?:\.[0-9a-zA-Z-]+)*))?)(?:\+([0-9a-zA-Z-]+(?:\.[0-9a-zA-Z-]+)*))?)$
-        
+
     UserId:
       description: 'User id'
       in: path
@@ -1424,7 +1404,7 @@ components:
       required: true
       schema:
         type: string
-        
+
   requestBodies:
     CollectionVersionArtifactBody:
       description: "A multipart/form encoded payload including the binary collection artifact file contents and it's sha256sum"
