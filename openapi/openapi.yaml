@@ -589,24 +589,12 @@ paths:
 
 components:
   schemas:
-    Error:
+
+    APIEndpoints:
+      description: 'Map of API endpoint names to URLS'
       type: object
-      description: 'Error data'
-      properties:
-        code:
-          description: 'Unique identifier for the error'
-          type: string
-          example: 'invalid'
-        message:
-          type: string
-          example: 'namespace and name parameters are required'
-        field:
-          description: 'The name of the field involved'
-          type: string
-          example: 'namespace'
-      required:
-        - code
-        - message
+      additionalProperties:
+        type: string
 
     APIException:
       type: object
@@ -628,76 +616,16 @@ components:
         - code
         - message
 
-    ConflictError:
-      allOf:
-        - $ref: '#/components/schemas/APIException'
-
-    ConflictCollectionExistsError:
-      allOf:
-        - $ref: '#/components/schemas/ConflictError'
-
-    RepositoryNameError:
-      allOf:
-        - $ref: '#/components/schemas/ConflictError'
-
     ArtifactExistsError:
       allOf:
         - $ref: '#/components/schemas/ConflictError'
 
-    ValidationError:
-      allOf:
-        - $ref: '#/components/schemas/APIException'
-
-    APIEndpoints:
-      description: 'Map of API endpoint names to URLS'
-      type: object
-      additionalProperties:
-        type: string
-
-    PageCount:
-      type: integer
-
-    PageNext:
+    Author:
+      description: 'Author of a collection or role'
       type: string
-
-    PagePrevious:
-      type: string
-
-    CollectionVersionLink:
-      type: object
-      properties:
-        href:
-          description: 'The URL to the CollectionVersion'
-          type: string
-        version:
-          type: string
-          maxLength: 64
-
-    CollectionVersionArtifactDetail:
-      type: object
-      properties:
-        download_url:
-          readOnly: true
-          type: string
-        filename:
-          readOnly: true
-          type: string
-        sha256:
-          type: string
-        size:
-          type: integer
-
-    CollectionName:
-      description: 'The name of a Collection'
-      type: string
-      example: 'my_collection'
-      pattern: '^(?!.*__)[a-z]+[0-9a-z_]*$'
-
-    CollectionNamespaceName:
-      description: 'The Collection namespace'
-      type: string
-      example: 'my_namespace'
-      pattern: '^(?!.*__)[a-z]+[0-9a-z_]*$'
+      format: email
+      # TODO: add author validation pattern
+      example: 'Adrian Likins <alikins@redhat.com>'
 
     Collection:
       description: 'An Ansible Collection'
@@ -828,6 +756,18 @@ components:
         - state
         - version
 
+    CollectionName:
+      description: 'The name of a Collection'
+      type: string
+      example: 'my_collection'
+      pattern: '^(?!.*__)[a-z]+[0-9a-z_]*$'
+
+    CollectionNamespaceName:
+      description: 'The Collection namespace'
+      type: string
+      example: 'my_namespace'
+      pattern: '^(?!.*__)[a-z]+[0-9a-z_]*$'
+
     CollectionNamespace:
       type: object
       properties:
@@ -840,17 +780,59 @@ components:
           type: string
           format: uri
 
-    CollectionVersionDetailCollection:
+    CollectionVersion:
       type: object
       properties:
-        name:
+        artifact:
+          $ref: '#/components/schemas/CollectionVersionDetailArtifact'
+        metadata:
+          $ref: '#/components/schemas/CollectionVersionDetailMetadata'
+        hidden:
+          type: boolean
+        download_url:
           type: string
+          format: uri
+        namespace:
+          $ref: '#/components/schemas/CollectionNamespace'
         id:
           type: integer
         href:
-          description: 'link to the Collection'
           type: string
           format: uri
+        collection:
+          $ref: '#/components/schemas/CollectionVersionDetailCollection'
+
+    CollectionVersionArtifactData:
+      description: 'CollectionVersionArtifact archive file binary and sha256 checksum. Used for importing collection artifacts'
+      type: object
+      properties:
+        sha256:
+          description: 'The sha256sum of the collection artifact file'
+          type: string
+        file:
+          description: 'The binary contents of a collection artifact'
+          type: string
+          format: binary
+
+    CollectionVersionArtifactDetail:
+      type: object
+      properties:
+        download_url:
+          readOnly: true
+          type: string
+        filename:
+          readOnly: true
+          type: string
+        sha256:
+          type: string
+        size:
+          type: integer
+
+    CollectionVersionDependencies:
+      description: 'A map of collection namespace.name to a semantic version'
+      type: object
+      additionalProperties:
+        $ref: '#/components/schemas/SemanticVersionSpec'
 
     CollectionVersionDetailArtifact:
       type: object
@@ -862,39 +844,17 @@ components:
         sha256:
           type: string
 
-    SemanticVersion:
-      description: 'A version string in the Semantic Version form'
-      type: string
-      example: '1.0.1'
-
-    SemanticVersionSpec:
-      description: 'A string to match against SemanticVersion'
-      type: string
-      example: '>=1.0.0'
-
-    CollectionVersionDependencies:
-      description: 'A map of collection namespace.name to a semantic version'
+    CollectionVersionDetailCollection:
       type: object
-      additionalProperties:
-        $ref: '#/components/schemas/SemanticVersionSpec'
-
-    CollectionVersionLicense:
-      description: 'A SPDX license id'
-      type: string
-      # TODO: This could in theory be an enum
-
-    GalaxyTag:
-      description: 'A Galaxy Tag'
-      type: string
-      pattern: '^[a-z0-9]+$'
-      example: 'development'
-
-    Author:
-      description: 'Author of a collection or role'
-      type: string
-      format: email
-      # TODO: add author validation pattern
-      example: 'Adrian Likins <alikins@redhat.com>'
+      properties:
+        name:
+          type: string
+        id:
+          type: integer
+        href:
+          description: 'link to the Collection'
+          type: string
+          format: uri
 
     CollectionVersionDetailMetadata:
       description: "The Collection Version metadata from collections galaxy.yml or MANIFEST.JSON"
@@ -958,80 +918,52 @@ components:
         - name
         - version
 
-    CollectionVersion:
+    CollectionVersionLicense:
+      description: 'A SPDX license id'
+      type: string
+      # TODO: This could in theory be an enum
+
+    CollectionVersionLink:
       type: object
       properties:
-        artifact:
-          $ref: '#/components/schemas/CollectionVersionDetailArtifact'
-        metadata:
-          $ref: '#/components/schemas/CollectionVersionDetailMetadata'
-        hidden:
-          type: boolean
-        download_url:
-          type: string
-          format: uri
-        namespace:
-          $ref: '#/components/schemas/CollectionNamespace'
-        id:
-          type: integer
         href:
+          description: 'The URL to the CollectionVersion'
           type: string
-          format: uri
-        collection:
-          $ref: '#/components/schemas/CollectionVersionDetailCollection'
+        version:
+          type: string
+          maxLength: 64
 
-    CollectionVersionArtifactData:
-      description: 'CollectionVersionArtifact archive file binary and sha256 checksum. Used for importing collection artifacts'
+    # Instead of creating a schema type for each paginated
+    # might be able to make 'results' a PageResults type.
+    # And make PageResults use 'anyOf' and a discriminator
+    # to 'choose' the correct type in the list. But currently
+    # there isn't info in the Page data that indicates the
+    # type to be expected in the 'results'. This would need
+    # something like a 'result_type': 'CollectionVersion' in
+    # the data.
+    CollectionVersionsPage:
+      description: 'A page of a list of CollectionVersionLinks'
       type: object
       properties:
-        sha256:
-          description: 'The sha256sum of the collection artifact file'
-          type: string
-        file:
-          description: 'The binary contents of a collection artifact'
-          type: string
-          format: binary
+        count:
+          $ref: '#/components/schemas/PageCount'
+        next:
+          $ref: '#/components/schemas/PageNext'
+        previous:
+          $ref: '#/components/schemas/PagePrevious'
+        results:
+          description: 'List of CollectionVersionLinks for this Page'
+          type: array
+          items:
+            $ref: '#/components/schemas/CollectionVersionLink'
 
-    V1BaseModel:
-      description: 'Base for common v1 shared model attributes'
-      type: object
-      properties:
-        id:
-          description: 'Database ID for this object.'
-          readOnly: true
-          type: integer
-        url:
-          description: 'URL for this resource.'
-          readOnly: true
-          type: string
-          format: uri
-        related:
-          description: 'Data structure with URLs of related resources.'
-          readOnly: true
-          type: object
-          additionalProperties:
-            type: string
-        summary_fields:
-          description: >-
-            Data structure with name/description for related
-            resources.
-          readOnly: true
-          type: object
-          additionalProperties: {}
-        active:
-          readOnly: true
-          type: string
-        modified:
-          description: 'Timestamp when this object was last modified.'
-          readOnly: true
-          type: string
-        created:
-          description: 'Timestamp when this object was created.'
-          readOnly: true
-          type: string
-      required:
-        - id
+    ConflictError:
+      allOf:
+        - $ref: '#/components/schemas/APIException'
 
+    ConflictCollectionExistsError:
+      allOf:
+        - $ref: '#/components/schemas/ConflictError'
 
     Content:
       allOf:
@@ -1086,6 +1018,47 @@ components:
             - search_rank
             - download_rank
 
+    ContentsPage:
+      description: "A page of a list of Contents"
+      type: object
+      properties:
+        count:
+          $ref: '#/components/schemas/PageCount'
+        next:
+          $ref: '#/components/schemas/PageNext'
+        previous:
+          $ref: '#/components/schemas/PagePrevious'
+        results:
+          description: 'List of Contents for this Page'
+          type: array
+          items:
+            $ref: '#/components/schemas/Content'
+
+    Error:
+      type: object
+      description: 'Error data'
+      properties:
+        code:
+          description: 'Unique identifier for the error'
+          type: string
+          example: 'invalid'
+        message:
+          type: string
+          example: 'namespace and name parameters are required'
+        field:
+          description: 'The name of the field involved'
+          type: string
+          example: 'namespace'
+      required:
+        - code
+        - message
+
+    GalaxyTag:
+      description: 'A Galaxy Tag'
+      type: string
+      pattern: '^[a-z0-9]+$'
+      example: 'development'
+
     Namespace:
       description: 'A Namespace'
       allOf:
@@ -1123,6 +1096,39 @@ components:
           required:
             - name
 
+    NamespacesPage:
+      description: "A Page of a list of Namespaces"
+      type: object
+      properties:
+        count:
+          $ref: '#/components/schemas/PageCount'
+        next:
+          $ref: '#/components/schemas/PageNext'
+        previous:
+          $ref: '#/components/schemas/PagePrevious'
+        results:
+          description: 'List of Namespaces for this Page'
+          type: array
+          items:
+            $ref: '#/components/schemas/Namespace'
+
+    RepositoryNameError:
+      allOf:
+        - $ref: '#/components/schemas/ConflictError'
+
+    ValidationError:
+      allOf:
+        - $ref: '#/components/schemas/APIException'
+
+    PageCount:
+      type: integer
+
+    PageNext:
+      type: string
+
+    PagePrevious:
+      type: string
+
     ProviderNamespace:
       description: 'A Provider Namespace'
       allOf:
@@ -1159,6 +1165,22 @@ components:
               type: string
           required:
             - name
+
+    ProviderNamespacesPage:
+      description: 'A page of a list of Provider Namespaces'
+      type: object
+      properties:
+        count:
+          $ref: '#/components/schemas/PageCount'
+        next:
+          $ref: '#/components/schemas/PageNext'
+        previous:
+          $ref: '#/components/schemas/PagePrevious'
+        results:
+          description: 'List of Provider Namespaces'
+          type: array
+          items:
+            $ref: '#/components/schemas/ProviderNamespace'
 
     Role:
       description: 'An Ansible Role'
@@ -1214,6 +1236,32 @@ components:
             - search_rank
             - download_rank
 
+    RolesPage:
+      description: "A Page of a list of Roles"
+      type: object
+      properties:
+        count:
+          $ref: '#/components/schemas/PageCount'
+        next:
+          $ref: '#/components/schemas/PageNext'
+        previous:
+          $ref: '#/components/schemas/PagePrevious'
+        results:
+          description: 'List of Roles for this Page'
+          type: array
+          items:
+            $ref: '#/components/schemas/Role'
+
+    SemanticVersion:
+      description: 'A version string in the Semantic Version form'
+      type: string
+      example: '1.0.1'
+
+    SemanticVersionSpec:
+      description: 'A string to match against SemanticVersion'
+      type: string
+      example: '>=1.0.0'
+
     Tag:
       description: 'A Galaxy Tag'
       allOf:
@@ -1225,6 +1273,22 @@ components:
               type: string
           required:
             - name
+
+    TagsPage:
+      description: "A page of a list of Galaxy Tags"
+      type: object
+      properties:
+        count:
+          $ref: '#/components/schemas/PageCount'
+        next:
+          $ref: '#/components/schemas/PageNext'
+        previous:
+          $ref: '#/components/schemas/PagePrevious'
+        results:
+          description: 'List of Tags for this Page'
+          type: array
+          items:
+            $ref: '#/components/schemas/Tag'
 
     User:
       description: 'A User'
@@ -1254,6 +1318,22 @@ components:
           required:
             - username
 
+    UsersPage:
+      description: "A page of a list of Users"
+      type: object
+      properties:
+        count:
+          $ref: '#/components/schemas/PageCount'
+        next:
+          $ref: '#/components/schemas/PageNext'
+        previous:
+          $ref: '#/components/schemas/PagePrevious'
+        results:
+          description: 'List of Users for this Page'
+          type: array
+          items:
+            $ref: '#/components/schemas/User'
+
     UserUpdate:
       description: 'User data to update'
       properties:
@@ -1274,126 +1354,45 @@ components:
           pattern: '^[a-zA-Z0-9_.@+-]+$'
           type: string
 
-    # Instead of creating a schema type for each paginated
-    # might be able to make 'results' a PageResults type.
-    # And make PageResults use 'anyOf' and a discriminator
-    # to 'choose' the correct type in the list. But currently
-    # there isn't info in the Page data that indicates the
-    # type to be expected in the 'results'. This would need
-    # something like a 'result_type': 'CollectionVersion' in
-    # the data.
-    CollectionVersionsPage:
-      description: 'A page of a list of CollectionVersionLinks'
+    V1BaseModel:
+      description: 'Base for common v1 shared model attributes'
       type: object
       properties:
-        count:
-          $ref: '#/components/schemas/PageCount'
-        next:
-          $ref: '#/components/schemas/PageNext'
-        previous:
-          $ref: '#/components/schemas/PagePrevious'
-        results:
-          description: 'List of CollectionVersionLinks for this Page'
-          type: array
-          items:
-            $ref: '#/components/schemas/CollectionVersionLink'
-
-    ContentsPage:
-      description: "A page of a list of Contents"
-      type: object
-      properties:
-        count:
-          $ref: '#/components/schemas/PageCount'
-        next:
-          $ref: '#/components/schemas/PageNext'
-        previous:
-          $ref: '#/components/schemas/PagePrevious'
-        results:
-          description: 'List of Contents for this Page'
-          type: array
-          items:
-            $ref: '#/components/schemas/Content'
-
-    NamespacesPage:
-      description: "A Page of a list of Namespaces"
-      type: object
-      properties:
-        count:
-          $ref: '#/components/schemas/PageCount'
-        next:
-          $ref: '#/components/schemas/PageNext'
-        previous:
-          $ref: '#/components/schemas/PagePrevious'
-        results:
-          description: 'List of Namespaces for this Page'
-          type: array
-          items:
-            $ref: '#/components/schemas/Namespace'
-
-    ProviderNamespacesPage:
-      description: 'A page of a list of Provider Namespaces'
-      type: object
-      properties:
-        count:
-          $ref: '#/components/schemas/PageCount'
-        next:
-          $ref: '#/components/schemas/PageNext'
-        previous:
-          $ref: '#/components/schemas/PagePrevious'
-        results:
-          description: 'List of Provider Namespaces'
-          type: array
-          items:
-            $ref: '#/components/schemas/ProviderNamespace'
-
-    RolesPage:
-      description: "A Page of a list of Roles"
-      type: object
-      properties:
-        count:
-          $ref: '#/components/schemas/PageCount'
-        next:
-          $ref: '#/components/schemas/PageNext'
-        previous:
-          $ref: '#/components/schemas/PagePrevious'
-        results:
-          description: 'List of Roles for this Page'
-          type: array
-          items:
-            $ref: '#/components/schemas/Role'
-
-    TagsPage:
-      description: "A page of a list of Galaxy Tags"
-      type: object
-      properties:
-        count:
-          $ref: '#/components/schemas/PageCount'
-        next:
-          $ref: '#/components/schemas/PageNext'
-        previous:
-          $ref: '#/components/schemas/PagePrevious'
-        results:
-          description: 'List of Tags for this Page'
-          type: array
-          items:
-            $ref: '#/components/schemas/Tag'
-
-    UsersPage:
-      description: "A page of a list of Users"
-      type: object
-      properties:
-        count:
-          $ref: '#/components/schemas/PageCount'
-        next:
-          $ref: '#/components/schemas/PageNext'
-        previous:
-          $ref: '#/components/schemas/PagePrevious'
-        results:
-          description: 'List of Users for this Page'
-          type: array
-          items:
-            $ref: '#/components/schemas/User'
-
+        id:
+          description: 'Database ID for this object.'
+          readOnly: true
+          type: integer
+        url:
+          description: 'URL for this resource.'
+          readOnly: true
+          type: string
+          format: uri
+        related:
+          description: 'Data structure with URLs of related resources.'
+          readOnly: true
+          type: object
+          additionalProperties:
+            type: string
+        summary_fields:
+          description: >-
+            Data structure with name/description for related
+            resources.
+          readOnly: true
+          type: object
+          additionalProperties: {}
+        active:
+          readOnly: true
+          type: string
+        modified:
+          description: 'Timestamp when this object was last modified.'
+          readOnly: true
+          type: string
+        created:
+          description: 'Timestamp when this object was created.'
+          readOnly: true
+          type: string
+      required:
+        - id
 
   responses:
 
