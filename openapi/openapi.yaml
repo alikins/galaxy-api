@@ -5,6 +5,7 @@ info:
   contact:
     url: https://github.com/ansible/galaxy/issues
     name: 'Ansible Galaxy Issues'
+    email: notreal@example.invalid
 
 openapi: 3.0.0
 
@@ -13,6 +14,7 @@ servers:
     description: 'local dev server'
 
 externalDocs:
+  description: 'General docs about Ansible Galaxy'
   url: https://galaxy.ansible.com/docs/
 
 tags:
@@ -21,8 +23,11 @@ tags:
       url: https://galaxy.ansible.com/docs/contributing/creating_collections.html
       description: 'Creating Collections docs at galaxy.ansible.com'
   - name: 'collection-imports'
+    description: 'Importing Collections'
   - name: 'collection-versions'
+    description: 'Versions of Collections'
   - name: 'download'
+    description: 'Downloading artifacts'
   - name: 'client_mazer'
     description: 'API used by mazer and or ansible-galaxy'
   - name: 'introspection'
@@ -31,14 +36,16 @@ tags:
     description: 'API endpoints from the v3 API'
   - name: 'v2'
     description: 'API endpoints from the v2 API'
-  - name: 'notifications'
   - name: 'me'
     description: 'API related to the current user.'
   - name: 'search'
+    description: 'API for searching'
   - name: 'namespaces'
+    description: 'API for Namespaces'
   - name: 'tags'
     description: 'API for Ansible Galaxy tags.'
   - name: 'users'
+    description: 'API for Users'
   - name: 'v1'
     description: 'API endpoints from the v1 API.'
 
@@ -83,7 +90,6 @@ paths:
         - me
         - v1
       security:
-        - TokenAuth: []
         - TokenApiKey: []
         - BasicAuth: []
       parameters:
@@ -123,7 +129,7 @@ paths:
         - namespaces
         - v3
 
-  '/namespaces/{namespace_id}/':
+  '/namespaces/{id}/':
     get:
       summary: 'Get a Namespace'
       operationId: GetNamespace
@@ -138,6 +144,8 @@ paths:
     patch:
       summary: 'Update a Namespace'
       operationId: 'UpdateNamespace'
+      parameters:
+        - $ref: '#/components/parameters/NamespaceId'
       requestBody:
         $ref: '#/components/requestBodies/Namespace'
       responses:
@@ -149,6 +157,8 @@ paths:
     delete:
       summary: 'Delete a Namespace'
       operationId: DeleteNamespace
+      parameters:
+        - $ref: '#/components/parameters/NamespaceId'
       responses:
         '204':
           $ref: '#/components/responses/SuccessfulDeletion'
@@ -173,6 +183,7 @@ paths:
 
   '/search/roles/':
     get:
+      summary: 'Get a list of Roles by searching'
       operationId: ListRoleBySearch
       tags:
         - search
@@ -319,6 +330,7 @@ paths:
 
   '/collection-versions/{id}/artifact/':
     get:
+      summary: 'Get a CollectionVersionArtifact'
       operationId: GetCollectionVersionArtifactById
       tags:
         - collection-versions
@@ -362,7 +374,6 @@ paths:
         - v2
         - client_mazer
       security:
-        - TokenAuth: []
         - TokenApiKey: []
         - BasicAuth: []
       parameters: []
