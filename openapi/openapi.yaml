@@ -13,8 +13,8 @@ servers:
     description: 'Production server (uses live data)'
   - url: https://galaxy-dev.ansible.com/
     description: 'shared public dev server'
-  - url: http://localhost:8000
-    description: 'local sandbox'
+  - url: http://localhost:5001
+    description: 'local dev server'
     
 externalDocs:
   url: https://galaxy.ansible.com/docs/
@@ -100,6 +100,10 @@ paths:
       tags:
         - me
         - v1
+      security:
+        - TokenAuth: []
+        - TokenApiKey: []
+        - BasicAuth: []
       parameters:
         - $ref: '#/components/parameters/Search'
       responses:
@@ -329,6 +333,10 @@ paths:
         - collections
         - v2
         - client_mazer
+      security:
+        - TokenAuth: []
+        - TokenApiKey: []
+        - BasicAuth: []
       parameters: []
       requestBody:
         $ref: '#/components/requestBodies/CollectionVersionArtifactBody'
@@ -339,6 +347,12 @@ paths:
           $ref: '#/components/responses/Unauthorized'
         '409':
           $ref: '#/components/responses/Conflict'
+        default:
+          description: 'Unexpected Error'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
           
   '/api/v2/collections/{id}/':
     get:
@@ -1242,6 +1256,17 @@ components:
                 
     Unauthorized:
       description: 'Authorization error'
+      headers:
+        WWW-Authenticate:
+          schema:
+            type: string
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/APIException'
+
+    NotFound:
+      description: 'Not Found (404)'
       content:
         application/json:
           schema:
@@ -1407,3 +1432,13 @@ components:
         multipart/form-data:
           schema:
             $ref: '#/components/schemas/CollectionVersionArtifactData'
+
+  securitySchemes:
+    BasicAuth:
+      type: http
+      scheme: basic
+    TokenApiKey:
+      description: Provide a Galaxy API token in "Authorization" header with value in form "Token {api_key}"
+      type: apiKey
+      in: header
+      name: Authorization
