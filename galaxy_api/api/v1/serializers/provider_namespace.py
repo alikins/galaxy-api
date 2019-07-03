@@ -17,7 +17,7 @@
 
 from django.urls import reverse
 
-from galaxy_api.db.models import ProviderNamespace
+from galaxy_api.models import ProviderNamespace
 from . import base_serializer
 
 

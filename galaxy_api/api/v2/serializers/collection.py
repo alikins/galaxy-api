@@ -23,7 +23,7 @@ from rest_framework.reverse import reverse
 
 # from galaxy.common.schema import CollectionFilename
 from galaxy_api.api import fields
-from galaxy_api.db import models
+from galaxy_api import models
 
 
 __all__ = (

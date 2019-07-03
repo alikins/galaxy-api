@@ -16,7 +16,7 @@
 # along with Galaxy.  If not, see <http://www.apache.org/licenses/>.
 
 from django.urls import reverse
-from galaxy_api.db import models
+from galaxy_api import models
 from . import base_serializer
 
 
