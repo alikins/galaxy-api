@@ -27,6 +27,8 @@ tags:
     description: 'API used by mazer and or ansible-galaxy'
   - name: 'introspection'
     description: 'API used to gather information about the API itself'
+  - name: 'v3'
+    description: 'API endpoints from the v3 API'
   - name: 'v2'
     description: 'API endpoints from the v2 API'
   - name: 'notifications'
@@ -108,6 +110,52 @@ paths:
       responses:
         '200':
           $ref: '#/components/responses/Namespaces'
+    post:
+      operationId: 'CreateNamespace'
+      summary: 'Create a Namespace'
+      parameters: []
+      requestBody:
+        $ref: '#/components/requestBodies/Namespace'
+      responses:
+        '201':
+            $ref: '#/components/responses/Namespace'
+      tags:
+        - namespaces
+        - v3
+
+  '/namespaces/{namespace_id}/':
+    get:
+      summary: 'Get a Namespace'
+      operationId: GetNamespace
+      parameters:
+        - $ref: '#/components/parameters/NamespaceId'
+      tags:
+        - namespaces
+        - v3
+      responses:
+        '200':
+            $ref: '#/components/responses/Namespace'
+    patch:
+      summary: 'Update a Namespace'
+      operationId: 'UpdateNamespace'
+      requestBody:
+        $ref: '#/components/requestBodies/Namespace'
+      responses:
+        '200':
+            $ref: '#/components/responses/Namespace'
+      tags:
+        - namespaces
+        - v3
+    delete:
+      summary: 'Delete a Namespace'
+      operationId: DeleteNamespace
+      responses:
+        '204':
+          $ref: '#/components/responses/SuccessfulDeletion'
+      tags:
+        - namespaces
+        - v3
+
 
   '/search/content/':
     get:
@@ -1252,6 +1300,9 @@ components:
           schema:
             $ref: '#/components/schemas/APIException'
 
+    SuccessfulDeletion:
+      description: 'A DELETE operation was successful'
+
     CollectionVersions:
       description: 'Response containing a page of CollectionVersionLinks'
       content:
@@ -1298,6 +1349,13 @@ components:
         application/json:
           schema:
             $ref: '#/components/schemas/CollectionCreationResult'
+
+    Namespace:
+      description: 'Result of creating a Namespace'
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Namespace'
 
     Contents:
       description: 'Response containing a Page of Content search results'
@@ -1371,6 +1429,14 @@ components:
       schema:
         type: string
 
+    NamespaceId:
+      description: 'The Namespace id'
+      in: path
+      name: id
+      required: true
+      schema:
+        type: string
+
     CollectionNamespace:
       description: 'The collection namespace'
       in: path
@@ -1412,6 +1478,13 @@ components:
         multipart/form-data:
           schema:
             $ref: '#/components/schemas/CollectionVersionArtifactData'
+
+    Namespace:
+      description: "A Namespace body"
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Namespace'
 
   securitySchemes:
     BasicAuth:
