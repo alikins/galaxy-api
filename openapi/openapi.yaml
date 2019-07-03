@@ -81,7 +81,7 @@ paths:
         $ref: '#/components/requestBodies/CollectionVersionArtifactBody'
       responses:
         '202':
-          $ref: '#/components/responses/CreateCollectionResult'
+          $ref: '#/components/responses/CollectionImportAccepted'
         '401':
           $ref: '#/components/responses/Unauthorized'
         '409':
@@ -1472,8 +1472,8 @@ components:
           schema:
             $ref: '#/components/schemas/CollectionVersionArtifactDetail'
 
-    CreateCollectionResult:
-      description: 'Result of collection import task with task url'
+    CollectionImportAccepted:
+      description: 'Result of an accepted collection import. Includes the url of the import task'
       content:
         application/json:
           schema:
