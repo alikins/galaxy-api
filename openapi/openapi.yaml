@@ -10,7 +10,7 @@ info:
 openapi: 3.0.0
 
 servers:
-  - url: http://localhost:5001/api/v3/
+  - url: http://localhost:5001/api/v3
     description: 'local dev server'
 
 externalDocs:
@@ -166,6 +166,71 @@ paths:
         - namespaces
         - v3
 
+  '/provider_namespaces/':
+    get:
+      summary: 'Get Provider Namespaces'
+      operationId: GetProviderNamespaces
+      parameters:
+        - $ref: '#/components/parameters/Page'
+        - $ref: '#/components/parameters/PageSize'
+        - $ref: '#/components/parameters/Search'
+      responses:
+        '200':
+          $ref: '#/components/responses/ProviderNamespaces'
+      tags:
+        - provider_namespaces
+        - v3
+    post:
+      operationId: CreateProviderNamespace
+      summary: 'Create a Provider Namespace'
+      parameters: []
+      requestBody:
+        $ref: '#/components/requestBodies/ProviderNamespace'
+      responses:
+        '201':
+            $ref: '#/components/responses/ProviderNamespace'
+      tags:
+        - provider_namespaces
+        - v3
+
+  '/provider_namespaces/{id}/':
+    get:
+      operationId: GetProviderNamespace
+      description: 'Get a Provider Namespace'
+      parameters:
+        - $ref: '#/components/parameters/ProviderNamespaceId'
+      responses:
+        '200':
+          $ref: '#/components/responses/ProviderNamespace'
+      tags:
+        - provider_namespaces
+        - v3
+
+    patch:
+      operationId: UpdateProviderNamespace
+      description: 'Update a Provider Namespace'
+      parameters:
+        - $ref: '#/components/parameters/ProviderNamespaceId'
+      requestBody:
+        $ref: '#/components/requestBodies/ProviderNamespace'
+      responses:
+        '200':
+          $ref: '#/components/responses/ProviderNamespace'
+      tags:
+        - provider_namespaces
+        - v3
+
+    delete:
+      operationId: DeleteProviderNamespace
+      description: 'Delete a Provider Namespace'
+      parameters:
+        - $ref: '#/components/parameters/ProviderNamespaceId'
+      responses:
+        '204':
+          $ref: '#/components/responses/SuccessfulDeletion'
+      tags:
+        - provider_namespaces
+        - v3
 
   '/search/content/':
     get:
@@ -1058,6 +1123,43 @@ components:
           required:
             - name
 
+    ProviderNamespace:
+      description: 'A Provider Namespace'
+      allOf:
+        - $ref: '#/components/schemas/V1BaseModel'
+        - type: object
+          properties:
+            avatar_url:
+              maxLength: 256
+              nullable: true
+              type: string
+            company:
+              maxLength: 256
+              nullable: true
+              type: string
+            description:
+              maxLength: 255
+              type: string
+            email:
+              maxLength: 256
+              nullable: true
+              type: string
+            html_url:
+              maxLength: 256
+              nullable: true
+              type: string
+            is_vendor:
+              type: boolean
+            location:
+              maxLength: 256
+              nullable: true
+              type: string
+            name:
+              maxLength: 512
+              type: string
+          required:
+            - name
+
     Role:
       description: 'An Ansible Role'
       allOf:
@@ -1228,6 +1330,22 @@ components:
           items:
             $ref: '#/components/schemas/Namespace'
 
+    ProviderNamespacesPage:
+      description: 'A page of a list of Provider Namespaces'
+      type: object
+      properties:
+        count:
+          $ref: '#/components/schemas/PageCount'
+        next:
+          $ref: '#/components/schemas/PageNext'
+        previous:
+          $ref: '#/components/schemas/PagePrevious'
+        results:
+          description: 'List of Provider Namespaces'
+          type: array
+          items:
+            $ref: '#/components/schemas/ProviderNamespace'
+
     RolesPage:
       description: "A Page of a list of Roles"
       type: object
@@ -1361,13 +1479,6 @@ components:
           schema:
             $ref: '#/components/schemas/CollectionCreationResult'
 
-    Namespace:
-      description: 'Result of creating a Namespace'
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Namespace'
-
     Contents:
       description: 'Response containing a Page of Content search results'
       content:
@@ -1382,12 +1493,33 @@ components:
           schema:
             $ref: '#/components/schemas/UsersPage'
 
+    Namespace:
+      description: 'Result of creating a Namespace'
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Namespace'
+
     Namespaces:
       description: 'Response containing a Page of a list of Namespaces'
       content:
         application/json:
           schema:
             $ref: '#/components/schemas/NamespacesPage'
+
+    ProviderNamespace:
+      description: 'Result of creating a Provider Namespace'
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ProviderNamespace'
+
+    ProviderNamespaces:
+      description: 'Response containing a Page of a list of Provider Namespaces'
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ProviderNamespacesPage'
 
     Roles:
       description: 'Response containing a Page of a list of Roles'
@@ -1448,6 +1580,14 @@ components:
       schema:
         type: string
 
+    ProviderNamespaceId:
+      description: 'The Provider Namespace id'
+      in: path
+      name: id
+      required: true
+      schema:
+        type: string
+
     CollectionNamespace:
       description: 'The collection namespace'
       in: path
@@ -1496,6 +1636,13 @@ components:
         application/json:
           schema:
             $ref: '#/components/schemas/Namespace'
+
+    ProviderNamespace:
+      description: "A Provider Namespace body"
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ProviderNamespace'
 
   securitySchemes:
     BasicAuth:
