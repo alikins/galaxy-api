@@ -361,7 +361,7 @@ paths:
         - $ref: '#/components/parameters/NamespaceId'
       responses:
         '204':
-          $ref: '#/components/responses/SuccessfulDeletion'
+          $ref: '#/components/responses/DeleteSuccessful'
       tags:
         - namespaces
         - v3
@@ -427,7 +427,7 @@ paths:
         - $ref: '#/components/parameters/ProviderNamespaceId'
       responses:
         '204':
-          $ref: '#/components/responses/SuccessfulDeletion'
+          $ref: '#/components/responses/DeleteSuccessful'
       tags:
         - provider_namespaces
         - v3
@@ -1429,8 +1429,15 @@ components:
           schema:
             $ref: '#/components/schemas/APIException'
 
-    SuccessfulDeletion:
+    DeleteSuccessful:
       description: 'A DELETE operation was successful'
+
+    CollectionImportAccepted:
+      description: 'Result of an accepted collection import. Includes the url of the import task'
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/CollectionCreationResult'
 
     CollectionVersions:
       description: 'Response containing a page of CollectionVersionLinks'
@@ -1472,12 +1479,7 @@ components:
           schema:
             $ref: '#/components/schemas/CollectionVersionArtifactDetail'
 
-    CollectionImportAccepted:
-      description: 'Result of an accepted collection import. Includes the url of the import task'
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/CollectionCreationResult'
+
 
     Contents:
       description: 'Response containing a Page of Content search results'
