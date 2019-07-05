@@ -259,6 +259,82 @@ paths:
         '200':
           $ref: '#/components/responses/CollectionVersion'
 
+  '/collection-version-artifacts/':
+    get:
+      summary: 'Get a list of Collection Version artifacts'
+      operationId: GetCollectionVersionArtifacts
+      tags:
+        - collection-version-artifacts
+        - v3
+      responses:
+        '200':
+          $ref: '#/components/responses/CollectionVersionArtifacts'
+
+    post:
+      summary: 'Create a new CollectionVersionArtifact by uploading collection artifact'
+      operationId: UploadCollectionVersionArtifact
+      description: 
+        Create a new CollectionVersionArtifact by uploading a collection artifact.
+        This will add the new artifact, but will not create a new Collection.
+        To create a CollectionVersionArtifact and a Collection, use 'POST /collections'
+      tags:
+        - v3
+        - collection-version-artifacts
+      security:
+        - TokenApiKey: []
+        - BasicAuth: []
+      parameters: []
+      requestBody:
+        $ref: '#/components/requestBodies/CollectionVersionArtifactBody'
+      responses:
+        '202':
+          $ref: '#/components/responses/CollectionImportAccepted'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '409':
+          $ref: '#/components/responses/Conflict'
+        default:
+          description: 'Unexpected Error'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  '/collection-version-artifacts/{artifact_id}':
+    get:
+      summary: 'Get a Collection Version artifacts'
+      operationId: GetCollectionVersionArtifact
+      tags:
+        - collection-version-artifacts
+        - v3
+      responses:
+        '200':
+          $ref: '#/components/responses/CollectionVersionArtifact'
+
+  '/collection-version-artifacts/{artifact_id}/download':
+    get:
+      summary: 'Download a Collection Version artifact'
+      operationId: DownloadCollectionVersionArtifact
+      tags:
+        - collection-version-artifacts
+        - v3
+      responses:
+        '200':
+          $ref: '#/components/responses/CollectionVersionArtifactDownload'
+
+  '/collection-version-artifacts/filenames/{filename}':
+    get:
+      summary: 'Get Collection Version Artifact info by filename'
+      operationId: GetCollectionVersionArtifactByFilename
+      parameters:
+        - $ref: '#/components/parameters/CollectionVersionArtifactFilename'
+      tags:
+        - collection-version-artifacts
+        - v3
+      responses:
+        '200':
+          $ref: '#/components/responses/CollectionVersionArtifact'
+
   '/download/{filename}':
     get:
       summary: 'Download the collection artifact'
@@ -267,20 +343,10 @@ paths:
         - download
         - client_mazer
       parameters:
-        - description: 'CollectionVersion artifact filename'
-          in: path
-          name: filename
-          required: true
-          schema:
-            type: string
+        - $ref: '#/components/parameters/CollectionVersionArtifactFilename'
       responses:
         '200':
-          description: 'The collection artifact file binary contents'
-          content:
-            application/octet-stream:
-              schema:
-                type: string
-                format: binary
+          $ref: '#/components/responses/CollectionVersionArtifactDownload'
 
   '/me/':
     get:
@@ -819,6 +885,7 @@ components:
 
     CollectionVersionArtifactDetail:
       type: object
+      title: 'CollectionVersionArtifactDetail'
       properties:
         download_url:
           readOnly: true
@@ -830,6 +897,21 @@ components:
           type: string
         size:
           type: integer
+
+    CollectionVersionArtifactsPage:
+      description: 'A page of a list of CollectionVersionArtifacts'
+      allOf:
+        - $ref: '#/components/schemas/PageInfo'
+        - type: object
+          properties:
+            results:
+              description: 'List of CollectionVersionArtifacts for this Page'
+              title: 'CollectionVersionArtifacts'
+              type: array
+              items:
+                $ref: '#/components/schemas/CollectionVersionArtifactDetail'
+          required:
+            - results
 
     CollectionVersionDependencies:
       description: 'A map of collection namespace.name to a semantic version'
@@ -1453,6 +1535,23 @@ components:
           schema:
             $ref: '#/components/schemas/CollectionVersionArtifactDetail'
 
+    CollectionVersionArtifacts:
+      description: 'Response containing a page of CollectionVersionArtifacts'
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/CollectionVersionArtifactsPage'
+
+    CollectionVersionArtifactDownload:
+      description: 'The collection artifact file binary contents'
+      content:
+        application/octet-stream:
+          schema:
+            title: 'CollectionVersionArtifactDownload'
+            description: 'The collection artifact file binary contents'
+            type: string
+            format: binary
+
     Conflict:
       description: 'Conflict Error'
       content:
@@ -1579,6 +1678,14 @@ components:
       schema:
         type: string
         pattern: ^((([0-9]+)\.([0-9]+)\.([0-9]+)(?:-([0-9a-zA-Z-]+(?:\.[0-9a-zA-Z-]+)*))?)(?:\+([0-9a-zA-Z-]+(?:\.[0-9a-zA-Z-]+)*))?)$
+
+    CollectionVersionArtifactFilename:
+      description: 'CollectionVersion artifact filename'
+      in: path
+      name: filename
+      required: true
+      schema:
+        type: string
 
     NamespaceId:
       description: 'The Namespace id'
