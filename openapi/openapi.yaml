@@ -124,7 +124,7 @@ paths:
         - $ref: '#/components/parameters/Search'
       responses:
         '200':
-          $ref: '#/components/responses/CollectionVersions'
+          $ref: '#/components/responses/CollectionVersionLinks'
 
   '/collections/{namespace}/{name}/':
     parameters:
@@ -162,7 +162,7 @@ paths:
         - $ref: '#/components/parameters/Search'
       responses:
         '200':
-          $ref: '#/components/responses/CollectionVersions'
+          $ref: '#/components/responses/CollectionVersionLinks'
 
   '/collections/{namespace}/{name}/versions/{version}/':
     parameters:
@@ -763,12 +763,13 @@ components:
       pattern: '^(?!.*__)[a-z]+[0-9a-z_]*$'
 
     CollectionNamespaceName:
-      description: 'The Collection namespace'
+      description: 'The name of the Collection Namespace'
       type: string
       example: 'my_namespace'
       pattern: '^(?!.*__)[a-z]+[0-9a-z_]*$'
 
     CollectionNamespace:
+      description: 'The Collection Namespace'
       type: object
       properties:
         name:
@@ -781,6 +782,8 @@ components:
           format: uri
 
     CollectionVersion:
+      description: 'Collection Version'
+      title: 'Collection Version'
       type: object
       properties:
         artifact:
@@ -925,6 +928,7 @@ components:
 
     CollectionVersionLink:
       type: object
+      title: 'CollectionVersionLink'
       properties:
         href:
           description: 'The URL to the CollectionVersion'
@@ -933,31 +937,23 @@ components:
           type: string
           maxLength: 64
 
-    # Instead of creating a schema type for each paginated
-    # might be able to make 'results' a PageResults type.
-    # And make PageResults use 'anyOf' and a discriminator
-    # to 'choose' the correct type in the list. But currently
-    # there isn't info in the Page data that indicates the
-    # type to be expected in the 'results'. This would need
-    # something like a 'result_type': 'CollectionVersion' in
-    # the data.
-    CollectionVersionsPage:
+    CollectionVersionLinksPage:
       description: 'A page of a list of CollectionVersionLinks'
-      type: object
-      properties:
-        count:
-          $ref: '#/components/schemas/PageCount'
-        next:
-          $ref: '#/components/schemas/PageNext'
-        previous:
-          $ref: '#/components/schemas/PagePrevious'
-        results:
-          description: 'List of CollectionVersionLinks for this Page'
-          type: array
-          items:
-            $ref: '#/components/schemas/CollectionVersionLink'
+      allOf:
+        - $ref: '#/components/schemas/PageInfo'
+        - type: object
+          properties:
+            results:
+              description: 'List of CollectionVersionLinks for this Page'
+              title: 'CollectionVersionLinks'
+              type: array
+              items:
+                $ref: '#/components/schemas/CollectionVersionLink'
+          required:
+            - results
 
     ConflictError:
+      title: 'ConflictError'
       allOf:
         - $ref: '#/components/schemas/APIException'
 
@@ -966,6 +962,7 @@ components:
         - $ref: '#/components/schemas/ConflictError'
 
     Content:
+      title: 'Content'
       allOf:
         - $ref: '#/components/schemas/V1BaseModel'
         - type: object
@@ -1020,19 +1017,18 @@ components:
 
     ContentsPage:
       description: "A page of a list of Contents"
-      type: object
-      properties:
-        count:
-          $ref: '#/components/schemas/PageCount'
-        next:
-          $ref: '#/components/schemas/PageNext'
-        previous:
-          $ref: '#/components/schemas/PagePrevious'
-        results:
-          description: 'List of Contents for this Page'
-          type: array
-          items:
-            $ref: '#/components/schemas/Content'
+      allOf:
+        - $ref: '#/components/schemas/PageInfo'
+        - type: object
+          properties:
+            results:
+              description: 'List of Contents for this Page'
+              title: 'Contents'
+              type: array
+              items:
+                $ref: '#/components/schemas/Content'
+          required:
+            - results
 
     Error:
       type: object
@@ -1060,6 +1056,7 @@ components:
       example: 'development'
 
     Namespace:
+      title: 'Namespace'
       description: 'A Namespace'
       allOf:
         - $ref: '#/components/schemas/V1BaseModel'
@@ -1098,19 +1095,18 @@ components:
 
     NamespacesPage:
       description: "A Page of a list of Namespaces"
-      type: object
-      properties:
-        count:
-          $ref: '#/components/schemas/PageCount'
-        next:
-          $ref: '#/components/schemas/PageNext'
-        previous:
-          $ref: '#/components/schemas/PagePrevious'
-        results:
-          description: 'List of Namespaces for this Page'
-          type: array
-          items:
-            $ref: '#/components/schemas/Namespace'
+      allOf:
+        - $ref: '#/components/schemas/PageInfo'
+        - type: object
+          properties:
+            results:
+              description: 'List of Namespaces for this Page'
+              title: 'Namespaces'
+              type: array
+              items:
+                $ref: '#/components/schemas/Namespace'
+          required:
+            - results
 
     RepositoryNameError:
       allOf:
@@ -1123,14 +1119,31 @@ components:
     PageCount:
       type: integer
 
+    PageInfo:
+      description: 'Pagination info'
+      title: 'Page Info'
+      properties:
+        count:
+          $ref: '#/components/schemas/PageCount'
+        next:
+          $ref: '#/components/schemas/PageNext'
+        previous:
+          $ref: '#/components/schemas/PagePrevious'
+        result_type:
+          type: string
+          description: 'The type of object in the results list'
+          nullable: true
+
     PageNext:
       type: string
 
     PagePrevious:
+      description: 'The previous page'
       type: string
 
     ProviderNamespace:
       description: 'A Provider Namespace'
+      title: 'ProviderNamespace'
       allOf:
         - $ref: '#/components/schemas/V1BaseModel'
         - type: object
@@ -1168,22 +1181,22 @@ components:
 
     ProviderNamespacesPage:
       description: 'A page of a list of Provider Namespaces'
-      type: object
-      properties:
-        count:
-          $ref: '#/components/schemas/PageCount'
-        next:
-          $ref: '#/components/schemas/PageNext'
-        previous:
-          $ref: '#/components/schemas/PagePrevious'
-        results:
-          description: 'List of Provider Namespaces'
-          type: array
-          items:
-            $ref: '#/components/schemas/ProviderNamespace'
+      title: 'Provider Namespaces Page'
+      allOf:
+        - $ref: '#/components/schemas/PageInfo'
+        - type: object
+          properties:
+            results:
+              title: 'ProviderNamespaces'
+              type: array
+              items:
+                $ref: '#/components/schemas/ProviderNamespace'
+          required:
+            - results
 
     Role:
       description: 'An Ansible Role'
+      title: 'Role'
       allOf:
         - $ref: '#/components/schemas/V1BaseModel'
         - type: object
@@ -1238,19 +1251,16 @@ components:
 
     RolesPage:
       description: "A Page of a list of Roles"
-      type: object
-      properties:
-        count:
-          $ref: '#/components/schemas/PageCount'
-        next:
-          $ref: '#/components/schemas/PageNext'
-        previous:
-          $ref: '#/components/schemas/PagePrevious'
-        results:
-          description: 'List of Roles for this Page'
-          type: array
-          items:
-            $ref: '#/components/schemas/Role'
+      allOf:
+        - $ref: '#/components/schemas/PageInfo'
+        - type: object
+          properties:
+            results:
+              description: 'List of Roles for this Page'
+              title: 'Roles'
+              type: array
+              items:
+                $ref: '#/components/schemas/Role'
 
     SemanticVersion:
       description: 'A version string in the Semantic Version form'
@@ -1263,6 +1273,7 @@ components:
       example: '>=1.0.0'
 
     Tag:
+      title: 'Tag'
       description: 'A Galaxy Tag'
       allOf:
         - $ref: '#/components/schemas/V1BaseModel'
@@ -1276,22 +1287,22 @@ components:
 
     TagsPage:
       description: "A page of a list of Galaxy Tags"
-      type: object
-      properties:
-        count:
-          $ref: '#/components/schemas/PageCount'
-        next:
-          $ref: '#/components/schemas/PageNext'
-        previous:
-          $ref: '#/components/schemas/PagePrevious'
-        results:
-          description: 'List of Tags for this Page'
-          type: array
-          items:
-            $ref: '#/components/schemas/Tag'
+      allOf:
+        - $ref: '#/components/schemas/PageInfo'
+        - type: object
+          properties:
+            results:
+              description: 'List of Tags for this Page'
+              title: 'Tags'
+              type: array
+              items:
+                $ref: '#/components/schemas/Tag'
+          required:
+            - results
 
     User:
       description: 'A User'
+      title: 'User'
       allOf:
         - $ref: '#/components/schemas/V1BaseModel'
         - type: object
@@ -1320,19 +1331,18 @@ components:
 
     UsersPage:
       description: "A page of a list of Users"
-      type: object
-      properties:
-        count:
-          $ref: '#/components/schemas/PageCount'
-        next:
-          $ref: '#/components/schemas/PageNext'
-        previous:
-          $ref: '#/components/schemas/PagePrevious'
-        results:
-          description: 'List of Users for this Page'
-          type: array
-          items:
-            $ref: '#/components/schemas/User'
+      allOf:
+        - $ref: '#/components/schemas/PageInfo'
+        - type: object
+          properties:
+            results:
+              description: 'List of Users for this Page'
+              title: 'Users'
+              type: array
+              items:
+                $ref: '#/components/schemas/User'
+          required:
+            - results
 
     UserUpdate:
       description: 'User data to update'
@@ -1403,12 +1413,12 @@ components:
           schema:
             $ref: '#/components/schemas/CollectionCreationResult'
 
-    CollectionVersions:
+    CollectionVersionLinks:
       description: 'Response containing a page of CollectionVersionLinks'
       content:
         application/json:
           schema:
-            $ref: '#/components/schemas/CollectionVersionsPage'
+            $ref: '#/components/schemas/CollectionVersionLinksPage'
 
     CollectionVersion:
       description: 'Response contain a CollectionVersion'
