@@ -334,7 +334,8 @@ paths:
       responses:
         '200':
           $ref: '#/components/responses/CollectionVersionArtifact'
-  '/content/ansible/collections/':
+  '/pulp/content/ansible/collections/':
+    description: 'Wrapper API for /pulp/api/v3/content/ansible/collections/'
     get:
       tags:
         - collections
@@ -695,13 +696,16 @@ paths:
               schema:
                 $ref: '#/components/schemas/Tag'
 
-  /pulp/api/v3/tasks/:
+  # Could just make this /tasks/
+  '/pulp/tasks/':
+    description: 'Wrapper API for Pulp tasks API'
     get:
       tags:
         - tasks
         - pulp
         - v3
       summary: List tasks
+      description: 'Wrapper for Pulp API GET /pulp/api/v3/tasks/'
       operationId: GetPulpTasks
       parameters:
         - name: ordering
@@ -841,18 +845,20 @@ paths:
                     type: array
                     items:
                       $ref: '#/components/schemas/PulpTask'
-  '/{task_href}':
+  '/pulp/tasks/{pulp_task_id}':
+    description: 'Wrapper API for Pulp {task_href}'
     get:
       tags:
         - tasks
         - pulp
         - v3
       summary: Inspect a task
+      description: "Wrapper API for Pulp GET {task_href} aka GET /pulp/api/v3/tasks/{task_id}"
       operationId: GetPulpTask
       parameters:
-        - name: task_href
+        - name: pulp_task_id
           in: path
-          description: 'URI of Task. e.g.: /pulp/api/v3/tasks/1/'
+          description: 'ID of Task. e.g.: "1" in /pulp/api/v3/tasks/1/'
           required: true
           schema:
             type: string
