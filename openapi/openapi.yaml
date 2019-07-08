@@ -695,6 +695,220 @@ paths:
               schema:
                 $ref: '#/components/schemas/Tag'
 
+  /pulp/api/v3/tasks/:
+    get:
+      tags:
+        - tasks
+        - pulp
+        - v3
+      summary: List tasks
+      operationId: GetPulpTasks
+      parameters:
+        - name: ordering
+          in: query
+          description: Which field to use when ordering the results.
+          schema:
+            type: string
+        - name: state
+          in: query
+          schema:
+            type: string
+        - name: state__in
+          in: query
+          description: Filter results where state is in a comma-separated list of values
+          schema:
+            type: string
+        - name: worker
+          in: query
+          description: Foreign Key referenced by HREF
+          schema:
+            type: string
+        - name: worker__in
+          in: query
+          description: Filter results where worker is in a comma-separated list of values
+          schema:
+            type: string
+        - name: name__contains
+          in: query
+          description: Filter results where name contains value
+          schema:
+            type: string
+        - name: started_at__lt
+          in: query
+          description: Filter results where started_at is less than value
+          schema:
+            type: string
+        - name: started_at__lte
+          in: query
+          description: Filter results where started_at is less than or equal to value
+          schema:
+            type: string
+        - name: started_at__gt
+          in: query
+          description: Filter results where started_at is greater than value
+          schema:
+            type: string
+        - name: started_at__gte
+          in: query
+          description: Filter results where started_at is greater than or equal to value
+          schema:
+            type: string
+        - name: started_at__range
+          in: query
+          description: >-
+            Filter results where started_at is between two comma separated
+            values
+          schema:
+            type: string
+        - name: finished_at__lt
+          in: query
+          description: Filter results where finished_at is less than value
+          schema:
+            type: string
+        - name: finished_at__lte
+          in: query
+          description: Filter results where finished_at is less than or equal to value
+          schema:
+            type: string
+        - name: finished_at__gt
+          in: query
+          description: Filter results where finished_at is greater than value
+          schema:
+            type: string
+        - name: finished_at__gte
+          in: query
+          description: Filter results where finished_at is greater than or equal to value
+          schema:
+            type: string
+        - name: finished_at__range
+          in: query
+          description: >-
+            Filter results where finished_at is between two comma separated
+            values
+          schema:
+            type: string
+        - name: parent
+          in: query
+          description: Foreign Key referenced by HREF
+          schema:
+            type: string
+        - name: name
+          in: query
+          schema:
+            type: string
+        - name: started_at
+          in: query
+          description: ISO 8601 formatted dates are supported
+          schema:
+            type: string
+        - name: finished_at
+          in: query
+          description: ISO 8601 formatted dates are supported
+          schema:
+            type: string
+        - name: page
+          in: query
+          description: A page number within the paginated result set.
+          schema:
+            type: integer
+        - name: page_size
+          in: query
+          description: Number of results to return per page.
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: ''
+          content:
+            application/json:
+              schema:
+                required:
+                  - count
+                  - results
+                type: object
+                properties:
+                  next:
+                    type: string
+                    format: uri
+                    nullable: true
+                  previous:
+                    type: string
+                    format: uri
+                    nullable: true
+                  count:
+                    type: integer
+                  results:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/PulpTask'
+  '/{task_href}':
+    get:
+      tags:
+        - tasks
+        - pulp
+        - v3
+      summary: Inspect a task
+      operationId: GetPulpTask
+      parameters:
+        - name: task_href
+          in: path
+          description: 'URI of Task. e.g.: /pulp/api/v3/tasks/1/'
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PulpTask'
+    delete:
+      tags:
+        - tasks
+        - pulp
+        - v3
+      summary: Delete a task
+      operationId: DeletePulpTask
+      parameters:
+        - name: task_href
+          in: path
+          description: 'URI of Task. e.g.: /pulp/api/v3/tasks/1/'
+          required: true
+          schema:
+            type: string
+      responses:
+        '204':
+          description: ''
+          content: {}
+    patch:
+      tags:
+        - tasks
+        - pulp
+        - v3
+      summary: Cancel a task
+      description: This operation cancels a task.
+      operationId: PatchPulpTask
+      parameters:
+        - name: task_href
+          in: path
+          description: 'URI of Task. e.g.: /pulp/api/v3/tasks/1/'
+          required: true
+          schema:
+            type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PulpTaskCancel'
+        required: true
+      responses:
+        '200':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PulpTask'
   '/users/':
     get:
       summary: 'Get a list of Users'
@@ -1317,10 +1531,12 @@ components:
 
     PageNext:
       type: string
+      format: uri
 
     PagePrevious:
       description: 'The previous page'
       type: string
+      format: uri
 
     ProviderNamespace:
       description: 'A Provider Namespace'
@@ -1523,7 +1739,144 @@ components:
                 $ref: '#/components/schemas/Tag'
           required:
             - results
-
+    PulpProgressReport:
+      type: object
+      properties:
+        message:
+          title: Message
+          minLength: 1
+          type: string
+          description: The message shown to the user for the progress report.
+          readOnly: true
+        state:
+          title: State
+          minLength: 1
+          type: string
+          description: >-
+            The current state of the progress report. The possible values are:
+            'waiting', 'skipped', 'running', 'completed', 'failed' and
+            'canceled'. The default is 'waiting'.
+          readOnly: true
+        total:
+          title: Total
+          type: integer
+          description: The total count of items to be handled by the ProgressBar.
+          readOnly: true
+        done:
+          title: Done
+          type: integer
+          description: The count of items already processed. Defaults to 0.
+          readOnly: true
+        suffix:
+          title: Suffix
+          minLength: 1
+          type: string
+          description: The suffix to be shown with the progress report.
+          nullable: true
+          readOnly: true
+    PulpTask:
+      required:
+        - name
+      type: object
+      properties:
+        _href:
+          title: ' href'
+          type: string
+          format: uri
+          readOnly: true
+        _created:
+          title: ' created'
+          type: string
+          description: Timestamp of creation.
+          format: date-time
+          readOnly: true
+        state:
+          title: State
+          minLength: 1
+          type: string
+          description: >-
+            The current state of the task. The possible values include:
+            'waiting', 'skipped', 'running', 'completed', 'failed' and
+            'canceled'.
+          readOnly: true
+        name:
+          title: Name
+          minLength: 1
+          type: string
+          description: The name of task.
+        started_at:
+          title: Started at
+          type: string
+          description: Timestamp of the when this task started execution.
+          format: date-time
+          readOnly: true
+        finished_at:
+          title: Finished at
+          type: string
+          description: Timestamp of the when this task stopped execution.
+          format: date-time
+          readOnly: true
+        non_fatal_errors:
+          title: Non fatal errors
+          type: string
+          description: >-
+            A JSON Object of non-fatal errors encountered during the execution
+            of this task.
+          readOnly: true
+        error:
+          title: Error
+          type: string
+          description: >-
+            A JSON Object of a fatal error encountered during the execution of
+            this task.
+          readOnly: true
+        worker:
+          title: Worker
+          type: string
+          description: >-
+            The worker associated with this task. This field is empty if a
+            worker is not yet assigned.
+          format: uri
+          readOnly: true
+        parent:
+          title: Parent
+          type: string
+          description: The parent task that spawned this task.
+          format: uri
+          readOnly: true
+        spawned_tasks:
+          uniqueItems: true
+          type: array
+          description: Any tasks spawned by this task.
+          readOnly: true
+          items:
+            type: string
+            description: Any tasks spawned by this task.
+            format: uri
+        progress_reports:
+          type: array
+          readOnly: true
+          items:
+            $ref: '#/components/schemas/PulpProgressReport'
+        created_resources:
+          uniqueItems: true
+          type: array
+          description: Resources created by this task.
+          readOnly: true
+          items:
+            type: string
+            description: Resources created by this task.
+            format: uri
+    PulpTaskCancel:
+      required:
+        - state
+      type: object
+      properties:
+        state:
+          title: State
+          minLength: 1
+          type: string
+          description: The desired state of the task. Only 'canceled' is accepted.
     User:
       description: 'A User'
       title: 'User'
