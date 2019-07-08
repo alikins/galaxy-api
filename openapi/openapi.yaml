@@ -78,8 +78,10 @@ paths:
         - v2
         - client_mazer
       security:
-        - TokenApiKey: []
-        - BasicAuth: []
+        - UserTokenApiKey: []
+        - UserBasicAuth: []
+        - AdminTokenApiKey: []
+        - AdminBasicAuth: []
       parameters: []
       requestBody:
         $ref: '#/components/requestBodies/CollectionVersionArtifactBody'
@@ -285,8 +287,10 @@ paths:
         - v3
         - collection-version-artifacts
       security:
-        - TokenApiKey: []
-        - BasicAuth: []
+        - UserTokenApiKey: []
+        - UserBasicAuth: []
+        - AdminTokenApiKey: []
+        - AdminBasicAuth: []
       parameters: []
       requestBody:
         $ref: '#/components/requestBodies/CollectionVersionArtifactBody'
@@ -364,8 +368,8 @@ paths:
         - me
         - v1
       security:
-        - TokenApiKey: []
-        - BasicAuth: []
+        - UserTokenApiKey: []
+        - UserBasicAuth: []
       parameters:
         - $ref: '#/components/parameters/Search'
       responses:
@@ -390,10 +394,14 @@ paths:
       responses:
         '200':
           $ref: '#/components/responses/Namespaces'
+
     post:
       operationId: 'CreateNamespace'
       summary: 'Create a Namespace'
       parameters: []
+      security:
+        - AdminTokenApiKey: []
+        - AdminBasicAuth: []
       requestBody:
         $ref: '#/components/requestBodies/Namespace'
       responses:
@@ -420,6 +428,9 @@ paths:
       operationId: 'UpdateNamespace'
       parameters:
         - $ref: '#/components/parameters/NamespaceId'
+      security:
+        - AdminTokenApiKey: []
+        - AdminBasicAuth: []
       requestBody:
         $ref: '#/components/requestBodies/Namespace'
       responses:
@@ -433,6 +444,9 @@ paths:
       operationId: DeleteNamespace
       parameters:
         - $ref: '#/components/parameters/NamespaceId'
+      security:
+        - AdminTokenApiKey: []
+        - AdminBasicAuth: []
       responses:
         '204':
           $ref: '#/components/responses/DeleteSuccessful'
@@ -458,6 +472,9 @@ paths:
       operationId: CreateProviderNamespace
       summary: 'Create a Provider Namespace'
       parameters: []
+      security:
+        - AdminTokenApiKey: []
+        - AdminBasicAuth: []
       requestBody:
         $ref: '#/components/requestBodies/ProviderNamespace'
       responses:
@@ -485,6 +502,9 @@ paths:
       description: 'Update a Provider Namespace'
       parameters:
         - $ref: '#/components/parameters/ProviderNamespaceId'
+      security:
+        - AdminTokenApiKey: []
+        - AdminBasicAuth: []
       requestBody:
         $ref: '#/components/requestBodies/ProviderNamespace'
       responses:
@@ -499,6 +519,9 @@ paths:
       description: 'Delete a Provider Namespace'
       parameters:
         - $ref: '#/components/parameters/ProviderNamespaceId'
+      security:
+        - AdminTokenApiKey: []
+        - AdminBasicAuth: []
       responses:
         '204':
           $ref: '#/components/responses/DeleteSuccessful'
@@ -518,71 +541,43 @@ paths:
         Wrapper for https://pulp-ansible.readthedocs.io/en/latest/restapi.html#operation/content_ansible_collections_list
       operationId: GetPulpContentAnsibleCollections
       parameters:
-      - name: name
-        in: query
-        description: Filter results where name matches value
-        schema:
-          type: string
-      - name: namespace
-        in: query
-        description: Filter results where namespace matches value
-        schema:
-          type: string
-      - name: version
-        in: query
-        description: Filter results where version matches value
-        schema:
-          type: string
-      - name: repository_version
-        in: query
-        description: Repository Version referenced by HREF
-        schema:
-          type: string
-      - name: repository_version_added
-        in: query
-        description: Repository Version referenced by HREF
-        schema:
-          type: string
-      - name: repository_version_removed
-        in: query
-        description: Repository Version referenced by HREF
-        schema:
-          type: string
-      - name: page
-        in: query
-        description: A page number within the paginated result set.
-        schema:
-          type: integer
-      - name: page_size
-        in: query
-        description: Number of results to return per page.
-        schema:
-          type: integer
+        - $ref: '#/components/parameters/Page'
+        - $ref: '#/components/parameters/PageSize'
+        - $ref: '#/components/parameters/Search'
+        - name: name
+          in: query
+          description: Filter results where name matches value
+          schema:
+            type: string
+        - name: namespace
+          in: query
+          description: Filter results where namespace matches value
+          schema:
+            type: string
+        - name: version
+          in: query
+          description: Filter results where version matches value
+          schema:
+            type: string
+        - name: repository_version
+          in: query
+          description: Repository Version referenced by HREF
+          schema:
+            type: string
+        - name: repository_version_added
+          in: query
+          description: Repository Version referenced by HREF
+          schema:
+            type: string
+        - name: repository_version_removed
+          in: query
+          description: Repository Version referenced by HREF
+          schema:
+            type: string
       responses:
         200:
-          description: "response from getting pulp collection content"
-          content:
-            application/json:
-              schema:
-                required:
-                - count
-                - results
-                type: object
-                properties:
-                  next:
-                    type: string
-                    format: uri
-                    nullable: true
-                  previous:
-                    type: string
-                    format: uri
-                    nullable: true
-                  count:
-                    type: integer
-                  results:
-                    type: array
-                    items:
-                      $ref: '#/components/schemas/PulpCollection'
+          $ref: '#/components/responses/PulpContentAnsibleCollections'
+
     post:
       summary: Create a collection
       description: |
@@ -593,6 +588,11 @@ paths:
         - pulp
         - collections
         - v3
+      security:
+        - UserTokenApiKey: []
+        - UserBasicAuth: []
+        - AdminTokenApiKey: []
+        - AdminBasicAuth: []
       requestBody:
         content:
           application/json:
@@ -619,6 +619,9 @@ paths:
       description: 'Wrapper for Pulp API GET /pulp/api/v3/tasks/'
       operationId: GetPulpTasks
       parameters:
+        - $ref: '#/components/parameters/Page'
+        - $ref: '#/components/parameters/PageSize'
+        - $ref: '#/components/parameters/Search'
         - name: ordering
           in: query
           description: Which field to use when ordering the results.
@@ -721,41 +724,9 @@ paths:
           description: ISO 8601 formatted dates are supported
           schema:
             type: string
-        - name: page
-          in: query
-          description: A page number within the paginated result set.
-          schema:
-            type: integer
-        - name: page_size
-          in: query
-          description: Number of results to return per page.
-          schema:
-            type: integer
       responses:
         '200':
-          description: ''
-          content:
-            application/json:
-              schema:
-                required:
-                  - count
-                  - results
-                type: object
-                properties:
-                  next:
-                    type: string
-                    format: uri
-                    nullable: true
-                  previous:
-                    type: string
-                    format: uri
-                    nullable: true
-                  count:
-                    type: integer
-                  results:
-                    type: array
-                    items:
-                      $ref: '#/components/schemas/PulpTask'
+          $ref: '#/components/responses/PulpTasks'
 
   '/pulp/tasks/{pulp_task_id}':
     description: 'Wrapper API for Pulp {task_href}'
@@ -795,10 +766,14 @@ paths:
           required: true
           schema:
             type: string
+      security:
+        - UserTokenApiKey: []
+        - UserBasicAuth: []
+        - AdminTokenApiKey: []
+        - AdminBasicAuth: []
       responses:
-        '204':
-          description: ''
-          content: {}
+        204:
+          description: A DELETE operation was successful
     patch:
       tags:
         - tasks
@@ -814,6 +789,11 @@ paths:
           required: true
           schema:
             type: string
+      security:
+        - UserTokenApiKey: []
+        - UserBasicAuth: []
+        - AdminTokenApiKey: []
+        - AdminBasicAuth: []
       requestBody:
         content:
           application/json:
@@ -903,6 +883,31 @@ paths:
         '200':
           $ref: '#/components/responses/Tags'
 
+    post:
+      summary: 'Create a Galaxy Tag'
+      operationId: CreateTag
+      tags:
+        - tags
+        - v1
+      security:
+        - UserTokenApiKey: []
+        - UserBasicAuth: []
+        - AdminTokenApiKey: []
+        - AdminBasicAuth: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Tag'
+        required: true
+      responses:
+        201:
+          description: "Tag creation was succesful"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Tag'
+
   '/tags/{id}/':
     get:
       summary: 'Get a Galaxy Tag'
@@ -911,16 +916,39 @@ paths:
         - tags
         - v1
       parameters:
-        - description: 'Tag id'
-          in: path
-          name: id
-          required: true
-          schema:
-            type: string
+        - $ref: '#/components/parameters/TagId'
         - $ref: '#/components/parameters/Search'
       responses:
         '200':
           description: 'A Galaxy Tag'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Tag'
+
+    patch:
+      summary: 'Patch/update a Tag by id'
+      operationId: PatchTagById
+      tags:
+        - tags
+        - v1
+      parameters:
+        - $ref: '#/components/parameters/TagId'
+        - $ref: '#/components/parameters/Search'
+      security:
+        - UserTokenApiKey: []
+        - UserBasicAuth: []
+        - AdminTokenApiKey: []
+        - AdminBasicAuth: []
+      requestBody:
+        description: 'An Tag to update to'
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Tag'
+      responses:
+        '200':
+          description: 'The Tag updated by the PATCH'
           content:
             application/json:
               schema:
@@ -968,13 +996,17 @@ paths:
       parameters:
         - $ref: '#/components/parameters/UserId'
         - $ref: '#/components/parameters/Search'
+      security:
+        - UserTokenApiKey: []
+        - UserBasicAuth: []
+        - AdminTokenApiKey: []
+        - AdminBasicAuth: []
       requestBody:
         description: 'An User to update to'
         content:
           application/json:
             schema:
               $ref: '#/components/schemas/UserUpdate'
-
       responses:
         '200':
           description: 'The User updated by the PATCH'
@@ -1608,14 +1640,8 @@ components:
           required:
             - results
 
-    PulpCollection:
-      title: 'PulpCollection'
-      description: 'A Collection as stored in Pulp'
-      required:
-        - _artifact
-        - name
-        - namespace
-        - version
+    PulpBase:
+      description: 'A base class for Pulp objects'
       type: object
       properties:
         _href:
@@ -1623,34 +1649,62 @@ components:
           type: string
           format: uri
           readOnly: true
-        _type:
-          title: ' type'
-          minLength: 1
-          type: string
-          readOnly: true
-        _artifact:
-          title: ' artifact'
-          type: string
-          description: Artifact file representing the physical content
-          format: uri
         _created:
           title: ' created'
           type: string
           description: Timestamp of creation.
           format: date-time
           readOnly: true
-        version:
-          title: Version
-          minLength: 1
-          type: string
-        name:
-          title: Name
-          minLength: 1
-          type: string
-        namespace:
-          title: Namespace
-          minLength: 1
-          type: string
+
+    PulpCollection:
+      title: 'PulpCollection'
+      description: 'A Collection as stored in Pulp'
+      allOf:
+        - $ref: '#/components/schemas/PulpBase'
+        - type: object
+          properties:
+            _type:
+              title: ' type'
+              minLength: 1
+              type: string
+              readOnly: true
+            _artifact:
+              title: ' artifact'
+              type: string
+              description: Artifact file representing the physical content
+              format: uri
+            version:
+              title: Version
+              minLength: 1
+              type: string
+            name:
+              title: Name
+              minLength: 1
+              type: string
+            namespace:
+              title: Namespace
+              minLength: 1
+              type: string
+          required:
+            - _artifact
+            - name
+            - namespace
+            - version
+
+    PulpContentAnsibleCollectionsPage:
+      description: 'A page of a list of PulpContentAnsibleCollections'
+      title: 'Pulp ContentAnsibleCollections Page'
+      allOf:
+        - $ref: '#/components/schemas/PageInfo'
+        - type: object
+          properties:
+            results:
+              title: 'PulpCollections'
+              type: array
+              items:
+                $ref: '#/components/schemas/PulpCollection'
+          required:
+            - results
 
     PulpProgressReport:
       type: object
@@ -1689,98 +1743,92 @@ components:
           readOnly: true
 
     PulpTask:
-      required:
-        - name
-      type: object
-      properties:
-        _href:
-          title: ' href'
-          type: string
-          format: uri
-          readOnly: true
-        _created:
-          title: ' created'
-          type: string
-          description: Timestamp of creation.
-          format: date-time
-          readOnly: true
-        state:
-          title: State
-          minLength: 1
-          type: string
-          description: >-
-            The current state of the task. The possible values include:
-            'waiting', 'skipped', 'running', 'completed', 'failed' and
-            'canceled'.
-          readOnly: true
-        name:
-          title: Name
-          minLength: 1
-          type: string
-          description: The name of task.
-        started_at:
-          title: Started at
-          type: string
-          description: Timestamp of the when this task started execution.
-          format: date-time
-          readOnly: true
-        finished_at:
-          title: Finished at
-          type: string
-          description: Timestamp of the when this task stopped execution.
-          format: date-time
-          readOnly: true
-        non_fatal_errors:
-          title: Non fatal errors
-          type: string
-          description: >-
-            A JSON Object of non-fatal errors encountered during the execution
-            of this task.
-          readOnly: true
-        error:
-          title: Error
-          type: string
-          description: >-
-            A JSON Object of a fatal error encountered during the execution of
-            this task.
-          readOnly: true
-        worker:
-          title: Worker
-          type: string
-          description: >-
-            The worker associated with this task. This field is empty if a
-            worker is not yet assigned.
-          format: uri
-          readOnly: true
-        parent:
-          title: Parent
-          type: string
-          description: The parent task that spawned this task.
-          format: uri
-          readOnly: true
-        spawned_tasks:
-          uniqueItems: true
-          type: array
-          description: Any tasks spawned by this task.
-          readOnly: true
-          items:
-            type: string
-            description: Any tasks spawned by this task.
-            format: uri
-        progress_reports:
-          type: array
-          readOnly: true
-          items:
-            $ref: '#/components/schemas/PulpProgressReport'
-        created_resources:
-          uniqueItems: true
-          type: array
-          description: Resources created by this task.
-          readOnly: true
-          items:
-            type: string
-            description: Resources created by this task.
-            format: uri
+      title: 'Pulp Task'
+      description: 'A Pulp Task'
+      allOf:
+        - $ref: '#/components/schemas/PulpBase'
+        - type: object
+          required:
+            - name
+          properties:
+            state:
+              title: State
+              minLength: 1
+              type: string
+              description: >-
+                The current state of the task. The possible values include:
+                'waiting', 'skipped', 'running', 'completed', 'failed' and
+                'canceled'.
+              readOnly: true
+            name:
+              title: Name
+              minLength: 1
+              type: string
+              description: The name of task.
+            started_at:
+              title: Started at
+              type: string
+              description: Timestamp of the when this task started execution.
+              format: date-time
+              readOnly: true
+            finished_at:
+              title: Finished at
+              type: string
+              description: Timestamp of the when this task stopped execution.
+              format: date-time
+              readOnly: true
+            non_fatal_errors:
+              title: Non fatal errors
+              type: string
+              description: >-
+                A JSON Object of non-fatal errors encountered during the execution
+                of this task.
+              readOnly: true
+            error:
+              title: Error
+              type: string
+              description: >-
+                A JSON Object of a fatal error encountered during the execution of
+                this task.
+              readOnly: true
+            worker:
+              title: Worker
+              type: string
+              description: >-
+                The worker associated with this task. This field is empty if a
+                worker is not yet assigned.
+              format: uri
+              readOnly: true
+            parent:
+              title: Parent
+              type: string
+              description: The parent task that spawned this task.
+              format: uri
+              readOnly: true
+            spawned_tasks:
+              uniqueItems: true
+              type: array
+              description: Any tasks spawned by this task.
+              readOnly: true
+              items:
+                type: string
+                description: Any tasks spawned by this task.
+                format: uri
+            progress_reports:
+              type: array
+              readOnly: true
+              items:
+                $ref: '#/components/schemas/PulpProgressReport'
+            created_resources:
+              uniqueItems: true
+              type: array
+              description: Resources created by this task.
+              readOnly: true
+              items:
+                type: string
+                description: Resources created by this task.
+                format: uri
+
 
     PulpTaskCancel:
       required:
@@ -1792,6 +1840,19 @@ components:
           minLength: 1
           type: string
           description: The desired state of the task. Only 'canceled' is accepted.
+
+    PulpTasksPage:
+      description: "A Page of a list of Pulp Tasks"
+      allOf:
+        - $ref: '#/components/schemas/PageInfo'
+        - type: object
+          properties:
+            results:
+              description: 'List of Pulp Tasks for this Page'
+              title: 'Pulp Tasks'
+              type: array
+              items:
+                $ref: '#/components/schemas/PulpTask'
 
     Role:
       description: 'An Ansible Role'
@@ -2129,6 +2190,20 @@ components:
           schema:
             $ref: '#/components/schemas/ProviderNamespacesPage'
 
+    PulpContentAnsibleCollections:
+      description: "Response from getting pulp collection content"
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/PulpContentAnsibleCollectionsPage'
+
+    PulpTasks:
+      description: 'Response containing a Page of a list of Pulp Tasks'
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/PulpTasksPage'
+
     Roles:
       description: 'Response containing a Page of a list of Roles'
       content:
@@ -2256,6 +2331,14 @@ components:
       schema:
         type: string
 
+    TagId:
+      description: 'Tag id'
+      in: path
+      name: id
+      required: true
+      schema:
+        type: string
+
     UserId:
       description: 'User id'
       in: path
@@ -2287,10 +2370,19 @@ components:
             $ref: '#/components/schemas/ProviderNamespace'
 
   securitySchemes:
-    BasicAuth:
+    # FIXME: kind of faking rbac
+    AdminBasicAuth:
       type: http
       scheme: basic
-    TokenApiKey:
+    UserBasicAuth:
+      type: http
+      scheme: basic
+    UserTokenApiKey:
+      description: Provide a Galaxy API token in "Authorization" header with value in form "Token {api_key}"
+      type: apiKey
+      in: header
+      name: Authorization
+    AdminTokenApiKey:
       description: Provide a Galaxy API token in "Authorization" header with value in form "Token {api_key}"
       type: apiKey
       in: header
