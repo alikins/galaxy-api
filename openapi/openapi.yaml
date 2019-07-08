@@ -174,7 +174,7 @@ paths:
     parameters:
       - $ref: '#/components/parameters/CollectionNamespace'
       - $ref: '#/components/parameters/CollectionName'
-      - $ref: '#/components/parameters/CollectionVersion'
+      - $ref: '#/components/parameters/SemanticVersion'
     get:
       summary: 'Get a CollectionVersion by namespace, name, and version'
       operationId: GetCollectionVersion
@@ -190,7 +190,7 @@ paths:
     parameters:
       - $ref: '#/components/parameters/CollectionNamespace'
       - $ref: '#/components/parameters/CollectionName'
-      - $ref: '#/components/parameters/CollectionVersion'
+      - $ref: '#/components/parameters/SemanticVersion'
     get:
       summary: 'Get Artifact details for a Collection by namespace, name, and version'
       operationId: GetCollectionVersionArtifact
@@ -530,7 +530,6 @@ paths:
         - v3
 
   '/pulp/content/ansible/collections/':
-    description: 'Wrapper API for /pulp/api/v3/content/ansible/collections/'
     get:
       tags:
         - collections
@@ -609,7 +608,6 @@ paths:
 
   # Could just make this /tasks/
   '/pulp/tasks/':
-    description: 'Wrapper API for Pulp tasks API'
     get:
       tags:
         - tasks
@@ -729,7 +727,6 @@ paths:
           $ref: '#/components/responses/PulpTasks'
 
   '/pulp/tasks/{pulp_task_id}':
-    description: 'Wrapper API for Pulp {task_href}'
     get:
       tags:
         - tasks
@@ -2262,15 +2259,6 @@ components:
         type: string
         pattern: ^(?!.*__)[a-z]+[0-9a-z_]*$'
 
-    CollectionVersion:
-      description: 'A Semantic Version string'
-      in: path
-      name: version
-      required: true
-      schema:
-        type: string
-        pattern: ^((([0-9]+)\.([0-9]+)\.([0-9]+)(?:-([0-9a-zA-Z-]+(?:\.[0-9a-zA-Z-]+)*))?)(?:\+([0-9a-zA-Z-]+(?:\.[0-9a-zA-Z-]+)*))?)$
-
     CollectionVersionArtifactFilename:
       description: 'CollectionVersion artifact filename'
       in: path
@@ -2330,6 +2318,15 @@ components:
       required: false
       schema:
         type: string
+
+    SemanticVersion:
+      description: 'A Semantic Version string'
+      in: path
+      name: version
+      required: true
+      schema:
+        type: string
+        pattern: ^((([0-9]+)\.([0-9]+)\.([0-9]+)(?:-([0-9a-zA-Z-]+(?:\.[0-9a-zA-Z-]+)*))?)(?:\+([0-9a-zA-Z-]+(?:\.[0-9a-zA-Z-]+)*))?)$
 
     TagId:
       description: 'Tag id'
