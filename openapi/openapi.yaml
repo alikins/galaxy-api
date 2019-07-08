@@ -38,12 +38,16 @@ tags:
     description: 'API endpoints from the v2 API'
   - name: 'me'
     description: 'API related to the current user.'
+  - name: 'pulp'
+    description: 'API related to Pulp'
   - name: 'search'
     description: 'API for searching'
   - name: 'namespaces'
     description: 'API for Namespaces'
   - name: 'tags'
     description: 'API for Ansible Galaxy tags.'
+  - name: 'tasks'
+    description: 'API for Pulp tasks'
   - name: 'users'
     description: 'API for Users'
   - name: 'v1'
@@ -273,7 +277,7 @@ paths:
     post:
       summary: 'Create a new CollectionVersionArtifact by uploading collection artifact'
       operationId: UploadCollectionVersionArtifact
-      description: 
+      description:
         Create a new CollectionVersionArtifact by uploading a collection artifact.
         This will add the new artifact, but will not create a new Collection.
         To create a CollectionVersionArtifact and a Collection, use 'POST /collections'
@@ -334,106 +338,6 @@ paths:
       responses:
         '200':
           $ref: '#/components/responses/CollectionVersionArtifact'
-  '/pulp/content/ansible/collections/':
-    description: 'Wrapper API for /pulp/api/v3/content/ansible/collections/'
-    get:
-      tags:
-        - collections
-        - pulp
-        - v3
-      summary: List collections
-      description: |
-        Wrapper for https://pulp-ansible.readthedocs.io/en/latest/restapi.html#operation/content_ansible_collections_list
-      operationId: GetPulpContentAnsibleCollections
-      parameters:
-      - name: name
-        in: query
-        description: Filter results where name matches value
-        schema:
-          type: string
-      - name: namespace
-        in: query
-        description: Filter results where namespace matches value
-        schema:
-          type: string
-      - name: version
-        in: query
-        description: Filter results where version matches value
-        schema:
-          type: string
-      - name: repository_version
-        in: query
-        description: Repository Version referenced by HREF
-        schema:
-          type: string
-      - name: repository_version_added
-        in: query
-        description: Repository Version referenced by HREF
-        schema:
-          type: string
-      - name: repository_version_removed
-        in: query
-        description: Repository Version referenced by HREF
-        schema:
-          type: string
-      - name: page
-        in: query
-        description: A page number within the paginated result set.
-        schema:
-          type: integer
-      - name: page_size
-        in: query
-        description: Number of results to return per page.
-        schema:
-          type: integer
-      responses:
-        200:
-          description: "response from getting pulp collection content"
-          content:
-            application/json:
-              schema:
-                required:
-                - count
-                - results
-                type: object
-                properties:
-                  next:
-                    type: string
-                    format: uri
-                    nullable: true
-                  previous:
-                    type: string
-                    format: uri
-                    nullable: true
-                  count:
-                    type: integer
-                  results:
-                    type: array
-                    items:
-                      $ref: '#/components/schemas/PulpCollection'
-    post:
-      summary: Create a collection
-      description: |
-        ViewSet for Ansible Collection.
-        Wrapper for https://pulp-ansible.readthedocs.io/en/latest/restapi.html#operation/content_ansible_collections_create
-      operationId: content_ansible_collections_create
-      tags:
-        - pulp
-        - collections
-        - v3
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/PulpCollection'
-        required: true
-      responses:
-        201:
-          description: ""
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/PulpCollection'
 
   '/download/{filename}':
     get:
@@ -598,103 +502,106 @@ paths:
         - provider_namespaces
         - v3
 
-  '/search/':
+  '/pulp/content/ansible/collections/':
+    description: 'Wrapper API for /pulp/api/v3/content/ansible/collections/'
     get:
-      summary: 'Get info about the search API'
-      operationId: GetApiSearch
       tags:
-        - search
-        - introspection
-        - v1
-      parameters: []
+        - collections
+        - pulp
+        - v3
+      summary: List collections
+      description: |
+        Wrapper for https://pulp-ansible.readthedocs.io/en/latest/restapi.html#operation/content_ansible_collections_list
+      operationId: GetPulpContentAnsibleCollections
+      parameters:
+      - name: name
+        in: query
+        description: Filter results where name matches value
+        schema:
+          type: string
+      - name: namespace
+        in: query
+        description: Filter results where namespace matches value
+        schema:
+          type: string
+      - name: version
+        in: query
+        description: Filter results where version matches value
+        schema:
+          type: string
+      - name: repository_version
+        in: query
+        description: Repository Version referenced by HREF
+        schema:
+          type: string
+      - name: repository_version_added
+        in: query
+        description: Repository Version referenced by HREF
+        schema:
+          type: string
+      - name: repository_version_removed
+        in: query
+        description: Repository Version referenced by HREF
+        schema:
+          type: string
+      - name: page
+        in: query
+        description: A page number within the paginated result set.
+        schema:
+          type: integer
+      - name: page_size
+        in: query
+        description: Number of results to return per page.
+        schema:
+          type: integer
       responses:
-        '200':
-          description: 'A map of endpoints in the search API'
+        200:
+          description: "response from getting pulp collection content"
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/APIEndpoints'
-
-  '/search/content/':
-    get:
-      summary: 'Get a list of Contents by searching'
-      operationId: ListContentBySearch
+                required:
+                - count
+                - results
+                type: object
+                properties:
+                  next:
+                    type: string
+                    format: uri
+                    nullable: true
+                  previous:
+                    type: string
+                    format: uri
+                    nullable: true
+                  count:
+                    type: integer
+                  results:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/PulpCollection'
+    post:
+      summary: Create a collection
+      description: |
+        ViewSet for Ansible Collection.
+        Wrapper for https://pulp-ansible.readthedocs.io/en/latest/restapi.html#operation/content_ansible_collections_create
+      operationId: content_ansible_collections_create
       tags:
-        - search
-        - v1
-      parameters:
-        - $ref: '#/components/parameters/Page'
-        - $ref: '#/components/parameters/PageSize'
+        - pulp
+        - collections
+        - v3
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PulpCollection'
+        required: true
       responses:
-        '200':
-          $ref: '#/components/responses/Contents'
-
-  '/search/roles/':
-    get:
-      summary: 'Get a list of Roles by searching'
-      operationId: ListRoleBySearch
-      tags:
-        - search
-        - v1
-      parameters:
-        - $ref: '#/components/parameters/Page'
-        - $ref: '#/components/parameters/PageSize'
-      responses:
-        '200':
-          $ref: '#/components/responses/Roles'
-
-  '/search/tags/':
-    get:
-      summary: 'Get a list of Tags by searching'
-      operationId: ListTagBySearch
-      tags:
-        - search
-        - v1
-      parameters:
-        - $ref: '#/components/parameters/Page'
-        - $ref: '#/components/parameters/PageSize'
-        # TODO: search param tags
-      responses:
-        '200':
-          $ref: '#/components/responses/Tags'
-
-  '/tags/':
-    get:
-      summary: 'Get a list of Galaxy Tags'
-      operationId: ListTags
-      tags:
-        - tags
-        - v1
-      parameters:
-        - $ref: '#/components/parameters/Page'
-        - $ref: '#/components/parameters/PageSize'
-        - $ref: '#/components/parameters/Search'
-      responses:
-        '200':
-          $ref: '#/components/responses/Tags'
-
-  '/tags/{id}/':
-    get:
-      summary: 'Get a Galaxy Tag'
-      operationId: GetTagById
-      tags:
-        - tags
-        - v1
-      parameters:
-        - description: 'Tag id'
-          in: path
-          name: id
-          required: true
-          schema:
-            type: string
-        - $ref: '#/components/parameters/Search'
-      responses:
-        '200':
-          description: 'A Galaxy Tag'
+        201:
+          description: ""
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Tag'
+                $ref: '#/components/schemas/PulpCollection'
 
   # Could just make this /tasks/
   '/pulp/tasks/':
@@ -845,6 +752,7 @@ paths:
                     type: array
                     items:
                       $ref: '#/components/schemas/PulpTask'
+
   '/pulp/tasks/{pulp_task_id}':
     description: 'Wrapper API for Pulp {task_href}'
     get:
@@ -915,6 +823,105 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/PulpTask'
+
+  '/search/':
+    get:
+      summary: 'Get info about the search API'
+      operationId: GetApiSearch
+      tags:
+        - search
+        - introspection
+        - v1
+      parameters: []
+      responses:
+        '200':
+          description: 'A map of endpoints in the search API'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/APIEndpoints'
+
+  '/search/content/':
+    get:
+      summary: 'Get a list of Contents by searching'
+      operationId: ListContentBySearch
+      tags:
+        - search
+        - v1
+      parameters:
+        - $ref: '#/components/parameters/Page'
+        - $ref: '#/components/parameters/PageSize'
+      responses:
+        '200':
+          $ref: '#/components/responses/Contents'
+
+  '/search/roles/':
+    get:
+      summary: 'Get a list of Roles by searching'
+      operationId: ListRoleBySearch
+      tags:
+        - search
+        - v1
+      parameters:
+        - $ref: '#/components/parameters/Page'
+        - $ref: '#/components/parameters/PageSize'
+      responses:
+        '200':
+          $ref: '#/components/responses/Roles'
+
+  '/search/tags/':
+    get:
+      summary: 'Get a list of Tags by searching'
+      operationId: ListTagBySearch
+      tags:
+        - search
+        - v1
+      parameters:
+        - $ref: '#/components/parameters/Page'
+        - $ref: '#/components/parameters/PageSize'
+        # TODO: search param tags
+      responses:
+        '200':
+          $ref: '#/components/responses/Tags'
+
+  '/tags/':
+    get:
+      summary: 'Get a list of Galaxy Tags'
+      operationId: ListTags
+      tags:
+        - tags
+        - v1
+      parameters:
+        - $ref: '#/components/parameters/Page'
+        - $ref: '#/components/parameters/PageSize'
+        - $ref: '#/components/parameters/Search'
+      responses:
+        '200':
+          $ref: '#/components/responses/Tags'
+
+  '/tags/{id}/':
+    get:
+      summary: 'Get a Galaxy Tag'
+      operationId: GetTagById
+      tags:
+        - tags
+        - v1
+      parameters:
+        - description: 'Tag id'
+          in: path
+          name: id
+          required: true
+          schema:
+            type: string
+        - $ref: '#/components/parameters/Search'
+      responses:
+        '200':
+          description: 'A Galaxy Tag'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Tag'
+
   '/users/':
     get:
       summary: 'Get a list of Users'
@@ -1640,6 +1647,148 @@ components:
           title: Namespace
           minLength: 1
           type: string
+
+    PulpProgressReport:
+      type: object
+      properties:
+        message:
+          title: Message
+          minLength: 1
+          type: string
+          description: The message shown to the user for the progress report.
+          readOnly: true
+        state:
+          title: State
+          minLength: 1
+          type: string
+          description: >-
+            The current state of the progress report. The possible values are:
+            'waiting', 'skipped', 'running', 'completed', 'failed' and
+            'canceled'. The default is 'waiting'.
+          readOnly: true
+        total:
+          title: Total
+          type: integer
+          description: The total count of items to be handled by the ProgressBar.
+          readOnly: true
+        done:
+          title: Done
+          type: integer
+          description: The count of items already processed. Defaults to 0.
+          readOnly: true
+        suffix:
+          title: Suffix
+          minLength: 1
+          type: string
+          description: The suffix to be shown with the progress report.
+          nullable: true
+          readOnly: true
+
+    PulpTask:
+      required:
+        - name
+      type: object
+      properties:
+        _href:
+          title: ' href'
+          type: string
+          format: uri
+          readOnly: true
+        _created:
+          title: ' created'
+          type: string
+          description: Timestamp of creation.
+          format: date-time
+          readOnly: true
+        state:
+          title: State
+          minLength: 1
+          type: string
+          description: >-
+            The current state of the task. The possible values include:
+            'waiting', 'skipped', 'running', 'completed', 'failed' and
+            'canceled'.
+          readOnly: true
+        name:
+          title: Name
+          minLength: 1
+          type: string
+          description: The name of task.
+        started_at:
+          title: Started at
+          type: string
+          description: Timestamp of the when this task started execution.
+          format: date-time
+          readOnly: true
+        finished_at:
+          title: Finished at
+          type: string
+          description: Timestamp of the when this task stopped execution.
+          format: date-time
+          readOnly: true
+        non_fatal_errors:
+          title: Non fatal errors
+          type: string
+          description: >-
+            A JSON Object of non-fatal errors encountered during the execution
+            of this task.
+          readOnly: true
+        error:
+          title: Error
+          type: string
+          description: >-
+            A JSON Object of a fatal error encountered during the execution of
+            this task.
+          readOnly: true
+        worker:
+          title: Worker
+          type: string
+          description: >-
+            The worker associated with this task. This field is empty if a
+            worker is not yet assigned.
+          format: uri
+          readOnly: true
+        parent:
+          title: Parent
+          type: string
+          description: The parent task that spawned this task.
+          format: uri
+          readOnly: true
+        spawned_tasks:
+          uniqueItems: true
+          type: array
+          description: Any tasks spawned by this task.
+          readOnly: true
+          items:
+            type: string
+            description: Any tasks spawned by this task.
+            format: uri
+        progress_reports:
+          type: array
+          readOnly: true
+          items:
+            $ref: '#/components/schemas/PulpProgressReport'
+        created_resources:
+          uniqueItems: true
+          type: array
+          description: Resources created by this task.
+          readOnly: true
+          items:
+            type: string
+            description: Resources created by this task.
+            format: uri
+
+    PulpTaskCancel:
+      required:
+        - state
+      type: object
+      properties:
+        state:
+          title: State
+          minLength: 1
+          type: string
+          description: The desired state of the task. Only 'canceled' is accepted.
+
     Role:
       description: 'An Ansible Role'
       title: 'Role'
@@ -1745,144 +1894,7 @@ components:
                 $ref: '#/components/schemas/Tag'
           required:
             - results
-    PulpProgressReport:
-      type: object
-      properties:
-        message:
-          title: Message
-          minLength: 1
-          type: string
-          description: The message shown to the user for the progress report.
-          readOnly: true
-        state:
-          title: State
-          minLength: 1
-          type: string
-          description: >-
-            The current state of the progress report. The possible values are:
-            'waiting', 'skipped', 'running', 'completed', 'failed' and
-            'canceled'. The default is 'waiting'.
-          readOnly: true
-        total:
-          title: Total
-          type: integer
-          description: The total count of items to be handled by the ProgressBar.
-          readOnly: true
-        done:
-          title: Done
-          type: integer
-          description: The count of items already processed. Defaults to 0.
-          readOnly: true
-        suffix:
-          title: Suffix
-          minLength: 1
-          type: string
-          description: The suffix to be shown with the progress report.
-          nullable: true
-          readOnly: true
-    PulpTask:
-      required:
-        - name
-      type: object
-      properties:
-        _href:
-          title: ' href'
-          type: string
-          format: uri
-          readOnly: true
-        _created:
-          title: ' created'
-          type: string
-          description: Timestamp of creation.
-          format: date-time
-          readOnly: true
-        state:
-          title: State
-          minLength: 1
-          type: string
-          description: >-
-            The current state of the task. The possible values include:
-            'waiting', 'skipped', 'running', 'completed', 'failed' and
-            'canceled'.
-          readOnly: true
-        name:
-          title: Name
-          minLength: 1
-          type: string
-          description: The name of task.
-        started_at:
-          title: Started at
-          type: string
-          description: Timestamp of the when this task started execution.
-          format: date-time
-          readOnly: true
-        finished_at:
-          title: Finished at
-          type: string
-          description: Timestamp of the when this task stopped execution.
-          format: date-time
-          readOnly: true
-        non_fatal_errors:
-          title: Non fatal errors
-          type: string
-          description: >-
-            A JSON Object of non-fatal errors encountered during the execution
-            of this task.
-          readOnly: true
-        error:
-          title: Error
-          type: string
-          description: >-
-            A JSON Object of a fatal error encountered during the execution of
-            this task.
-          readOnly: true
-        worker:
-          title: Worker
-          type: string
-          description: >-
-            The worker associated with this task. This field is empty if a
-            worker is not yet assigned.
-          format: uri
-          readOnly: true
-        parent:
-          title: Parent
-          type: string
-          description: The parent task that spawned this task.
-          format: uri
-          readOnly: true
-        spawned_tasks:
-          uniqueItems: true
-          type: array
-          description: Any tasks spawned by this task.
-          readOnly: true
-          items:
-            type: string
-            description: Any tasks spawned by this task.
-            format: uri
-        progress_reports:
-          type: array
-          readOnly: true
-          items:
-            $ref: '#/components/schemas/PulpProgressReport'
-        created_resources:
-          uniqueItems: true
-          type: array
-          description: Resources created by this task.
-          readOnly: true
-          items:
-            type: string
-            description: Resources created by this task.
-            format: uri
-    PulpTaskCancel:
-      required:
-        - state
-      type: object
-      properties:
-        state:
-          title: State
-          minLength: 1
-          type: string
-          description: The desired state of the task. Only 'canceled' is accepted.
+
     User:
       description: 'A User'
       title: 'User'
