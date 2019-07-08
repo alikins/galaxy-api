@@ -307,7 +307,9 @@ paths:
   '/collection-version-artifacts/{artifact_id}':
     get:
       summary: 'Get a Collection Version artifacts'
-      operationId: GetCollectionVersionArtifact
+      operationId: GetCollectionVersionArtifactByArtifactId
+      parameters:
+        - $ref: '#/components/parameters/CollectionVersionArtifactId'
       tags:
         - collection-version-artifacts
         - v3
@@ -319,6 +321,8 @@ paths:
     get:
       summary: 'Download a Collection Version artifact'
       operationId: DownloadCollectionVersionArtifact
+      parameters:
+        - $ref: '#/components/parameters/CollectionVersionArtifactId'
       tags:
         - collection-version-artifacts
         - v3
@@ -785,9 +789,9 @@ paths:
       summary: Delete a task
       operationId: DeletePulpTask
       parameters:
-        - name: task_href
+        - name: pulp_task_id
           in: path
-          description: 'URI of Task. e.g.: /pulp/api/v3/tasks/1/'
+          description: 'ID of Task. e.g.: /pulp/api/v3/tasks/1/'
           required: true
           schema:
             type: string
@@ -804,9 +808,9 @@ paths:
       description: This operation cancels a task.
       operationId: PatchPulpTask
       parameters:
-        - name: task_href
+        - name: pulp_task_id
           in: path
-          description: 'URI of Task. e.g.: /pulp/api/v3/tasks/1/'
+          description: 'ID of Task. e.g.: /pulp/api/v3/tasks/1/'
           required: true
           schema:
             type: string
@@ -2196,6 +2200,14 @@ components:
       description: 'CollectionVersion artifact filename'
       in: path
       name: filename
+      required: true
+      schema:
+        type: string
+
+    CollectionVersionArtifactId:
+      description: 'CollectionVersion artifact ID'
+      in: path
+      name: artifact_id
       required: true
       schema:
         type: string
