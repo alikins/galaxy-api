@@ -24,7 +24,7 @@ from rest_framework.response import Response
 
 from django.core.exceptions import ObjectDoesNotExist
 
-from galaxy_api.models import Provider, ProviderNamespace
+from galaxy_api.api import models
 from galaxy_api.api import base as base_views
 
 # from ..githubapi import GithubAPI
@@ -39,7 +39,7 @@ logger = logging.getLogger(__name__)
 class ProviderSourceList(base_views.ListAPIView):
     """User namespaces available within each active provider."""
 
-    model = ProviderNamespace
+    model = models.ProviderNamespace
     authentication_classes = (SessionAuthentication,)
 
 
@@ -57,7 +57,7 @@ class ProviderSourceList(base_views.ListAPIView):
         for the requesting user.
         """
         sources = []
-        for provider in Provider.objects.filter(active=True):
+        for provider in models.Provider.objects.filter(active=True):
             if provider.name.lower() == 'github':
                 # sources += GithubAPI(user=request.user).user_namespaces()
                 for source in sources:
@@ -66,7 +66,7 @@ class ProviderSourceList(base_views.ListAPIView):
                         'name': provider.name,
                     }
                     try:
-                        provider_namespace = ProviderNamespace.objects.get(
+                        provider_namespace = models.ProviderNamespace.objects.get(
                             provider=provider, name=source['name']
                         )
                         source['provider_namespace'] = {
