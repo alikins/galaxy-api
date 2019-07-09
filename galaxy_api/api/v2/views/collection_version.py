@@ -22,7 +22,7 @@ from rest_framework.permissions import AllowAny
 import semantic_version
 
 from galaxy_api.api import base
-from galaxy_api import models
+from galaxy_api.api import models
 from galaxy_api.api.v2 import serializers
 # from galaxy_api.api.v1.pagination import DefaultPagination
 
