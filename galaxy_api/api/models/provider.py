@@ -15,7 +15,7 @@ class Provider(CommonModel):
         ordering = ('name',)
 
     def get_absolute_url(self):
-        return reverse('api:v1:active_provider_detail', args=(self.pk,))
+        return reverse('api:v3:active_provider_detail', args=(self.pk,))
 
 
 class ProviderNamespace(PrimordialModel):
@@ -101,4 +101,4 @@ class ProviderNamespace(PrimordialModel):
     )
 
     def get_absolute_url(self):
-        return reverse('api:v1:provider_namespace_detail', args=(self.pk,))
+        return reverse('api:3:provider_namespace_detail', args=(self.pk,))

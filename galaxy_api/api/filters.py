@@ -34,7 +34,6 @@ from rest_framework.filters import BaseFilterBackend
 
 GalaxyUser = get_user_model()
 
-
 class ActiveOnlyBackend(BaseFilterBackend):
     """
     Filter to show only objects where is_active/active is True.

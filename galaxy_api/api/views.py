@@ -13,10 +13,10 @@ class ApiRootView(base.APIView):
         current = reverse('api:api_root_view', args=[])
         data = dict(
             description='GALAXY REST API',
-            current_version='v1',
+            current_version='v3',
             available_versions=dict(
                 v1=current,
-                v2='/api/v2/',
+                v2='/api/v3/',
             ),
             stuff='blippy'
         )

@@ -71,7 +71,7 @@ class BaseSerializer(serializers.ModelSerializer):
         if obj is None or isinstance(obj, AnonymousUser):
             return ''
         elif isinstance(obj, User):
-            return reverse('api:v1:user_detail', args=(obj.pk,))
+            return reverse('api:v3:user_detail', args=(obj.pk,))
         else:
             try:
                 return obj.get_absolute_url()
@@ -81,7 +81,7 @@ class BaseSerializer(serializers.ModelSerializer):
     def get_related(self, obj):
         res = OrderedDict()
         if getattr(obj, 'owner', None):
-            res['owner'] = reverse('api:v1:user_detail', args=(obj.owner.pk,))
+            res['owner'] = reverse('api:v3:user_detail', args=(obj.owner.pk,))
         return res
 
     def get_summary_fields(self, obj):
