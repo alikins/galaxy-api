@@ -32,9 +32,6 @@ from django.db.models.fields.related import ForeignObjectRel
 from rest_framework.exceptions import ParseError
 from rest_framework.filters import BaseFilterBackend
 
-# Galaxy
-from galaxy_api.models import UserAlias
-
 GalaxyUser = get_user_model()
 
 
@@ -141,36 +138,6 @@ class _FieldLookupBackend(BaseFilterBackend):
         return value
 
     def filter_queryset(self, request, queryset, view):
-        # this is a hack to allow aliases on user names when
-        # filtering on owner__username. QUERY_PARAMS is supposed
-        # to be an alias for GET, however they appear to be distinct
-        # objects internally, and since there is no setter for the
-        # QUERY_PARAMS version we use GET instead directly
-        if 'owner__username' in request.GET:
-            try:
-                # try and lookup the user first, to see if it exists
-                GalaxyUser.objects.get(username=request.GET['owner__username'])
-            except ObjectDoesNotExist:
-                # if not, check to see if there's an alias for it
-                try:
-                    alias_obj = UserAlias.objects.get(
-                        alias_name=request.GET['owner__username'])
-                    # and override that query parameter with
-                    # the actual username
-                    qp = request.GET.copy()
-                    qp['owner__username'] = alias_obj.alias_of.username
-                    # Again, we use GET here because QUERY_PARAMS has no
-                    # setter function, so trying to do so here results in
-                    # an error. Furthermore, even when GET is set to the
-                    # new QueryDict object, QUERY_PARAMS remains unchanged,
-                    # meaning we have to use GET everywhere to ensure the
-                    # same object is being used with the overridden param.
-                    # This may be fixed in later DRF versions?
-                    request.GET = qp
-                except Exception:
-                    # if not, we don't care, the later filtering
-                    # means an empty set will be returned for this
-                    pass
 
         try:
             # Apply filters specified via GET/QUERY_PARAMS. Each
