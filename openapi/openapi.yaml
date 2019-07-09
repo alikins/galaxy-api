@@ -1619,6 +1619,7 @@ components:
     PageCount:
       description: 'The number of items in this Page'
       type: integer
+      example: 10
 
     PageInfo:
       description: 'Pagination info'
@@ -1634,28 +1635,29 @@ components:
 
     PageLinks:
       type: object
+      title: 'PageLinks'
       properties:
         first:
           type: string
           description: 'Link to first page'
           format: uri
-          example: /api?offset=0&limit=1
+          example: /examples/?offset=0&limit=1
         last:
           type: string
           description: 'Link to last page'
           format: uri
-          example: /api?offset=7&limit=1
+          example: /examples/?offset=7&limit=1
         next:
           type: string
           description: 'Link to next page'
           format: uri
-          example: /api?offset=5&limit=1
+          example: /examples/?offset=5&limit=1
           nullable: true
         previous:
           type: string
           description: 'Link to next page'
           format: uri
-          example: /api?offset=3&limit=1
+          example: /examples/?offset=3&limit=1
           nullable: true
       required:
         - first
@@ -1664,63 +1666,13 @@ components:
         - previous
 
     PageMeta:
+      title: 'PageMeta'
       type: object
       properties:
         count:
           $ref: '#/components/schemas/PageCount'
-        filter:
-          type: string
-          description: Full text filter
-          example: CVE-2016-0800
-          nullable: true
-        limit:
-          type: integer
-          description: Maximum number of paginated results.
-          example: 25
-        offset:
-          type: integer
-          description: First record of paginated response.
-          example: 0
-        page:
-          type: integer
-          description: Page number of paginated response.
-          example: 1
-        page_size:
-          type: integer
-          description: Number of records per page of paginated response.
-          example: 25
-        pages:
-          type: integer
-          description: Total number of pages of paginated response.
-          example: 1
-        sort:
-          type: string
-          description: Sorting filter.
-          example: -inventory_id
-          nullable: true
-        total_items:
-          type: integer
-          description: Total number of records.
-          example: 37
       required:
         - count
-        - filter
-        - limit
-        - offset
-        - page
-        - page_size
-        - pages
-        - sort
-        - total_items
-
-    PageNext:
-      type: string
-      format: uri
-
-    PagePrevious:
-      description: 'The previous page'
-      type: string
-      format: uri
 
     ProviderNamespace:
       description: 'A Provider Namespace'
@@ -2425,15 +2377,6 @@ components:
       schema:
         type: string
 
-    Page:
-      description: 'Page number within the paginated result set.'
-      in: query
-      name: page
-      required: false
-      schema:
-        type: integer
-        default: 1
-
     PageLimit:
       description: 'Number of results to return per page.'
       in: query
@@ -2452,6 +2395,7 @@ components:
       required: false
       schema:
         type: integer
+        default: 1
 
     ProviderNamespaceId:
       description: 'The Provider Namespace id'
