@@ -127,8 +127,8 @@ paths:
         - v2
       parameters:
         - $ref: '#/components/parameters/CollectionId'
-        - $ref: '#/components/parameters/Page'
-        - $ref: '#/components/parameters/PageSize'
+        - $ref: '#/components/parameters/PageOffset'
+        - $ref: '#/components/parameters/PageLimit'
         - $ref: '#/components/parameters/Search'
       responses:
         '200':
@@ -165,8 +165,8 @@ paths:
         - v2
         - client_mazer
       parameters:
-        - $ref: '#/components/parameters/Page'
-        - $ref: '#/components/parameters/PageSize'
+        - $ref: '#/components/parameters/PageOffset'
+        - $ref: '#/components/parameters/PageLimit'
         - $ref: '#/components/parameters/Search'
       responses:
         '200':
@@ -394,8 +394,8 @@ paths:
         - namespaces
         - v1
       parameters:
-        - $ref: '#/components/parameters/Page'
-        - $ref: '#/components/parameters/PageSize'
+        - $ref: '#/components/parameters/PageOffset'
+        - $ref: '#/components/parameters/PageLimit'
         - $ref: '#/components/parameters/Search'
       responses:
         '200':
@@ -468,8 +468,8 @@ paths:
       summary: 'Get Provider Namespaces'
       operationId: GetProviderNamespaces
       parameters:
-        - $ref: '#/components/parameters/Page'
-        - $ref: '#/components/parameters/PageSize'
+        - $ref: '#/components/parameters/PageOffset'
+        - $ref: '#/components/parameters/PageLimit'
         - $ref: '#/components/parameters/Search'
       responses:
         '200':
@@ -552,8 +552,8 @@ paths:
         Wrapper for https://pulp-ansible.readthedocs.io/en/latest/restapi.html#operation/content_ansible_collections_list
       operationId: GetPulpContentAnsibleCollections
       parameters:
-        - $ref: '#/components/parameters/Page'
-        - $ref: '#/components/parameters/PageSize'
+        - $ref: '#/components/parameters/PageOffset'
+        - $ref: '#/components/parameters/PageLimit'
         - $ref: '#/components/parameters/Search'
         - name: name
           in: query
@@ -631,8 +631,8 @@ paths:
       description: 'Wrapper for Pulp API GET /pulp/api/v3/tasks/'
       operationId: GetPulpTasks
       parameters:
-        - $ref: '#/components/parameters/Page'
-        - $ref: '#/components/parameters/PageSize'
+        - $ref: '#/components/parameters/PageOffset'
+        - $ref: '#/components/parameters/PageLimit'
         - $ref: '#/components/parameters/Search'
         - name: ordering
           in: query
@@ -848,8 +848,8 @@ paths:
         - search
         - v1
       parameters:
-        - $ref: '#/components/parameters/Page'
-        - $ref: '#/components/parameters/PageSize'
+        - $ref: '#/components/parameters/PageOffset'
+        - $ref: '#/components/parameters/PageLimit'
       responses:
         '200':
           $ref: '#/components/responses/Contents'
@@ -862,8 +862,8 @@ paths:
         - search
         - v1
       parameters:
-        - $ref: '#/components/parameters/Page'
-        - $ref: '#/components/parameters/PageSize'
+        - $ref: '#/components/parameters/PageOffset'
+        - $ref: '#/components/parameters/PageLimit'
       responses:
         '200':
           $ref: '#/components/responses/Roles'
@@ -876,8 +876,8 @@ paths:
         - search
         - v1
       parameters:
-        - $ref: '#/components/parameters/Page'
-        - $ref: '#/components/parameters/PageSize'
+        - $ref: '#/components/parameters/PageOffset'
+        - $ref: '#/components/parameters/PageLimit'
         # TODO: search param tags
       responses:
         '200':
@@ -891,8 +891,8 @@ paths:
         - tags
         - v1
       parameters:
-        - $ref: '#/components/parameters/Page'
-        - $ref: '#/components/parameters/PageSize'
+        - $ref: '#/components/parameters/PageOffset'
+        - $ref: '#/components/parameters/PageLimit'
         - $ref: '#/components/parameters/Search'
       responses:
         '200':
@@ -981,8 +981,8 @@ paths:
         - users
         - v1
       parameters:
-        - $ref: '#/components/parameters/Page'
-        - $ref: '#/components/parameters/PageSize'
+        - $ref: '#/components/parameters/PageOffset'
+        - $ref: '#/components/parameters/PageLimit'
         - $ref: '#/components/parameters/Search'
       responses:
         '200':
@@ -1287,14 +1287,14 @@ components:
         - $ref: '#/components/schemas/PageInfo'
         - type: object
           properties:
-            results:
+            data:
               description: 'List of CollectionVersionArtifacts for this Page'
               title: 'CollectionVersionArtifacts'
               type: array
               items:
                 $ref: '#/components/schemas/CollectionVersionArtifactDetail'
           required:
-            - results
+            - data
 
     CollectionVersionDependencies:
       description: 'A map of collection namespace.name to a semantic version'
@@ -1408,14 +1408,14 @@ components:
         - $ref: '#/components/schemas/PageInfo'
         - type: object
           properties:
-            results:
+            data:
               description: 'List of CollectionVersionLinks for this Page'
               title: 'CollectionVersionLinks'
               type: array
               items:
                 $ref: '#/components/schemas/CollectionVersionLink'
           required:
-            - results
+            - data
 
     ConflictError:
       title: 'ConflictError'
@@ -1486,14 +1486,14 @@ components:
         - $ref: '#/components/schemas/PageInfo'
         - type: object
           properties:
-            results:
+            data:
               description: 'List of Contents for this Page'
               title: 'Contents'
               type: array
               items:
                 $ref: '#/components/schemas/Content'
           required:
-            - results
+            - data
 
     Error:
       type: object
@@ -1554,6 +1554,7 @@ components:
       pattern: '^[a-z0-9]+$'
       example: 'development'
 
+
     Namespace:
       title: 'Namespace'
       description: 'A Namespace'
@@ -1598,14 +1599,14 @@ components:
         - $ref: '#/components/schemas/PageInfo'
         - type: object
           properties:
-            results:
+            data:
               description: 'List of Namespaces for this Page'
               title: 'Namespaces'
               type: array
               items:
                 $ref: '#/components/schemas/Namespace'
           required:
-            - results
+            - data
 
     RepositoryNameError:
       allOf:
@@ -1616,22 +1617,101 @@ components:
         - $ref: '#/components/schemas/JSONError'
 
     PageCount:
+      description: 'The number of items in this Page'
       type: integer
 
     PageInfo:
       description: 'Pagination info'
       title: 'Page Info'
       properties:
+        meta:
+          $ref: '#/components/schemas/PageMeta'
+        links:
+          $ref: '#/components/schemas/PageLinks'
+      required:
+        - meta
+        - links
+
+    PageLinks:
+      type: object
+      properties:
+        first:
+          type: string
+          description: 'Link to first page'
+          format: uri
+          example: /api?offset=0&limit=1
+        last:
+          type: string
+          description: 'Link to last page'
+          format: uri
+          example: /api?offset=7&limit=1
+        next:
+          type: string
+          description: 'Link to next page'
+          format: uri
+          example: /api?offset=5&limit=1
+          nullable: true
+        previous:
+          type: string
+          description: 'Link to next page'
+          format: uri
+          example: /api?offset=3&limit=1
+          nullable: true
+      required:
+        - first
+        - last
+        - next
+        - previous
+
+    PageMeta:
+      type: object
+      properties:
         count:
           $ref: '#/components/schemas/PageCount'
-        next:
-          $ref: '#/components/schemas/PageNext'
-        previous:
-          $ref: '#/components/schemas/PagePrevious'
-        result_type:
+        filter:
           type: string
-          description: 'The type of object in the results list'
+          description: Full text filter
+          example: CVE-2016-0800
           nullable: true
+        limit:
+          type: integer
+          description: Maximum number of paginated results.
+          example: 25
+        offset:
+          type: integer
+          description: First record of paginated response.
+          example: 0
+        page:
+          type: integer
+          description: Page number of paginated response.
+          example: 1
+        page_size:
+          type: integer
+          description: Number of records per page of paginated response.
+          example: 25
+        pages:
+          type: integer
+          description: Total number of pages of paginated response.
+          example: 1
+        sort:
+          type: string
+          description: Sorting filter.
+          example: -inventory_id
+          nullable: true
+        total_items:
+          type: integer
+          description: Total number of records.
+          example: 37
+      required:
+        - count
+        - filter
+        - limit
+        - offset
+        - page
+        - page_size
+        - pages
+        - sort
+        - total_items
 
     PageNext:
       type: string
@@ -1687,13 +1767,13 @@ components:
         - $ref: '#/components/schemas/PageInfo'
         - type: object
           properties:
-            results:
+            data:
               title: 'ProviderNamespaces'
               type: array
               items:
                 $ref: '#/components/schemas/ProviderNamespace'
           required:
-            - results
+            - data
 
     PulpBase:
       description: 'A base class for Pulp objects'
@@ -1753,13 +1833,13 @@ components:
         - $ref: '#/components/schemas/PageInfo'
         - type: object
           properties:
-            results:
+            data:
               title: 'PulpCollections'
               type: array
               items:
                 $ref: '#/components/schemas/PulpCollection'
           required:
-            - results
+            - data
 
     PulpProgressReport:
       type: object
@@ -1902,12 +1982,14 @@ components:
         - $ref: '#/components/schemas/PageInfo'
         - type: object
           properties:
-            results:
+            data:
               description: 'List of Pulp Tasks for this Page'
               title: 'Pulp Tasks'
               type: array
               items:
                 $ref: '#/components/schemas/PulpTask'
+          required:
+            - data
 
     Role:
       description: 'An Ansible Role'
@@ -1970,12 +2052,14 @@ components:
         - $ref: '#/components/schemas/PageInfo'
         - type: object
           properties:
-            results:
+            data:
               description: 'List of Roles for this Page'
               title: 'Roles'
               type: array
               items:
                 $ref: '#/components/schemas/Role'
+          required:
+            - data
 
     SemanticVersion:
       description: 'A version string in the Semantic Version form'
@@ -2006,14 +2090,14 @@ components:
         - $ref: '#/components/schemas/PageInfo'
         - type: object
           properties:
-            results:
+            data:
               description: 'List of Tags for this Page'
               title: 'Tags'
               type: array
               items:
                 $ref: '#/components/schemas/Tag'
           required:
-            - results
+            - data
 
     User:
       description: 'A User'
@@ -2050,14 +2134,14 @@ components:
         - $ref: '#/components/schemas/PageInfo'
         - type: object
           properties:
-            results:
+            data:
               description: 'List of Users for this Page'
               title: 'Users'
               type: array
               items:
                 $ref: '#/components/schemas/User'
           required:
-            - results
+            - data
 
     UserUpdate:
       description: 'User data to update'
@@ -2350,16 +2434,24 @@ components:
         type: integer
         default: 1
 
-    PageSize:
+    PageLimit:
       description: 'Number of results to return per page.'
       in: query
-      name: page_size
+      name: limit
       required: false
       schema:
         type: integer
         default: 10
         minimum: 0
         maximum: 1000
+
+    PageOffset:
+      description: 'Page offset number within the paginated result set'
+      in: query
+      name: offset
+      required: false
+      schema:
+        type: integer
 
     ProviderNamespaceId:
       description: 'The Provider Namespace id'
