@@ -618,6 +618,7 @@ paths:
         - $ref: '#/components/parameters/Page'
         - $ref: '#/components/parameters/PageSize'
         - $ref: '#/components/parameters/Search'
+        - $ref: '#/components/parameters/TaskType'
         - name: ordering
           in: query
           description: Which field to use when ordering the results.
@@ -1124,6 +1125,12 @@ components:
       title: 'CollectionImportTask'
       type: object
       properties:
+        _href:
+          description: 'URL for this CollectionImportTask'
+          type: string
+          format: uri
+        task_type:
+          $ref: '#/components/schemas/TaskType'
         name:
           maxLength: 64
           type: string
@@ -1755,6 +1762,8 @@ components:
               minLength: 1
               type: string
               description: The name of task.
+            task_type:
+              $ref: '#/components/schemas/TaskType'
             started_at:
               title: Started at
               type: string
@@ -1932,6 +1941,11 @@ components:
       title: 'Task'
       type: object
       properties:
+        _href:
+          description: 'URL for this Task details'
+          type: string
+          format: uri
+          example: '/collection-imports/37'
         error:
           type: string
           readOnly: true
@@ -1943,13 +1957,11 @@ components:
           maxLength: 64
           type: string
           readOnly: true
-        # TODO/FIXME: may make more sense to have a url resource for each specific task type
-        #             possible '/tasks/type/collection_import/{task_id}' or '/tasks/type/someothertype/'
+        # TODO: possibly not needed if requiring clients to follow the _href above for details is OK
         detail:
           description: "Details specific to the task type"
           oneOf:
             - $ref: '#/components/schemas/CollectionImportTask'
-            - $ref: '#/components/schemas/TaskDetail'
             - $ref: '#/components/schemas/PulpTask'
         started_at:
           type: string
@@ -1958,12 +1970,15 @@ components:
         state:
           type: string
           readOnly: true
+        task_type:
+          $ref: '#/components/schemas/TaskType'
       required:
         - error
         - finished_at
         - name
         - started_at
         - state
+        - task_type
 
     TaskCancel:
       required:
@@ -1987,16 +2002,6 @@ components:
       required:
         - _href
 
-    TaskDetail:
-      title: 'TaskDetail'
-      description: 'Generic Task Details'
-      type: object
-      properties:
-        messages:
-          type: array
-          items:
-            type: string
-
     TasksPage:
       description: "A page of a list of Tasks"
       title: 'Tasks Page'
@@ -2013,6 +2018,12 @@ components:
           required:
             - results
 
+    TaskType:
+      description: 'The type of Task'
+      type: string
+      enum:
+        - 'collection-import'
+        - 'pulp-task'
 
     User:
       description: 'A User'
@@ -2392,6 +2403,14 @@ components:
       required: true
       schema:
         type: string
+
+    TaskType:
+      description: 'Task type'
+      in: query
+      name: task_type
+      required: false
+      schema:
+        $ref: '#/components/schemas/TaskType'
 
     UserId:
       description: 'User id'
