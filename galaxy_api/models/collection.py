@@ -74,10 +74,6 @@ class Collection(mixins.TimestampsMixin, models.Model):
     def __str__(self):
         return '{}.{}'.format(self.namespace, self.name)
 
-    def inc_download_count(self):
-        Collection.objects.filter(pk=self.pk).update(
-            download_count=models.F('download_count') + 1)
-
 
 class CollectionVersion(mixins.TimestampsMixin):
     """
