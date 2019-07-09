@@ -47,6 +47,6 @@ __all__ = (
 class TestView(APIView):
     def get(self, request):
         return Response({
-            '_href': reverse('api:v1:test'),
+            '_href': reverse('api:v3:test'),
             'status': 'OK',
         })
