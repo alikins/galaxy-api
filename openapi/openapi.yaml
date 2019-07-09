@@ -80,8 +80,10 @@ paths:
       security:
         - UserTokenApiKey: []
         - UserBasicAuth: []
+        - UserApiKeyAuth: []
         - AdminTokenApiKey: []
         - AdminBasicAuth: []
+        - ApiKeyAuthInternal: []
       parameters: []
       requestBody:
         $ref: '#/components/requestBodies/CollectionVersionArtifactBody'
@@ -290,8 +292,10 @@ paths:
       security:
         - UserTokenApiKey: []
         - UserBasicAuth: []
+        - UserApiKeyAuth: []
         - AdminTokenApiKey: []
         - AdminBasicAuth: []
+        - ApiKeyAuthInternal: []
       parameters: []
       requestBody:
         $ref: '#/components/requestBodies/CollectionVersionArtifactBody'
@@ -371,6 +375,7 @@ paths:
       security:
         - UserTokenApiKey: []
         - UserBasicAuth: []
+        - UserApiKeyAuth: []
       parameters:
         - $ref: '#/components/parameters/Search'
       responses:
@@ -403,6 +408,7 @@ paths:
       security:
         - AdminTokenApiKey: []
         - AdminBasicAuth: []
+        - ApiKeyAuthInternal: []
       requestBody:
         $ref: '#/components/requestBodies/Namespace'
       responses:
@@ -432,6 +438,7 @@ paths:
       security:
         - AdminTokenApiKey: []
         - AdminBasicAuth: []
+        - ApiKeyAuthInternal: []
       requestBody:
         $ref: '#/components/requestBodies/Namespace'
       responses:
@@ -448,6 +455,7 @@ paths:
       security:
         - AdminTokenApiKey: []
         - AdminBasicAuth: []
+        - ApiKeyAuthInternal: []
       responses:
         '204':
           $ref: '#/components/responses/DeleteSuccessful'
@@ -476,6 +484,7 @@ paths:
       security:
         - AdminTokenApiKey: []
         - AdminBasicAuth: []
+        - ApiKeyAuthInternal: []
       requestBody:
         $ref: '#/components/requestBodies/ProviderNamespace'
       responses:
@@ -506,6 +515,7 @@ paths:
       security:
         - AdminTokenApiKey: []
         - AdminBasicAuth: []
+        - ApiKeyAuthInternal: []
       requestBody:
         $ref: '#/components/requestBodies/ProviderNamespace'
       responses:
@@ -523,6 +533,7 @@ paths:
       security:
         - AdminTokenApiKey: []
         - AdminBasicAuth: []
+        - ApiKeyAuthInternal: []
       responses:
         '204':
           $ref: '#/components/responses/DeleteSuccessful'
@@ -591,8 +602,10 @@ paths:
       security:
         - UserTokenApiKey: []
         - UserBasicAuth: []
+        - UserApiKeyAuth: []
         - AdminTokenApiKey: []
         - AdminBasicAuth: []
+        - ApiKeyAuthInternal: []
       requestBody:
         content:
           application/json:
@@ -767,8 +780,10 @@ paths:
       security:
         - UserTokenApiKey: []
         - UserBasicAuth: []
+        - UserApiKeyAuth: []
         - AdminTokenApiKey: []
         - AdminBasicAuth: []
+        - ApiKeyAuthInternal: []
       responses:
         204:
           description: A DELETE operation was successful
@@ -790,8 +805,10 @@ paths:
       security:
         - UserTokenApiKey: []
         - UserBasicAuth: []
+        - UserApiKeyAuth: []
         - AdminTokenApiKey: []
         - AdminBasicAuth: []
+        - ApiKeyAuthInternal: []
       requestBody:
         content:
           application/json:
@@ -890,8 +907,10 @@ paths:
       security:
         - UserTokenApiKey: []
         - UserBasicAuth: []
+        - UserApiKeyAuth: []
         - AdminTokenApiKey: []
         - AdminBasicAuth: []
+        - ApiKeyAuthInternal: []
       requestBody:
         content:
           application/json:
@@ -936,8 +955,10 @@ paths:
       security:
         - UserTokenApiKey: []
         - UserBasicAuth: []
+        - UserApiKeyAuth: []
         - AdminTokenApiKey: []
         - AdminBasicAuth: []
+        - ApiKeyAuthInternal: []
       requestBody:
         description: 'An Tag to update to'
         content:
@@ -997,8 +1018,10 @@ paths:
       security:
         - UserTokenApiKey: []
         - UserBasicAuth: []
+        - UserApiKeyAuth: []
         - AdminTokenApiKey: []
         - AdminBasicAuth: []
+        - ApiKeyAuthInternal: []
       requestBody:
         description: 'An User to update to'
         content:
@@ -2385,3 +2408,16 @@ components:
       type: apiKey
       in: header
       name: Authorization
+    # https://raw.githubusercontent.com/RedHatInsights/vulnerability-engine/master/manager.spec.yaml
+    UserApiKeyAuth:
+      type: apiKey
+      in: header
+      name: x-rh-identity
+      description: Identity header provided by 3scale (for non-prod testing only).
+      x-apikeyInfoFunc: manager.base.auth
+    ApiKeyAuthInternal:
+      type: apiKey
+      in: header
+      name: x-rh-identity
+      description: Identity header provided by 3scale (for non-prod testing only).
+      x-apikeyInfoFunc: manager.base.auth_internal
