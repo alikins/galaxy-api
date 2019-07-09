@@ -65,7 +65,7 @@ class ProviderNamespaceSerializer(base_serializer.BaseSerializer):
         #          args=(instance.provider.pk,))
         if instance.namespace:
             result['namespace'] = reverse(
-                'api:v1:namespace_detail', args=(instance.namespace.pk,))
+                'api:v3:namespace_detail', args=(instance.namespace.pk,))
         # result['repositories'] = reverse(
         #     'api:v1:provider_namespace_repositories_list',
         #     args=(instance.pk,))

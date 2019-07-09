@@ -34,7 +34,7 @@ class Tag(CommonModel):
         return self.name
 
     def get_absolute_url(self):
-        return reverse('api:v1:tag_detail', args=(self.pk,))
+        return reverse('api:v3:tag_detail', args=(self.pk,))
 
     def get_num_roles(self):
         return self.roles.filter(active=True, is_valid=True).count()

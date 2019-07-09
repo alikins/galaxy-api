@@ -75,7 +75,7 @@ class Namespace(CommonModel):
     is_vendor = models.BooleanField(default=False)
 
     def get_absolute_url(self):
-        return reverse('api:v1:namespace_detail', args=(self.pk,))
+        return reverse('api:v3:namespace_detail', args=(self.pk,))
 
     @property
     def content_counts(self):

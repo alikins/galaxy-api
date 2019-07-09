@@ -7,7 +7,7 @@ from django.contrib.auth.models import AnonymousUser
 from django.contrib.auth import get_user_model
 
 from galaxy_api.api import base as base_views
-from galaxy_api.api.v1 import serializers
+from galaxy_api.api.v3 import serializers
 
 
 __all__ = [
