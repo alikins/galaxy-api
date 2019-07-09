@@ -22,9 +22,9 @@ tags:
     externalDocs:
       url: https://galaxy.ansible.com/docs/contributing/creating_collections.html
       description: 'Creating Collections docs at galaxy.ansible.com'
-  - name: 'collection-imports'
+  - name: 'collection_imports'
     description: 'Importing Collections'
-  - name: 'collection-versions'
+  - name: 'collection_versions'
     description: 'Versions of Collections'
   - name: 'download'
     description: 'Downloading artifacts'
@@ -205,12 +205,12 @@ paths:
           $ref: '#/components/responses/CollectionVersionArtifact'
 
 
-  '/collection-imports/{id}/':
+  '/collection_imports/{id}/':
     get:
       summary: 'Get a Collection-Import (import task) by id'
       operationId: GetCollectionImportById
       tags:
-        - collection-imports
+        - collection_imports
         - v2
       parameters:
         - description: 'A unique integer value identifying this collection import.'
@@ -228,12 +228,12 @@ paths:
               schema:
                 $ref: '#/components/schemas/CollectionImportResult'
 
-  '/collection-versions/{id}/artifact/':
+  '/collection_versions/{id}/artifact/':
     get:
       summary: 'Get a CollectionVersionArtifact'
       operationId: GetCollectionVersionArtifactById
       tags:
-        - collection-versions
+        - collection_versions
         - v2
       parameters:
         - description: 'The CollectionVersion id'
@@ -247,12 +247,12 @@ paths:
         '200':
           $ref: '#/components/responses/CollectionVersionArtifact'
 
-  '/collection-versions/{version_pk}/':
+  '/collection_versions/{version_pk}/':
     get:
       summary: 'Get a CollectionVersion by version_pk'
       operationId: GetCollectionVersionByVersionPk
       tags:
-        - collection-versions
+        - collection_versions
         - v2
       parameters:
         - description: 'The CollectionVersion version_pk'
@@ -265,12 +265,13 @@ paths:
         '200':
           $ref: '#/components/responses/CollectionVersion'
 
-  '/collection-version-artifacts/':
+  # "flat" resources ala https://platform-docs.cloud.paas.upshift.redhat.com/rest/urls.html#url-path-structure
+  '/collection_version_artifacts/':
     get:
       summary: 'Get a list of Collection Version artifacts'
       operationId: GetCollectionVersionArtifacts
       tags:
-        - collection-version-artifacts
+        - collection_version_artifact
         - v3
       responses:
         '200':
@@ -285,7 +286,7 @@ paths:
         To create a CollectionVersionArtifact and a Collection, use 'POST /collections'
       tags:
         - v3
-        - collection-version-artifacts
+        - collection_version_artifact
       security:
         - UserTokenApiKey: []
         - UserBasicAuth: []
@@ -308,40 +309,40 @@ paths:
               schema:
                 $ref: '#/components/schemas/Error'
 
-  '/collection-version-artifacts/{artifact_id}':
+  '/collection_version_artifacts/{artifact_id}':
     get:
       summary: 'Get a Collection Version artifacts'
       operationId: GetCollectionVersionArtifactByArtifactId
       parameters:
         - $ref: '#/components/parameters/CollectionVersionArtifactId'
       tags:
-        - collection-version-artifacts
+        - collection_version_artifact
         - v3
       responses:
         '200':
           $ref: '#/components/responses/CollectionVersionArtifact'
 
-  '/collection-version-artifacts/{artifact_id}/download':
+  '/collection_version_artifacts/{artifact_id}/download':
     get:
       summary: 'Download a Collection Version artifact'
       operationId: DownloadCollectionVersionArtifact
       parameters:
         - $ref: '#/components/parameters/CollectionVersionArtifactId'
       tags:
-        - collection-version-artifacts
+        - collection_version_artifact
         - v3
       responses:
         '200':
           $ref: '#/components/responses/CollectionVersionArtifactDownload'
 
-  '/collection-version-artifacts/filenames/{filename}':
+  '/collection_version_artifacts/filenames/{filename}':
     get:
       summary: 'Get Collection Version Artifact info by filename'
       operationId: GetCollectionVersionArtifactByFilename
       parameters:
         - $ref: '#/components/parameters/CollectionVersionArtifactFilename'
       tags:
-        - collection-version-artifacts
+        - collection_version_artifact
         - v3
       responses:
         '200':
@@ -2090,7 +2091,7 @@ components:
             id: '$response.body#/id'
           description: >
             The `id` value returned in the response can be used as
-            the `id` parameter in `{method} GET /collection-versions/{id}`.
+            the `id` parameter in `{method} GET /collection_versions/{id}`.
         GetCollectionById:
           operationId: GetCollectionById
           parameters:
