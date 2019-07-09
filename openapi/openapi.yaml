@@ -65,7 +65,7 @@ paths:
         '200':
           description: 'A map of endpoints in the API'
           content:
-            application/json:
+            application/vnd.api+json:
               schema:
                 $ref: '#/components/schemas/APIEndpoints'
 
@@ -97,7 +97,7 @@ paths:
         default:
           description: 'Unexpected Error'
           content:
-            application/json:
+            application/vnd.api+json:
               schema:
                 $ref: '#/components/schemas/Error'
 
@@ -114,7 +114,7 @@ paths:
         '200':
           description: 'A Collection'
           content:
-            application/json:
+            application/vnd.api+json:
               schema:
                 $ref: '#/components/schemas/Collection'
 
@@ -149,7 +149,7 @@ paths:
         '200':
           description: 'A Collection'
           content:
-            application/json:
+            application/vnd.api+json:
               schema:
                 $ref: '#/components/schemas/Collection'
 
@@ -226,7 +226,7 @@ paths:
         '200':
           description: 'The result of a collection import'
           content:
-            application/json:
+            application/vnd.api+json:
               schema:
                 $ref: '#/components/schemas/CollectionImportResult'
 
@@ -309,7 +309,7 @@ paths:
         default:
           description: 'Unexpected Error'
           content:
-            application/json:
+            application/vnd.api+json:
               schema:
                 $ref: '#/components/schemas/Error'
 
@@ -382,7 +382,7 @@ paths:
         '200':
           description: 'Response with the current User'
           content:
-            application/json:
+            application/vnd.api+json:
               schema:
                 $ref: '#/components/schemas/User'
 
@@ -608,7 +608,7 @@ paths:
         - ApiKeyAuthInternal: []
       requestBody:
         content:
-          application/json:
+          application/vnd.api+json:
             schema:
               $ref: '#/components/schemas/PulpCollection'
         required: true
@@ -616,7 +616,7 @@ paths:
         201:
           description: ""
           content:
-            application/json:
+            application/vnd.api+json:
               schema:
                 $ref: '#/components/schemas/PulpCollection'
 
@@ -760,7 +760,7 @@ paths:
         '200':
           description: ''
           content:
-            application/json:
+            application/vnd.api+json:
               schema:
                 $ref: '#/components/schemas/PulpTask'
     delete:
@@ -811,7 +811,7 @@ paths:
         - ApiKeyAuthInternal: []
       requestBody:
         content:
-          application/json:
+          application/vnd.api+json:
             schema:
               $ref: '#/components/schemas/PulpTaskCancel'
         required: true
@@ -819,7 +819,7 @@ paths:
         '200':
           description: ''
           content:
-            application/json:
+            application/vnd.api+json:
               schema:
                 $ref: '#/components/schemas/PulpTask'
 
@@ -836,7 +836,7 @@ paths:
         '200':
           description: 'A map of endpoints in the search API'
           content:
-            application/json:
+            application/vnd.api+json:
               schema:
                 $ref: '#/components/schemas/APIEndpoints'
 
@@ -913,7 +913,7 @@ paths:
         - ApiKeyAuthInternal: []
       requestBody:
         content:
-          application/json:
+          application/vnd.api+json:
             schema:
               $ref: '#/components/schemas/Tag'
         required: true
@@ -921,7 +921,7 @@ paths:
         201:
           description: "Tag creation was succesful"
           content:
-            application/json:
+            application/vnd.api+json:
               schema:
                 $ref: '#/components/schemas/Tag'
 
@@ -939,7 +939,7 @@ paths:
         '200':
           description: 'A Galaxy Tag'
           content:
-            application/json:
+            application/vnd.api+json:
               schema:
                 $ref: '#/components/schemas/Tag'
 
@@ -962,14 +962,14 @@ paths:
       requestBody:
         description: 'An Tag to update to'
         content:
-          application/json:
+          application/vnd.api+json:
             schema:
               $ref: '#/components/schemas/Tag'
       responses:
         '200':
           description: 'The Tag updated by the PATCH'
           content:
-            application/json:
+            application/vnd.api+json:
               schema:
                 $ref: '#/components/schemas/Tag'
 
@@ -1002,7 +1002,7 @@ paths:
         '200':
           description: 'Response with a User'
           content:
-            application/json:
+            application/vnd.api+json:
               schema:
                 $ref: '#/components/schemas/User'
 
@@ -1025,14 +1025,14 @@ paths:
       requestBody:
         description: 'An User to update to'
         content:
-          application/json:
+          application/vnd.api+json:
             schema:
               $ref: '#/components/schemas/UserUpdate'
       responses:
         '200':
           description: 'The User updated by the PATCH'
           content:
-            application/json:
+            application/vnd.api+json:
               schema:
                 $ref: '#/components/schemas/User'
 
@@ -2090,21 +2090,21 @@ components:
     CollectionImportAccepted:
       description: 'Result of an accepted collection import. Includes the url of the import task'
       content:
-        application/json:
+        application/vnd.api+json:
           schema:
             $ref: '#/components/schemas/CollectionCreationResult'
 
     CollectionVersionLinks:
       description: 'Response containing a page of CollectionVersionLinks'
       content:
-        application/json:
+        application/vnd.api+json:
           schema:
             $ref: '#/components/schemas/CollectionVersionLinksPage'
 
     CollectionVersion:
       description: 'Response contain a CollectionVersion'
       content:
-        application/json:
+        application/vnd.api+json:
           schema:
             $ref: '#/components/schemas/CollectionVersion'
       links:
@@ -2130,14 +2130,14 @@ components:
     CollectionVersionArtifact:
       description: 'The collection version artifact details with download_url, sha256, and filename'
       content:
-        application/json:
+        application/vnd.api+json:
           schema:
             $ref: '#/components/schemas/CollectionVersionArtifactDetail'
 
     CollectionVersionArtifacts:
       description: 'Response containing a page of CollectionVersionArtifacts'
       content:
-        application/json:
+        application/vnd.api+json:
           schema:
             $ref: '#/components/schemas/CollectionVersionArtifactsPage'
 
@@ -2154,7 +2154,7 @@ components:
     Conflict:
       description: 'Conflict Error'
       content:
-        application/json:
+        application/vnd.api+json:
           schema:
             oneOf:
               - $ref: '#/components/schemas/ConflictError'
@@ -2169,7 +2169,7 @@ components:
     Contents:
       description: 'Response containing a Page of Content search results'
       content:
-        application/json:
+        application/vnd.api+json:
           schema:
             $ref: '#/components/schemas/ContentsPage'
 
@@ -2179,63 +2179,63 @@ components:
     Namespace:
       description: 'Result of creating a Namespace'
       content:
-        application/json:
+        application/vnd.api+json:
           schema:
             $ref: '#/components/schemas/Namespace'
 
     Namespaces:
       description: 'Response containing a Page of a list of Namespaces'
       content:
-        application/json:
+        application/vnd.api+json:
           schema:
             $ref: '#/components/schemas/NamespacesPage'
 
     NotFound:
       description: 'Not Found (404)'
       content:
-        application/json:
+        application/vnd.api+json:
           schema:
             $ref: '#/components/schemas/APIException'
 
     ProviderNamespace:
       description: 'Result of creating a Provider Namespace'
       content:
-        application/json:
+        application/vnd.api+json:
           schema:
             $ref: '#/components/schemas/ProviderNamespace'
 
     ProviderNamespaces:
       description: 'Response containing a Page of a list of Provider Namespaces'
       content:
-        application/json:
+        application/vnd.api+json:
           schema:
             $ref: '#/components/schemas/ProviderNamespacesPage'
 
     PulpContentAnsibleCollections:
       description: "Response from getting pulp collection content"
       content:
-        application/json:
+        application/vnd.api+json:
           schema:
             $ref: '#/components/schemas/PulpContentAnsibleCollectionsPage'
 
     PulpTasks:
       description: 'Response containing a Page of a list of Pulp Tasks'
       content:
-        application/json:
+        application/vnd.api+json:
           schema:
             $ref: '#/components/schemas/PulpTasksPage'
 
     Roles:
       description: 'Response containing a Page of a list of Roles'
       content:
-        application/json:
+        application/vnd.api+json:
           schema:
             $ref: '#/components/schemas/RolesPage'
 
     Tags:
       description: 'Response containing a Page of a list of Tags'
       content:
-        application/json:
+        application/vnd.api+json:
           schema:
             $ref: '#/components/schemas/TagsPage'
 
@@ -2246,14 +2246,14 @@ components:
           schema:
             type: string
       content:
-        application/json:
+        application/vnd.api+json:
           schema:
             $ref: '#/components/schemas/APIException'
 
     Users:
       description: 'Response containing a Page of a list of Users'
       content:
-        application/json:
+        application/vnd.api+json:
           schema:
             $ref: '#/components/schemas/UsersPage'
 
@@ -2379,14 +2379,14 @@ components:
     Namespace:
       description: "A Namespace body"
       content:
-        application/json:
+        application/vnd.api+json:
           schema:
             $ref: '#/components/schemas/Namespace'
 
     ProviderNamespace:
       description: "A Provider Namespace body"
       content:
-        application/json:
+        application/vnd.api+json:
           schema:
             $ref: '#/components/schemas/ProviderNamespace'
 
