@@ -452,6 +452,20 @@ paths:
         - namespaces
         - v3
 
+  '/namespaces/{ns_name}/imports/collections':
+    get:
+      summary: 'Get a list of the CollectionImports for a Namespace'
+      operationId: GetCollectionImportsByNamespace
+      parameters:
+        - $ref: '#/components/parameters/NamespaceName'
+      tags:
+        - namespaces
+        - v3
+        - collection-imports
+      responses:
+        '200':
+            $ref: '#/components/responses/CollectionImportTasks'
+
   '/provider_namespaces/':
     get:
       summary: 'Get Provider Namespaces'
@@ -1098,6 +1112,21 @@ components:
         - started_at
         - state
         - version
+
+    CollectionImportTasksPage:
+      description: 'A page of a list of CollectionImportTask'
+      allOf:
+        - $ref: '#/components/schemas/PageInfo'
+        - type: object
+          properties:
+            results:
+              description: 'List of CollectionImportTask for this Page'
+              title: 'CollectionImportTasks'
+              type: array
+              items:
+                $ref: '#/components/schemas/CollectionImportTask'
+          required:
+            - results
 
     CollectionName:
       description: 'The name of a Collection'
@@ -1862,6 +1891,13 @@ components:
         application/json:
           schema:
             $ref: '#/components/schemas/CollectionCreationResult'
+
+    CollectionImportTasks:
+      description: 'Response containing a page of CollectionImportTask'
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/CollectionImportTasksPage'
 
     CollectionVersionLinks:
       description: 'Response containing a page of CollectionVersionLinks'
