@@ -345,7 +345,7 @@ paths:
         '200':
           $ref: '#/components/responses/CollectionVersionArtifact'
 
-  '/download/{filename}':
+  '/download/collections/{filename}':
     get:
       summary: 'Download the collection artifact'
       operationId: DownloadArtifactByFilename
