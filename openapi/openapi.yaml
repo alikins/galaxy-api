@@ -409,12 +409,12 @@ paths:
         - namespaces
         - v3
 
-  '/namespaces/{id}/':
+  '/namespaces/{ns_name}/':
     get:
       summary: 'Get a Namespace'
       operationId: GetNamespace
       parameters:
-        - $ref: '#/components/parameters/NamespaceId'
+        - $ref: '#/components/parameters/NamespaceName'
       tags:
         - namespaces
         - v3
@@ -425,7 +425,7 @@ paths:
       summary: 'Update a Namespace'
       operationId: 'UpdateNamespace'
       parameters:
-        - $ref: '#/components/parameters/NamespaceId'
+        - $ref: '#/components/parameters/NamespaceName'
       security:
         - AdminTokenApiKey: []
         - AdminBasicAuth: []
@@ -441,7 +441,7 @@ paths:
       summary: 'Delete a Namespace'
       operationId: DeleteNamespace
       parameters:
-        - $ref: '#/components/parameters/NamespaceId'
+        - $ref: '#/components/parameters/NamespaceName'
       security:
         - AdminTokenApiKey: []
         - AdminBasicAuth: []
@@ -2061,10 +2061,10 @@ components:
       schema:
         type: string
 
-    NamespaceId:
-      description: 'The Namespace id'
+    NamespaceName:
+      description: 'The Namespace name'
       in: path
-      name: id
+      name: ns_name
       required: true
       schema:
         type: string
