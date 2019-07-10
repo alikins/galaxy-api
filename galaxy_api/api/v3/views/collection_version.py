@@ -23,7 +23,7 @@ import semantic_version
 
 from galaxy_api.api import base
 from galaxy_api.api import models
-from galaxy_api.api.v2 import serializers
+from galaxy_api.api.v3 import serializers
 # from galaxy_api.api.v1.pagination import DefaultPagination
 
 
@@ -35,16 +35,17 @@ __all__ = (
 
 
 class VersionDetailView(base.RetrieveUpdateDestroyAPIView):
-    model = models.CollectionVersion
+    # model = models.CollectionVersion
     permission_classes = (AllowAny, )
     serializer_class = serializers.VersionDetailSerializer
 
     def get(self, request, *args, **kwargs):
         """Return a collection version."""
-        version = self._get_version()
-        serializer = serializers.VersionDetailSerializer(
-            version, context={'request': self.request})
-        return Response(serializer.data)
+        return Response({'not_implemented': 'yet'})
+        # version = self._get_version()
+        # serializer = serializers.VersionDetailSerializer(
+        #     version, context={'request': self.request})
+        # return Response(serializer.data)
 
     def _get_version(self):
         """
@@ -53,24 +54,15 @@ class VersionDetailView(base.RetrieveUpdateDestroyAPIView):
         """
         version_pk = self.kwargs.get('version_pk', None)
         version_str = self.kwargs.get('version', None)
-        if version_pk:
-            return get_object_or_404(models.CollectionVersion, pk=version_pk)
-        else:
-            collection = self._get_collection()
-            return get_object_or_404(
-                models.CollectionVersion,
-                collection=collection,
-                version=version_str,
-            )
+
+        # TODO/FIXME(akl): implement with pulp_ansible client
 
     def _get_collection(self):
         """Get collection from namespace and name."""
         ns_name = self.kwargs.get('namespace', None)
         name = self.kwargs.get('name', None)
-        # ns = get_object_or_404(models.Namespace, name=ns_name)
-        return get_object_or_404(models.Collection,
-                                 namespace=ns_name,
-                                 name=name)
+        # raise 404Exception('Not implemented yet')
+        return Response({'not_implemented': 'yet'})
 
 
 class VersionListView(base.ListAPIView):
@@ -78,43 +70,21 @@ class VersionListView(base.ListAPIView):
     serializer_class = serializers.VersionSummarySerializer
     # pagination_class = DefaultPagination
 
-    def get_queryset(self):
-        """Return list of versions for a specific collection."""
-        if getattr(self, 'swagger_fake_view', False):
-            return []
-
-        collection = self._get_collection()
-        return models.CollectionVersion.objects.filter(collection=collection)
-
     def list(self, request, *args, **kwargs):
         """Override drf ListModelMixin to sort versions by semver."""
 
-        queryset = self.filter_queryset(self.get_queryset())
-
-        data = sorted(queryset,
-                      key=lambda x: semantic_version.Version(x.version),
-                      reverse=True)
-
-        page = self.paginate_queryset(data)
-        if page is not None:
-            serializer = self.get_serializer(page, many=True)
-            return self.get_paginated_response(serializer.data)
-
-        serializer = self.get_serializer(queryset, many=True)
-        return Response(serializer.data)
+        return Response({'not_implemented': 'yet'})
 
     def _get_collection(self):
         """Get collection from either id, or namespace and name."""
-        pk = self.kwargs.get('pk', None)
-        if pk:
-            return get_object_or_404(models.Collection, pk=pk)
+        # pk = self.kwargs.get('pk', None)
+        # if pk:
+        #    return get_object_or_404(models.Collection, pk=pk)
 
         ns_name = self.kwargs.get('namespace', None)
         name = self.kwargs.get('name', None)
-        # ns = get_object_or_404(models.Namespace, name=ns_name)
-        return get_object_or_404(models.Collection,
-                                 namespace=ns_name,
-                                 name=name)
+
+        return Response({'not_implemented': 'yet'})
 
 
 # TODO(cutwater): Whith #1858 this view is considered for removal.
@@ -124,14 +94,4 @@ class CollectionArtifactView(base.RetrieveAPIView):
 
     def get_object(self):
         pk = self.kwargs.get('pk')
-        if pk is not None:
-            version = get_object_or_404(models.CollectionVersion, pk=pk)
-        else:
-            version = get_object_or_404(
-                models.CollectionVersion,
-                collection__namespace__iexact=self.kwargs['namespace'],
-                collection__name__iexact=self.kwargs['name'],
-                version__exact=self.kwargs['version'],
-            )
-
-        return version.get_content_artifact()
+        return Response({'not_implemented': 'yet'})

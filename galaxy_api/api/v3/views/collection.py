@@ -1,11 +1,9 @@
-from django.shortcuts import get_object_or_404
+# from django.shortcuts import get_object_or_404
 
 from rest_framework.response import Response
-
-from galaxy_api.api import models
 from galaxy_api.api import exceptions
 from galaxy_api.api import base
-from galaxy_api.api.v2 import serializers
+from galaxy_api.api.v3 import serializers
 
 __all__ = (
     'CollectionView'
@@ -38,20 +36,11 @@ class ArtifactMaxSizeError(exceptions.ValidationError):
 
 
 class CollectionDetailView(base.RetrieveUpdateDestroyAPIView):
-    # permission_classes = (AllowAny, )
-    model = models.Collection
-    serializer_class = serializers.CollectionSerializer
 
-    def get_queryset(self):
-        qs = self.model.objects.all().distinct()
-        return qs
 
     def get(self, request, *args, **kwargs):
         """Return a collection."""
-        collection = self._get_collection()
-        serializer = serializers.CollectionSerializer(
-            collection, context={'request': request})
-        return Response(serializer.data)
+        return Response({'not_implemented': 'yet'})
 
     def _get_collection(self):
         """Get collection from either id, or namespace and name."""
@@ -59,21 +48,19 @@ class CollectionDetailView(base.RetrieveUpdateDestroyAPIView):
         ns_name = self.kwargs.get('namespace', None)
         name = self.kwargs.get('name', None)
 
-        if pk:
-            return get_object_or_404(models.Collection, pk=pk)
+        # if pk:
+        #    return get_object_or_404(models.Collection, pk=pk)
         # ns = get_object_or_404(models.Namespace, name=ns_name)
-        return get_object_or_404(models.Collection,
-                                 namespace=ns_name,
-                                 name=name)
+        
+        # TODO: replace with pulp_ansible REST client use
+        #return get_object_or_404(models.Collection,
+        #                         namespace=ns_name,
+        #                         name=name)
 
 
 class CollectionListView(base.ListCreateAPIView):
-    model = models.Collection
+    # model = models.Collection
     serializer_class = serializers.CollectionSerializer
-
-    def get_queryset(self):
-        qs = models.Collection.objects.all()
-        return qs
 
     # def post(self, request, *args, **kwargs):
     #     """Upload an Ansible Collection."""

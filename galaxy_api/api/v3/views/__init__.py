@@ -25,8 +25,22 @@ from .users import (
     ActiveUserView,
 )
 
+from .collection import (
+    CollectionDetailView,
+    CollectionListView,
+)
+
+from .collection_version import (
+    VersionDetailView,
+    VersionListView,
+)
+
 __all__ = (
-    'TestView',
+    'ActiveUserView',
+
+    'CollectionDetailView',
+    'CollectionListView',
+
     'NamespaceList',
     'NamespaceDetail',
     'NamespaceProviderNamespacesList',
@@ -38,9 +52,11 @@ __all__ = (
 
     'ProviderSourceList',
 
+    'TestView',
+
     'UserDetail',
     'UserList',
-    'ActiveUserView',
+
 )
 
 

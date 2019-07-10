@@ -40,7 +40,6 @@ class VersionSummarySerializer(serializers.ModelSerializer):
     href = fields.VersionUrlField(source='*')
 
     class Meta:
-        model = models.CollectionVersion
         fields = ('version', 'href')
 
 
@@ -77,7 +76,6 @@ class VersionDetailSerializer(serializers.ModelSerializer):
     metadata = serializers.JSONField(binary=False)
 
     class Meta:
-        model = models.CollectionVersion
         fields = (
             'id',
             'href',
@@ -125,7 +123,7 @@ class CollectionSerializer(serializers.ModelSerializer):
     latest_version = VersionSummarySerializer(read_only=True)
 
     class Meta:
-        model = models.Collection
+        # model = models.Collection
         fields = (
             'id',
             'href',
