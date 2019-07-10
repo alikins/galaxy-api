@@ -558,34 +558,6 @@ paths:
               schema:
                 $ref: '#/components/schemas/APIEndpoints'
 
-  '/search/content/':
-    get:
-      summary: 'Get a list of Contents by searching'
-      operationId: ListContentBySearch
-      tags:
-        - search
-        - v1
-      parameters:
-        - $ref: '#/components/parameters/Page'
-        - $ref: '#/components/parameters/PageSize'
-      responses:
-        '200':
-          $ref: '#/components/responses/Contents'
-
-  '/search/roles/':
-    get:
-      summary: 'Get a list of Roles by searching'
-      operationId: ListRoleBySearch
-      tags:
-        - search
-        - v1
-      parameters:
-        - $ref: '#/components/parameters/Page'
-        - $ref: '#/components/parameters/PageSize'
-      responses:
-        '200':
-          $ref: '#/components/responses/Roles'
-
   '/search/tags/':
     get:
       summary: 'Get a list of Tags by searching'
@@ -1349,75 +1321,6 @@ components:
       allOf:
         - $ref: '#/components/schemas/ConflictError'
 
-    Content:
-      title: 'Content'
-      allOf:
-        - $ref: '#/components/schemas/V1BaseModel'
-        - type: object
-          properties:
-            company:
-              maxLength: 50
-              nullable: true
-              type: string
-            description:
-              maxLength: 255
-              type: string
-            download_count:
-              readOnly: true
-              type: string
-            download_rank:
-              type: number
-            imported:
-              format: date-time
-              nullable: true
-              type: string
-            is_valid:
-              readOnly: true
-              type: boolean
-            license:
-              maxLength: 50
-              type: string
-            min_ansible_version:
-              maxLength: 10
-              nullable: true
-              type: string
-            name:
-              maxLength: 512
-              type: string
-            relevance:
-              type: number
-            role_type:
-              readOnly: true
-              type: string
-            search_rank:
-              type: number
-            travis_status_url:
-              readOnly: true
-              type: string
-            username:
-              readOnly: true
-              type: string
-          required:
-            - name
-            - relevance
-            - search_rank
-            - download_rank
-
-    ContentsPage:
-      description: "A page of a list of Contents"
-      allOf:
-        - $ref: '#/components/schemas/PageInfo'
-        - type: object
-          properties:
-            results:
-              description: 'List of Contents for this Page'
-              title: 'Contents'
-              type: array
-              items:
-                $ref: '#/components/schemas/Content'
-          required:
-            - results
-
     Error:
       type: object
       description: 'Error data'
@@ -1583,74 +1486,6 @@ components:
                 $ref: '#/components/schemas/ProviderNamespace'
           required:
             - results
-
-    Role:
-      description: 'An Ansible Role'
-      title: 'Role'
-      allOf:
-        - $ref: '#/components/schemas/V1BaseModel'
-        - type: object
-          properties:
-            company:
-              maxLength: 50
-              nullable: true
-              type: string
-            description:
-              maxLength: 255
-              type: string
-            download_count:
-              readOnly: true
-              type: string
-            download_rank:
-              type: number
-            imported:
-              format: date-time
-              nullable: true
-              type: string
-            is_valid:
-              readOnly: true
-              type: boolean
-            license:
-              maxLength: 50
-              type: string
-            min_ansible_version:
-              maxLength: 10
-              nullable: true
-              type: string
-            name:
-              maxLength: 512
-              type: string
-            relevance:
-              type: number
-            role_type:
-              readOnly: true
-              type: string
-            search_rank:
-              type: number
-            travis_status_url:
-              readOnly: true
-              type: string
-            username:
-              readOnly: true
-              type: string
-          required:
-            - name
-            - relevance
-            - search_rank
-            - download_rank
-
-    RolesPage:
-      description: "A Page of a list of Roles"
-      allOf:
-        - $ref: '#/components/schemas/PageInfo'
-        - type: object
-          properties:
-            results:
-              description: 'List of Roles for this Page'
-              title: 'Roles'
-              type: array
-              items:
-                $ref: '#/components/schemas/Role'
 
     SemanticVersion:
       description: 'A version string in the Semantic Version form'
@@ -1971,13 +1806,6 @@ components:
                 conflict.repository_name_conflict: '#/compontents/schemas/RepositoryNameError'
                 conflict.artifact_exists: '#/compontents/schemas/ArtifactExistsError'
 
-    Contents:
-      description: 'Response containing a Page of Content search results'
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/ContentsPage'
-
     DeleteSuccessful:
       description: 'A DELETE operation was successful'
 
@@ -2015,13 +1843,6 @@ components:
         application/json:
           schema:
             $ref: '#/components/schemas/ProviderNamespacesPage'
-
-    Roles:
-      description: 'Response containing a Page of a list of Roles'
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/RolesPage'
 
     Tags:
       description: 'Response containing a Page of a list of Tags'
