@@ -24,9 +24,11 @@ from django.db import models
 
 from galaxy_api import constants as const
 from . import mixins
+from .base import BaseModel
+from .namespace import Namespace
 
 
-class Collection(mixins.TimestampsMixin, models.Model):
+class Collection(mixins.TimestampsMixin, mixins.DirtyMixin, models.Model):
     """
     A model representing an Ansible Content Collection.
 

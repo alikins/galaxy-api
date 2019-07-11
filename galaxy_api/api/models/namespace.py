@@ -21,13 +21,14 @@ from django.conf import settings
 from django.db import models
 from django.urls import reverse
 
-from .base import CommonModel
-# from .content import Content
+from galaxy_api import constants as const
+
+from . import mixins
 
 log = logging.getLogger(__name__)
 
 
-class Namespace(CommonModel):
+class Namespace(mixins.TimestampsMixin, mixins.DirtyMixin, models.Model):
     """
     A model representing Ansible content namespace.
 
