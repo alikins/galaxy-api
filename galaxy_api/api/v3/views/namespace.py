@@ -217,8 +217,7 @@ class NamespaceDetail(base_views.RetrieveUpdateDestroyAPIView):
         # if data.get('owners'):
         #     update_owners(instance, owners)
 
-        to_update = ['description', 'avatar_url', 'location',
-                     'company', 'email', 'html_url', 'active', 'is_vendor']
+        to_update = []
 
         if request.user.is_staff:
             to_update.append('name')

@@ -50,6 +50,3 @@ class Namespace(mixins.TimestampsMixin, mixins.DirtyMixin, models.Model):
 
     class Meta:
         ordering = ('name',)
-
-    def get_absolute_url(self):
-        return reverse('api:v3:namespace_detail', args=(self.pk,))
