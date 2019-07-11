@@ -5,18 +5,7 @@ from rest_framework.views import APIView
 from .namespace import (
     NamespaceList,
     NamespaceDetail,
-    NamespaceProviderNamespacesList,
     # NamespaceContentList
-)
-
-from .provider_namespace import (
-    ProviderNamespaceList,
-    ProviderNamespaceDetail,
-    # ProviderNamespaceRepositoriesList,
-)
-
-from .provider_source import (
-    ProviderSourceList
 )
 
 from .users import (
@@ -43,14 +32,6 @@ __all__ = (
 
     'NamespaceList',
     'NamespaceDetail',
-    'NamespaceProviderNamespacesList',
-    # 'NamespaceContentList',
-
-    'ProviderNamespaceList',
-    'ProviderNamespaceDetail',
-    # 'ProviderNamespaceRepositoriesList',
-
-    'ProviderSourceList',
 
     'TestView',
 

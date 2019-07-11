@@ -46,41 +46,12 @@ class NamespaceSerializer(base_serializer.BaseSerializer):
             'username': u.username
         } for u in instance.owners.all()]
 
-        provider_namespaces = [{
-            'id': pn.id,
-            'name': pn.name,
-            'display_name': pn.display_name,
-            'avatar_url': pn.avatar_url,
-            'location': pn.location,
-            'compay': pn.company,
-            'description': pn.description,
-            'email': pn.email,
-            'html_url': pn.html_url,
-            'provider': pn.provider.id,
-            'provider_name': pn.provider.name.lower()
-        } for pn in instance.provider_namespaces.all()]
-
-        # content_count_list = instance.content_counts
-        content_count_list = []
-        content_counts = {
-            c['content_type__name']: c['count']
-            for c in content_count_list
-        }
-
         return {
             'owners': owners,
-            'provider_namespaces': provider_namespaces,
-            'content_counts': content_counts
         }
 
     def get_related(self, instance):
         related = {
-            'provider_namespaces': reverse(
-                'api:v3:namespace_provider_namespaces_list',
-                args=(instance.pk,)),
-            # 'content': reverse(
-            #     'api:v1:namespace_content_list',
-            #     args=(instance.pk,)),
             # 'owners': reverse(
             #     'api:v1:namespace_owners_list',
             #     args=(instance.pk,))

@@ -39,9 +39,6 @@ from galaxy_api.api import base as base_views
 __all__ = [
     'NamespaceList',
     'NamespaceDetail',
-    'NamespaceProviderNamespacesList',
-    # 'NamespaceContentList',
-    # 'NamespaceOwnersList',
 ]
 
 GalaxyUser = get_user_model()
@@ -104,99 +101,6 @@ def can_update(namespace_id, user_id):
 
     return True
 
-
-def check_providers(data_providers, parent=None):
-    errors = {}
-
-    if not isinstance(data_providers, list):
-        return 'Invalid type. Expected list.'
-
-    for i in range(0, len(data_providers)):
-        pns = data_providers[i]
-        if not isinstance(pns, dict):
-            errors[i] = 'Invalid type. Expected dictionary'
-            continue
-        if not pns.get('name'):
-            errors[i] = "Attribute 'name' is required"
-            continue
-        if not pns.get('provider'):
-            errors[i] = "Attribute 'provider' is required"
-            continue
-        try:
-            provider = models.Provider.objects.get(pk=pns['provider'])
-        except ObjectDoesNotExist:
-            errors[i] = "The 'provider' attribute contains an invalid provider"
-            continue
-        if provider:
-            existing_namespaces = models.ProviderNamespace.objects.filter(
-                provider=provider,
-                name__iexact=pns['name'].lower(),
-                namespace__isnull=False)
-            if parent:
-                existing_namespaces = existing_namespaces.exclude(
-                    namespace=parent
-                )
-            if existing_namespaces:
-                errors[i] = (
-                    'This provider namespace is already associated '
-                    'with a Galaxy namespace'
-                )
-    return errors
-
-
-def update_provider_namespaces(namespace, provider_namespaces):
-    # Update provider namespaces in the list
-    for pns in provider_namespaces:
-        pns_attributes = {}
-        for item in ('display_name', 'avatar_url', 'location', 'company',
-                     'email', 'html_url', 'followers'):
-            if item in pns:
-                pns_attributes[item] = pns[item]
-
-        pns_attributes['description'] = (
-            pns['description'] if pns.get('description') is not None else ''
-        )
-
-        try:
-            provider = models.Provider.objects.get(pk=pns['provider'])
-        except ObjectDoesNotExist:
-            pass
-        else:
-            pns_attributes['provider'] = provider
-            pns_attributes['namespace'] = namespace
-
-            try:
-                pns_obj, _ = models.ProviderNamespace.objects.update_or_create(
-                    name=pns['name'], defaults=pns_attributes
-                )
-                pns['id'] = pns_obj.pk
-            except Exception as exc:
-                raise APIException(
-                    'Error creating or updating provider namespaces: {}'
-                    .format(exc)
-                )
-    # Disassociate provider namespaces not in the list
-    for id in [
-        obj.pk for obj
-        in models.ProviderNamespace.objects.filter(namespace=namespace)
-    ]:
-        found = False
-        for pns in provider_namespaces:
-            if pns['id'] == id:
-                found = True
-                break
-        if not found:
-            # The provider namespace is no longer associated with
-            # the Galaxy namespace
-            try:
-                obj = models.ProviderNamespace.objects.get(pk=id)
-            except ObjectDoesNotExist:
-                raise
-            else:
-                obj.namespace = None
-                obj.save()
-
-
 def update_owners(instance, owners):
     for owner_pk in owners:
         # add new owners
@@ -234,16 +138,6 @@ class NamespaceList(base_views.ListCreateAPIView):
             except ObjectDoesNotExist:
                 pass
 
-        if not request.user.is_staff:
-            if not data.get('provider_namespaces'):
-                errors['provider_namespaces'] = (
-                    'A minimum of one provider namespace is required'
-                )
-            else:
-                provider_errors = check_providers(data['provider_namespaces'])
-                if provider_errors:
-                    errors['provider_namespaces'] = provider_errors
-
         # FIXME
         if data.get('owners'):
             owner_errors, owners = check_owners(data['owners'])
@@ -279,7 +173,6 @@ class NamespaceList(base_views.ListCreateAPIView):
 
         # FIXME
         update_owners(namespace, owners)
-        update_provider_namespaces(namespace, data['provider_namespaces'])
 
         serializer = self.get_serializer(instance=namespace)
         return Response(serializer.data, status=status.HTTP_201_CREATED)
@@ -303,13 +196,6 @@ class NamespaceDetail(base_views.RetrieveUpdateDestroyAPIView):
         # ignore the name check
         if data.get('name') is not None:
             check_basic(data, errors, instance=instance)
-
-        if data.get('provider_namespaces'):
-            provider_errors = check_providers(
-                data['provider_namespaces'], parent=instance
-            )
-            if provider_errors:
-                errors['provider_namespaces'] = provider_errors
 
         # FIXME
         # if data.get('owners'):
@@ -342,9 +228,6 @@ class NamespaceDetail(base_views.RetrieveUpdateDestroyAPIView):
                 setattr(instance, item, data[item])
         instance.save()
 
-        if 'provider_namespaces' in data:
-            update_provider_namespaces(instance, data['provider_namespaces'])
-
         serializer = self.get_serializer(instance=instance)
         return Response(serializer.data)
 
@@ -352,31 +235,3 @@ class NamespaceDetail(base_views.RetrieveUpdateDestroyAPIView):
         instance = self.get_object()
         self.perform_destroy(instance)
         return Response(status=status.HTTP_204_NO_CONTENT)
-
-
-class NamespaceProviderNamespacesList(base_views.SubListAPIView):
-    view_name = "Namespace Provider Namespaces"
-    model = models.ProviderNamespace
-    serializer_class = serializers.ProviderNamespaceSerializer
-    parent_model = models.Namespace
-    relationship = "provider_namespaces"
-
-    def get_queryset(self):
-        if getattr(self, 'swagger_fake_view', False):
-            return []
-        return super(NamespaceProviderNamespacesList, self).get_queryset()
-
-# class NamespaceContentList(base_views.SubListAPIView):
-#     view_name = "Namespace Content"
-#     model = models.Content
-#     serializer_class = serializers.ContentSerializer
-#     parent_model = models.Namespace
-#     relationship = "content_objects"
-
-
-# class NamespaceOwnersList(base_views.SubListAPIView):
-#     view_name = "Namespace Owners"
-#     model = User
-#     serializer_class = serializers.UserSerializer
-#     parent_model = models.Namespace
-#     relationship = "owners"
