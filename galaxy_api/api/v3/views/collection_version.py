@@ -37,37 +37,17 @@ __all__ = (
 class VersionDetailView(base.RetrieveUpdateDestroyAPIView):
     # model = models.CollectionVersion
     permission_classes = (AllowAny, )
-    serializer_class = serializers.VersionDetailSerializer
+    # serializer_class = serializers.VersionDetailSerializer
 
     def get(self, request, *args, **kwargs):
         """Return a collection version."""
         return Response({'not_implemented': 'yet'})
-        # version = self._get_version()
-        # serializer = serializers.VersionDetailSerializer(
-        #     version, context={'request': self.request})
-        # return Response(serializer.data)
 
-    def _get_version(self):
-        """
-        Get collection version from either version id, or from
-        collection namespace, collection name, and version string.
-        """
-        version_pk = self.kwargs.get('version_pk', None)
-        version_str = self.kwargs.get('version', None)
-
-        # TODO/FIXME(akl): implement with pulp_ansible client
-
-    def _get_collection(self):
-        """Get collection from namespace and name."""
-        ns_name = self.kwargs.get('namespace', None)
-        name = self.kwargs.get('name', None)
-        # raise 404Exception('Not implemented yet')
-        return Response({'not_implemented': 'yet'})
 
 
 class VersionListView(base.ListAPIView):
     permission_classes = (AllowAny, )
-    serializer_class = serializers.VersionSummarySerializer
+    # serializer_class = serializers.VersionSummarySerializer
     # pagination_class = DefaultPagination
 
     def list(self, request, *args, **kwargs):
@@ -75,22 +55,12 @@ class VersionListView(base.ListAPIView):
 
         return Response({'not_implemented': 'yet'})
 
-    def _get_collection(self):
-        """Get collection from either id, or namespace and name."""
-        # pk = self.kwargs.get('pk', None)
-        # if pk:
-        #    return get_object_or_404(models.Collection, pk=pk)
-
-        ns_name = self.kwargs.get('namespace', None)
-        name = self.kwargs.get('name', None)
-
-        return Response({'not_implemented': 'yet'})
 
 
 # TODO(cutwater): Whith #1858 this view is considered for removal.
 class CollectionArtifactView(base.RetrieveAPIView):
     permission_classes = (AllowAny, )
-    serializer_class = serializers.CollectionArtifactSerializer
+    # serializer_class = serializers.CollectionArtifactSerializer
 
     def get_object(self):
         pk = self.kwargs.get('pk')

@@ -30,23 +30,6 @@ class NamespaceSerializer(base_serializer.BaseSerializer):
         model = models.Namespace
         fields = base_serializer.BASE_FIELDS + (
             'id',
+            'name',
+            'owners',
         )
-
-    def get_summary_fields(self, instance):
-        owners = [{
-            'id': u.id,
-            'avatar_url': u.avatar_url,
-            'username': u.username
-        } for u in instance.owners.all()]
-
-        return {
-            'owners': owners,
-        }
-
-    def get_related(self, instance):
-        related = {
-            # 'owners': reverse(
-            #     'api:v1:namespace_owners_list',
-            #     args=(instance.pk,))
-        }
-        return related

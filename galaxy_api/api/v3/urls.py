@@ -3,6 +3,11 @@ from django.urls import path
 from .views import TestView
 
 from .views import (
+    CollectionDetailView,
+    CollectionListView,
+)
+
+from .views import (
     NamespaceList,
     NamespaceDetail,
 )
@@ -34,15 +39,17 @@ urlpatterns = [
     # TODO/FIXME(akl) - these views will be
     # implemented as a client against pulp API
     
-    # path('collections/',
-    #      CollectionListView.as_view(),
-    #      name='collection-list'),
+    path('collections/',
+         CollectionListView.as_view(),
+         name='collection-list'),
+
     # path('collections/<int:pk>/',
     #      CollectionDetailView.as_view(),
     #      name='collection-detail'),
-    # path('collections/<str:namespace>/<str:name>/',
-    #      CollectionDetailView.as_view(),
-    #      name='collection-detail'),
+
+    path('collections/<str:namespace>/<str:name>/',
+         CollectionDetailView.as_view(),
+         name='collection-detail'),
 
     # path('collection-versions/<int:version_pk>/',
     #      VersionDetailView.as_view(),
