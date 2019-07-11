@@ -48,8 +48,10 @@ class CollectionDetailView(base.RetrieveAPIView):
         name = self.kwargs.get('name', None)
 
         ns = get_object_or_404(models.Namespace, name=ns_name)
-        return get_object_or_404(models.Collection, namespace=ns, name=name)
-
+        collection = get_object_or_404(models.Collection, namespace=ns, name=name)
+        serializer = serializers.CollectionSerializer(
+            collection, context={'request': request})
+        return Response(serializer.data)
 
 
 #    def get_object(self):

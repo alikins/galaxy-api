@@ -37,7 +37,7 @@ class CollectionSerializer(serializers.ModelSerializer):
     namespace = serializers.SlugRelatedField(
         many=False,
         read_only=True,
-        slug_field='namespace'
+        slug_field='name'
      )
   
     tags = serializers.SlugRelatedField( many=True, read_only=True, slug_field='tags')
