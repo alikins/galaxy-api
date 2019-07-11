@@ -43,8 +43,19 @@ ROOT_URLCONF = 'galaxy_api.urls'
 
 AUTH_USER_MODEL = 'galaxy_auth.user'
 
+REST_FRAMEWORK = {
+    'DEFAULT_PAGINATION_CLASS': 'galaxy_api.api.pagination.InsightsStylePagination',
+    'PAGE_SIZE': 100
+}
+
 SWAGGER_SETTINGS = {
    'DEFAULT_INFO': 'galaxy_api.urls.api_info',
+   'DEFAULT_PAGINATOR_INSPECTORS': [
+        'galaxy_api.api.pagination.IPP12RestResponsePagination',
+        'drf_yasg.inspectors.DjangoRestResponsePagination', 
+        'drf_yasg.inspectors.CoreAPICompatInspector', 
+   ],
+
 }
 
 TEMPLATES = [
