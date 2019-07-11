@@ -22,6 +22,7 @@ from django.core.validators import MinValueValidator, MaxValueValidator
 from django.conf import settings
 from django.db import models
 
+from galaxy_api import constants as const
 from . import mixins
 
 
@@ -29,47 +30,28 @@ class Collection(mixins.TimestampsMixin, models.Model):
     """
     A model representing an Ansible Content Collection.
 
-    :var namespace: Reference to a collection nanespace.
-    :var name: Collection name.
-    :var deprecated: Indicates if a collection is deprecated.
-    :var download_count: Number of collection downloads.
-    :var comminity_score: Total community score.
-    :var community_survey_count: Number of community surveys.
+    :var name: Collection name. Must be lower case containing
+        only alphanumeric characters and underscores.
+    :var remote_id: Collection ID in remote database.
+    :var namespace: Reference to a collection namespace
     :var tags: List of a last collection version tags.
     """
+    # Fields
+    name = models.CharField(max_length=const.MAX_NAME_LENGTH, editable=False)
+    remote_id = models.UUIDField(unique=True, editable=False)
 
-    # namespace = models.ForeignKey(Namespace, on_delete=models.PROTECT)
-    namespace = models.CharField(max_length=512, unique=True, db_index=True)
-
-    name = models.CharField(max_length=64)
-
-    deprecated = models.BooleanField(default=False)
-
-    # Community and quality score
-    download_count = models.IntegerField(default=0)
-    community_score = models.FloatField(null=True)
-    community_survey_count = models.IntegerField(default=0)
+    quality_score = models.FloatField(null=True, editable=False)
 
     # References
-    latest_version = models.ForeignKey(
-        'CollectionVersion',
-        on_delete=models.SET_NULL,
-        related_name='+',
-        null=True,
-    )
-    tags = models.ManyToManyField('Tag')
+    namespace = models.ForeignKey(Namespace, on_delete=models.CASCADE, editable=False)
 
-    # Search indexes
-    search_vector = psql_search.SearchVectorField(default='')
+    tags = models.ManyToManyField('Tag')
 
     class Meta:
         unique_together = (
             'namespace',
             'name',
         )
-        indexes = [
-            psql_indexes.GinIndex(fields=['search_vector'])
-        ]
 
     def __str__(self):
         return '{}.{}'.format(self.namespace, self.name)

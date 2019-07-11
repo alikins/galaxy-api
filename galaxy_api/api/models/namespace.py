@@ -29,66 +29,26 @@ log = logging.getLogger(__name__)
 
 class Namespace(CommonModel):
     """
-    Represents the aggregation of multiple namespaces across providers.
+    A model representing Ansible content namespace.
+
+    :var name: Namespace name. Must be lower case containing
+        only alphanumeric characters and underscores.
+    :var owners: Reference to a namespace owners.
+
     """
 
-    class Meta:
-        ordering = ('name',)
+    # Fields
+    name = models.CharField(max_length=const.MAX_NAME_LENGTH, unique=True, editable=False)
 
+    # References
     owners = models.ManyToManyField(
         settings.AUTH_USER_MODEL,
         related_name='namespaces',
         editable=True,
     )
 
-    avatar_url = models.CharField(
-        max_length=256,
-        blank=True,
-        null=True,
-        verbose_name="Avatar URL"
-    )
-    location = models.CharField(
-        max_length=256,
-        blank=True,
-        null=True,
-        verbose_name="Location"
-    )
-    company = models.CharField(
-        max_length=256,
-        blank=True,
-        null=True,
-        verbose_name="Company Name"
-    )
-    email = models.CharField(
-        max_length=256,
-        blank=True,
-        null=True,
-        verbose_name="Email Address"
-    )
-    html_url = models.CharField(
-        max_length=256,
-        blank=True,
-        null=True,
-        verbose_name="Web Site URL"
-    )
-
-    is_vendor = models.BooleanField(default=False)
+    class Meta:
+        ordering = ('name',)
 
     def get_absolute_url(self):
         return reverse('api:v3:namespace_detail', args=(self.pk,))
-
-    @property
-    def content_counts(self):
-        # FIXME: just stubbed out until COntent is a thing
-        return 31
-
-        # return Content.objects \
-        #     .filter(namespace=self.pk) \
-        #     .values('content_type__name') \
-        #     .annotate(count=models.Count('content_type__name')) \
-        #     .order_by('content_type__name')
-
-    def is_owner(self, user):
-        log.warning('Namespace.is_owner is stubbed. FIXME! user=%s', user)
-        return True
-        # return self.owners.filter(pk=user.pk).exists()
