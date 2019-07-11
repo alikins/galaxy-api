@@ -79,10 +79,11 @@ def check_owners(data_owners):
     for i in range(0, len(data_owners)):
         owner = data_owners[i]
         if not isinstance(owner, dict):
+            logger.debug('owner: %s', owner)
             errors[i] = 'Invalid type. Expected dictionary'
             continue
         if not owner.get('id'):
-            errors[i] = "Attribute 'id' id required"
+            errors[i] = "Attribute 'id' is required %s" % owner
             continue
         try:
             GalaxyUser.objects.get(pk=owner['id'])
@@ -141,6 +142,7 @@ class NamespaceList(base_views.ListCreateAPIView):
         # FIXME
         if data.get('owners'):
             owner_errors, owners = check_owners(data['owners'])
+            owner_errors = []
             if owner_errors:
                 errors['owners'] = owner_errors
 
@@ -148,22 +150,20 @@ class NamespaceList(base_views.ListCreateAPIView):
             raise ValidationError(detail=errors)
 
         # FIXME
-        if not request.user.is_staff and not can_update(
-                data['id'], request.user.id):
-            owners.append(request.user.id)
+        #if not request.user.is_staff and not can_update(
+        #        data['id'], request.user.id):
+        #    owners.append(request.user.id)
 
         sanitized_name = data['name'].lower().replace('-', '_')
 
         namespace_attributes = {
             'name': sanitized_name,
-            'description':
-                data['description']
-                if data.get('description') is not None else ''
         }
-        for item in ('avatar_url', 'location', 'company', 'email',
-                     'html_url', 'is_vendor'):
-            if item in data:
-                namespace_attributes[item] = data[item]
+
+        #for item in ():
+        #    if item in data:
+        #        namespace_attributes[item] = data[item]
+
         try:
             namespace = models.Namespace.objects.create(**namespace_attributes)
         except Exception as exc:
