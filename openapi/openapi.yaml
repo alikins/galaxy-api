@@ -360,6 +360,7 @@ paths:
       operationId: ListTagBySearch
       tags:
         - search
+        - tags
       parameters:
         - $ref: '#/components/parameters/Page'
         - $ref: '#/components/parameters/PageSize'
@@ -367,88 +368,6 @@ paths:
       responses:
         '200':
           $ref: '#/components/responses/Tags'
-
-  '/tags/':
-    get:
-      summary: 'Get a list of Galaxy Tags'
-      operationId: ListTags
-      tags:
-        - tags
-      parameters:
-        - $ref: '#/components/parameters/Page'
-        - $ref: '#/components/parameters/PageSize'
-        - $ref: '#/components/parameters/Search'
-      responses:
-        '200':
-          $ref: '#/components/responses/Tags'
-
-    post:
-      summary: 'Create a Galaxy Tag'
-      operationId: CreateTag
-      tags:
-        - tags
-      security:
-        - UserTokenApiKey: []
-        - UserBasicAuth: []
-        - AdminTokenApiKey: []
-        - AdminBasicAuth: []
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/Tag'
-        required: true
-      responses:
-        201:
-          description: "Tag creation was succesful"
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Tag'
-
-  '/tags/{id}/':
-    get:
-      summary: 'Get a Galaxy Tag'
-      operationId: GetTagById
-      tags:
-        - tags
-      parameters:
-        - $ref: '#/components/parameters/TagId'
-        - $ref: '#/components/parameters/Search'
-      responses:
-        '200':
-          description: 'A Galaxy Tag'
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Tag'
-
-    patch:
-      summary: 'Patch/update a Tag by id'
-      operationId: PatchTagById
-      tags:
-        - tags
-      parameters:
-        - $ref: '#/components/parameters/TagId'
-        - $ref: '#/components/parameters/Search'
-      security:
-        - UserTokenApiKey: []
-        - UserBasicAuth: []
-        - AdminTokenApiKey: []
-        - AdminBasicAuth: []
-      requestBody:
-        description: 'An Tag to update to'
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/Tag'
-      responses:
-        '200':
-          description: 'The Tag updated by the PATCH'
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Tag'
 
   '/users/':
     get:
@@ -966,6 +885,7 @@ components:
       type: string
       pattern: '^[a-z0-9]+$'
       example: 'development'
+      maxLength: 512
 
     Namespace:
       title: 'Namespace'
@@ -1046,11 +966,7 @@ components:
       description: 'A Galaxy Tag'
       allOf:
         - $ref: '#/components/schemas/DBBaseModel'
-        - type: object
-          properties:
-            name:
-              maxLength: 512
-              type: string
+        - $ref: '#/components/schemas/GalaxyTag'
           required:
             - name
 
@@ -1405,14 +1321,6 @@ components:
       required: true
       schema:
         $ref: '#/components/schemas/SemanticVersion'
-
-    TagId:
-      description: 'Tag id'
-      in: path
-      name: id
-      required: true
-      schema:
-        type: string
 
     TaskType:
       description: 'Task type'
