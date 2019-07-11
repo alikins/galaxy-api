@@ -15,8 +15,7 @@ class ApiRootView(base.APIView):
             description='GALAXY REST API',
             current_version='v3',
             available_versions=dict(
-                v1=current,
-                v2='/api/v3/',
+                v3=current,
             ),
             stuff='blippy'
         )
