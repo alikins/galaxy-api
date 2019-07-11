@@ -16,15 +16,15 @@
 # You should have received a copy of the Apache License
 # along with Galaxy.  If not, see <http://www.apache.org/licenses/>.
 
-from django.urls import reverse
+from django.db import models
 
-from .base import (
-    CommonModel,
-)
+from galaxy_api import constants as const
+from . import mixins
 
 
-class Tag(CommonModel):
+class Tag(mixins.TimestampsMixin, mixins.DirtyMixin, models.Model):
     """A class representing the tags that have been assigned to roles."""
+    name = models.CharField(max_length=const.MAX_NAME_LENGTH, unique=True, editable=False)
 
     class Meta:
         ordering = ['name']
@@ -33,8 +33,3 @@ class Tag(CommonModel):
     def __str__(self):
         return self.name
 
-    def get_absolute_url(self):
-        return reverse('api:v3:tag_detail', args=(self.pk,))
-
-    def get_num_roles(self):
-        return self.roles.filter(active=True, is_valid=True).count()
