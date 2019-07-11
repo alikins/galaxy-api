@@ -30,13 +30,6 @@ class NamespaceSerializer(base_serializer.BaseSerializer):
         model = models.Namespace
         fields = base_serializer.BASE_FIELDS + (
             'id',
-            'description',
-            'avatar_url',
-            'location',
-            'company',
-            'email',
-            'html_url',
-            'is_vendor',
         )
 
     def get_summary_fields(self, instance):
