@@ -1,10 +1,14 @@
 """URLs Configuration."""
 
 from django.conf import settings
+from django.contrib import admin
 from django.urls import include, path, re_path
+
 from drf_yasg.views import get_schema_view
 from drf_yasg import openapi
+
 from rest_framework import permissions
+
 
 
 api_prefix = settings.API_PATH_PREFIX.strip('/')
@@ -25,6 +29,7 @@ schema_view = get_schema_view(
 
 
 urlpatterns = [
+
     path(f'{api_prefix}/', include('galaxy_api.api.urls')),
 
     re_path(r'^swagger(?P<format>\.json|\.yaml)$',
@@ -36,4 +41,6 @@ urlpatterns = [
     re_path(r'^redoc/$',
             schema_view.with_ui('redoc', cache_timeout=0),
             name='schema-redoc'),
+
+    path('admin/', admin.site.urls),
 ]

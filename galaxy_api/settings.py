@@ -21,8 +21,11 @@ ALLOWED_HOSTS = []
 # Application definition
 
 INSTALLED_APPS = [
+    'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
+    'django.contrib.messages',
+    'django.contrib.sessions',
     'django.contrib.staticfiles',
 
     'rest_framework',
@@ -37,23 +40,35 @@ MIDDLEWARE = [
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'django.contrib.sessions.middleware.SessionMiddleware',
+    'django.contrib.auth.middleware.AuthenticationMiddleware',
+    'django.contrib.messages.middleware.MessageMiddleware',
+
 ]
 
 ROOT_URLCONF = 'galaxy_api.urls'
+
+# Authentication
+
 
 AUTH_USER_MODEL = 'galaxy_auth.user'
 
 REST_FRAMEWORK = {
     'DEFAULT_PAGINATION_CLASS': 'galaxy_api.api.pagination.InsightsStylePagination',
-    'PAGE_SIZE': 100
+    'PAGE_SIZE': 100,
+
+    # 'DEFAULT_AUTHENTICATION_CLASSES': (
+    #     'rest_framework.authentication.TokenAuthentication',
+    #     'rest_framework.authentication.SessionAuthentication',
+    # ),
 }
 
 SWAGGER_SETTINGS = {
    'DEFAULT_INFO': 'galaxy_api.urls.api_info',
    'DEFAULT_PAGINATOR_INSPECTORS': [
-        'galaxy_api.api.pagination.IPP12RestResponsePagination',
-        'drf_yasg.inspectors.DjangoRestResponsePagination', 
-        'drf_yasg.inspectors.CoreAPICompatInspector', 
+        'drf_yasg.inspectors.DjangoRestResponsePagination',
+        'drf_yasg.inspectors.CoreAPICompatInspector',
+        'galaxy_api.api.drf_yasg_ext.IPP12RestResponsePagination',
    ],
 
 }
@@ -68,6 +83,7 @@ TEMPLATES = [
                 'django.template.context_processors.debug',
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
+                'django.contrib.messages.context_processors.messages',
             ],
         },
     },
