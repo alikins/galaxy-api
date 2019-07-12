@@ -22,9 +22,9 @@ tags:
     externalDocs:
       url: https://galaxy.ansible.com/docs/contributing/creating_collections.html
       description: 'Creating Collections docs at galaxy.ansible.com'
-  - name: 'collection-imports'
+  - name: 'collection_imports'
     description: 'Importing Collections'
-  - name: 'collection-versions'
+  - name: 'collection_versions'
     description: 'Versions of Collections'
   - name: 'download'
     description: 'Downloading artifacts'
@@ -500,14 +500,14 @@ components:
         - $ref: '#/components/schemas/PageInfo'
         - type: object
           properties:
-            results:
+            data:
               description: 'List of Collections for this Page'
               title: 'Collections'
               type: array
               items:
                 $ref: '#/components/schemas/Collection'
           required:
-            - results
+            - data
 
     CollectionImportError:
       title: 'CollectionImportError'
@@ -631,14 +631,14 @@ components:
         - $ref: '#/components/schemas/PageInfo'
         - type: object
           properties:
-            results:
+            data:
               description: 'List of CollectionImportTask for this Page'
               title: 'CollectionImportTasks'
               type: array
               items:
                 $ref: '#/components/schemas/CollectionImportTask'
           required:
-            - results
+            - data
 
     CollectionName:
       description: 'The name of a Collection'
@@ -722,14 +722,14 @@ components:
         - $ref: '#/components/schemas/PageInfo'
         - type: object
           properties:
-            results:
+            data:
               description: 'List of CollectionVersionArtifacts for this Page'
               title: 'CollectionVersionArtifacts'
               type: array
               items:
                 $ref: '#/components/schemas/CollectionVersionArtifactDetail'
           required:
-            - results
+            - data
 
     CollectionVersionDependencies:
       description: 'A map of collection namespace.name to a semantic version'
@@ -843,14 +843,14 @@ components:
         - $ref: '#/components/schemas/PageInfo'
         - type: object
           properties:
-            results:
+            data:
               description: 'List of CollectionVersionLinks for this Page'
               title: 'CollectionVersionLinks'
               type: array
               items:
                 $ref: '#/components/schemas/CollectionVersionLink'
           required:
-            - results
+            - data
 
     ConflictError:
       title: 'ConflictError'
@@ -906,14 +906,14 @@ components:
         - $ref: '#/components/schemas/PageInfo'
         - type: object
           properties:
-            results:
+            data:
               description: 'List of Namespaces for this Page'
               title: 'Namespaces'
               type: array
               items:
                 $ref: '#/components/schemas/Namespace'
           required:
-            - results
+            - data
 
     RepositoryNameError:
       allOf:
@@ -924,31 +924,62 @@ components:
         - $ref: '#/components/schemas/APIException'
 
     PageCount:
+      description: 'The number of items in this Page'
       type: integer
+      example: 10
 
     PageInfo:
       description: 'Pagination info'
       title: 'Page Info'
       properties:
+        meta:
+          $ref: '#/components/schemas/PageMeta'
+        links:
+          $ref: '#/components/schemas/PageLinks'
+      required:
+        - meta
+        - links
+
+    PageLinks:
+      type: object
+      title: 'PageLinks'
+      properties:
+        first:
+          type: string
+          description: 'Link to first page'
+          format: uri
+          example: /examples/?offset=0&limit=1
+        last:
+          type: string
+          description: 'Link to last page'
+          format: uri
+          example: /examples/?offset=7&limit=1
+        next:
+          type: string
+          description: 'Link to next page'
+          format: uri
+          example: /examples/?offset=5&limit=1
+          nullable: true
+        previous:
+          type: string
+          description: 'Link to next page'
+          format: uri
+          example: /examples/?offset=3&limit=1
+          nullable: true
+      required:
+        - first
+        - last
+        - next
+        - previous
+
+    PageMeta:
+      title: 'PageMeta'
+      type: object
+      properties:
         count:
           $ref: '#/components/schemas/PageCount'
-        next:
-          $ref: '#/components/schemas/PageNext'
-        previous:
-          $ref: '#/components/schemas/PagePrevious'
-        result_type:
-          type: string
-          description: 'The type of object in the results list'
-          nullable: true
-
-    PageNext:
-      type: string
-      format: uri
-
-    PagePrevious:
-      description: 'The previous page'
-      type: string
-      format: uri
+      required:
+        - count
 
     SemanticVersion:
       description: 'A version string in the Semantic Version form'
@@ -977,14 +1008,14 @@ components:
         - $ref: '#/components/schemas/PageInfo'
         - type: object
           properties:
-            results:
+            data:
               description: 'List of Tags for this Page'
               title: 'Tags'
               type: array
               items:
                 $ref: '#/components/schemas/Tag'
           required:
-            - results
+            - data
 
     TaskType:
       description: 'The type of Task'
@@ -1041,14 +1072,14 @@ components:
         - $ref: '#/components/schemas/PageInfo'
         - type: object
           properties:
-            results:
+            data:
               description: 'List of Users for this Page'
               title: 'Users'
               type: array
               items:
                 $ref: '#/components/schemas/User'
           required:
-            - results
+            - data
 
     UserUpdate:
       description: 'User data to update'
@@ -1100,7 +1131,7 @@ components:
       content:
         application/json:
           schema:
-            $ref: '#/components/schemas/Collection'
+            $ref: '#/components/schemas/CollectionsPage'
 
     CollectionUpdateAccepted:
       description: 'Result of an accepted collection update.'
@@ -1378,3 +1409,16 @@ components:
       type: apiKey
       in: header
       name: Authorization
+    # https://raw.githubusercontent.com/RedHatInsights/vulnerability-engine/master/manager.spec.yaml
+    UserApiKeyAuth:
+      type: apiKey
+      in: header
+      name: x-rh-identity
+      description: Identity header provided by 3scale (for non-prod testing only).
+      x-apikeyInfoFunc: manager.base.auth
+    ApiKeyAuthInternal:
+      type: apiKey
+      in: header
+      name: x-rh-identity
+      description: Identity header provided by 3scale (for non-prod testing only).
+      x-apikeyInfoFunc: manager.base.auth_internal
