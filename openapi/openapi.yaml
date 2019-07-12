@@ -305,6 +305,8 @@ paths:
       operationId: GetCollectionsByNamespace
       parameters:
         - $ref: '#/components/parameters/NamespaceName'
+        - $ref: '#/components/parameters/PageOffset'
+        - $ref: '#/components/parameters/PageLimit'
       tags:
         - namespaces
         - collections
@@ -318,6 +320,8 @@ paths:
       operationId: GetCollectionImportsByNamespace
       parameters:
         - $ref: '#/components/parameters/NamespaceName'
+        - $ref: '#/components/parameters/PageOffset'
+        - $ref: '#/components/parameters/PageLimit'
       tags:
         - namespaces
         - collection-imports
