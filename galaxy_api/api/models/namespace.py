@@ -50,3 +50,6 @@ class Namespace(mixins.TimestampsMixin, mixins.DirtyMixin, models.Model):
 
     class Meta:
         ordering = ('name',)
+
+    def __str__(self):
+        return self.name
