@@ -436,26 +436,6 @@ components:
       additionalProperties:
         type: string
 
-    APIException:
-      type: object
-      description: 'API Exception'
-      properties:
-        code:
-          description: 'Unique identifier for the exception'
-          type: string
-          example: 'not_authenticated'
-        message:
-          type: string
-          example: 'Authentication credentials were not provided.'
-        errors:
-          description: 'A list of additional error objects'
-          type: array
-          items:
-            $ref: '#/components/schemas/Error'
-      required:
-        - code
-        - message
-
     ArtifactExistsError:
       allOf:
         - $ref: '#/components/schemas/ConflictError'
@@ -855,7 +835,7 @@ components:
     ConflictError:
       title: 'ConflictError'
       allOf:
-        - $ref: '#/components/schemas/APIException'
+        - $ref: '#/components/schemas/JSONError'
 
     ConflictCollectionExistsError:
       allOf:
@@ -886,6 +866,57 @@ components:
       pattern: '^[a-z0-9]+$'
       example: 'development'
       maxLength: 512
+
+    JSONError:
+      title: 'JSONError'
+      description: "A JSON API Error object"
+      type: object
+      externalDocs:
+        description: 'JSON API Error Specification'
+        url: 'https://jsonapi.org/format/#errors'
+      properties:
+        errors:
+          type: array
+          title: 'JSONErrorItems'
+          items:
+            $ref: '#/components/schemas/JSONErrorItem'
+          minItems: 1
+      required:
+        - errors
+
+    JSONErrorItem:
+      title: 'JSONErrorItem'
+      description: 'An item returned in the JSONError "errors" value'
+      externalDocs:
+        description: 'JSON API Error Specification'
+        url: 'https://jsonapi.org/format/#errors'
+      type: object
+      properties:
+        code:
+          description: 'Unique identifier for the error'
+          type: string
+          example: 'not_authenticated'
+        detail:
+          type: string
+          description: 'Error detail'
+          example: 'Record not found.'
+        status:
+          type: string
+          description: 'String representation of HTTP status code'
+          example: '404'
+        source:
+          type: object
+          properties:
+            parameter:
+              description: 'A string indicating which URI query parameter caused the error.'
+              type: string
+            pointer:
+              description: 'A JSON Pointer [RFC6901] to the associated entity in the request document '
+              type: string
+
+      required:
+        - detail
+        - status
 
     Namespace:
       title: 'Namespace'
@@ -921,7 +952,7 @@ components:
 
     ValidationError:
       allOf:
-        - $ref: '#/components/schemas/APIException'
+        - $ref: '#/components/schemas/JSONError'
 
     PageCount:
       description: 'The number of items in this Page'
@@ -1248,7 +1279,7 @@ components:
       content:
         application/json:
           schema:
-            $ref: '#/components/schemas/APIException'
+            $ref: '#/components/schemas/JSONError'
 
     Tags:
       description: 'Response containing a Page of a list of Tags'
@@ -1266,7 +1297,7 @@ components:
       content:
         application/json:
           schema:
-            $ref: '#/components/schemas/APIException'
+            $ref: '#/components/schemas/JSONError'
 
     Users:
       description: 'Response containing a Page of a list of Users'
