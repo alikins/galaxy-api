@@ -63,7 +63,9 @@ paths:
     get:
       summary: 'Get a list of the Collections'
       operationId: GetCollections
-      parameters: []
+      parameters:
+        - $ref: '#/components/parameters/PageOffset'
+        - $ref: '#/components/parameters/PageLimit'
       tags:
         - namespaces
         - collections
@@ -148,8 +150,8 @@ paths:
         - collection-versions
         - client_mazer
       parameters:
-        - $ref: '#/components/parameters/Page'
-        - $ref: '#/components/parameters/PageSize'
+        - $ref: '#/components/parameters/PageOffset'
+        - $ref: '#/components/parameters/PageLimit'
         - $ref: '#/components/parameters/Search'
       responses:
         '200':
@@ -250,8 +252,8 @@ paths:
       tags:
         - namespaces
       parameters:
-        - $ref: '#/components/parameters/Page'
-        - $ref: '#/components/parameters/PageSize'
+        - $ref: '#/components/parameters/PageOffset'
+        - $ref: '#/components/parameters/PageLimit'
         - $ref: '#/components/parameters/Search'
       responses:
         '200':
@@ -347,8 +349,8 @@ paths:
         - search
         - collections
       parameters:
-        - $ref: '#/components/parameters/Page'
-        - $ref: '#/components/parameters/PageSize'
+        - $ref: '#/components/parameters/PageOffset'
+        - $ref: '#/components/parameters/PageLimit'
         # TODO: search param collections
       responses:
         '200':
@@ -362,8 +364,8 @@ paths:
         - search
         - tags
       parameters:
-        - $ref: '#/components/parameters/Page'
-        - $ref: '#/components/parameters/PageSize'
+        - $ref: '#/components/parameters/PageOffset'
+        - $ref: '#/components/parameters/PageLimit'
         # TODO: search param tags
       responses:
         '200':
@@ -376,8 +378,8 @@ paths:
       tags:
         - users
       parameters:
-        - $ref: '#/components/parameters/Page'
-        - $ref: '#/components/parameters/PageSize'
+        - $ref: '#/components/parameters/PageOffset'
+        - $ref: '#/components/parameters/PageLimit'
         - $ref: '#/components/parameters/Search'
       responses:
         '200':
@@ -1348,25 +1350,25 @@ components:
       schema:
         type: string
 
-    Page:
-      description: 'Page number within the paginated result set.'
-      in: query
-      name: page
-      required: false
-      schema:
-        type: integer
-        default: 1
-
-    PageSize:
+    PageLimit:
       description: 'Number of results to return per page.'
       in: query
-      name: page_size
+      name: limit
       required: false
       schema:
         type: integer
         default: 10
         minimum: 0
         maximum: 1000
+
+    PageOffset:
+      description: 'Page offset number within the paginated result set'
+      in: query
+      name: offset
+      required: false
+      schema:
+        type: integer
+        default: 1
 
     Search:
       description: 'Term to search for'
