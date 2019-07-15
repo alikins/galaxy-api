@@ -53,8 +53,16 @@ ROOT_URLCONF = 'galaxy_api.urls'
 
 AUTH_USER_MODEL = 'galaxy_auth.user'
 
+# community v1/v2 style pagination with count/previous/next/results
+# GALAXY_DEFAULT_PAGINATION = 'galaxy_api.api.pagination.PageNumberPagination'
+# GALAXY_DEFAULT_PAGINATION_INSPECTOR = 'galaxy_api.api.drf_yasg_ext.PageNumberPaginationInspector'
+
+# insights style pagination with meta/links/data
+GALAXY_DEFAULT_PAGINATION = 'galaxy_api.api.pagination.InsightsStylePagination'
+GALAXY_DEFAULT_PAGINATION_INSPECTOR = 'galaxy_api.api.drf_yasg_ext.IPP12RestResponsePagination',
+
 REST_FRAMEWORK = {
-    'DEFAULT_PAGINATION_CLASS': 'galaxy_api.api.pagination.InsightsStylePagination',
+    'DEFAULT_PAGINATION_CLASS': GALAXY_DEFAULT_PAGINATION,
     'PAGE_SIZE': 100,
 
     # 'DEFAULT_AUTHENTICATION_CLASSES': (
@@ -68,7 +76,7 @@ SWAGGER_SETTINGS = {
    'DEFAULT_PAGINATOR_INSPECTORS': [
         'drf_yasg.inspectors.DjangoRestResponsePagination',
         'drf_yasg.inspectors.CoreAPICompatInspector',
-        'galaxy_api.api.drf_yasg_ext.IPP12RestResponsePagination',
+        GALAXY_DEFAULT_PAGINATION_INSPECTOR,
    ],
 
 }
