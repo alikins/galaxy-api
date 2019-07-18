@@ -239,9 +239,12 @@ paths:
       operationId: searchCollections
       tags:
         - Search
+      parameters:
+        - $ref: '#/components/parameters/PageOffset'
+        - $ref: '#/components/parameters/PageLimit'
       responses:
         '200':
-          description: A paginated list of Collections
+          $ref: '#/components/responses/Collections'
         'default':
           description: Error
 
@@ -251,9 +254,12 @@ paths:
       operationId: searchTags
       tags:
         - Search
+      parameters:
+        - $ref: '#/components/parameters/PageOffset'
+        - $ref: '#/components/parameters/PageLimit'
       responses:
         '200':
-          description: A paginated list of Tags
+          $ref: '#/components/responses/Tags'
         'default':
           description: Error
 
@@ -549,6 +555,27 @@ components:
       pattern: ^((([0-9]+)\.([0-9]+)\.([0-9]+)(?:-([0-9a-zA-Z-]+(?:\.[0-9a-zA-Z-]+)*))?)(?:\+([0-9a-zA-Z-]+(?:\.[0-9a-zA-Z-]+)*))?)$
       example: '1.0.1'
 
+    Tag:
+      title: 'Tag'
+      description: 'Ansible collection tag'
+      type: object
+      # TODO: unknown Tag schema
+
+    TagsPage:
+      description: "A Page of a list of Tags"
+      allOf:
+        - $ref: '#/components/schemas/PageInfo'
+        - type: object
+          properties:
+            data:
+              description: 'List of Tags for this Page'
+              title: 'Tags'
+              type: array
+              items:
+                $ref: '#/components/schemas/Tag'
+          required:
+            - data
+
     Tenant:
       title: 'Tenant'
       description: 'Tenant is a special model that usually represents user or
@@ -759,6 +786,13 @@ components:
         application/vnd.api+json:
           schema:
             $ref: '#/components/schemas/User'
+
+    Tags:
+      description: 'Response with Tags'
+      content:
+        application/vnd.api+json:
+          schema:
+            $ref: '#/components/schemas/TagsPage'
 
     Unauthorized:
       description: 'Unauthorized (401)'
