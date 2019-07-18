@@ -297,6 +297,39 @@ components:
         - detail
         - status
 
+    Namespace:
+      title: 'Namespace'
+      description: 'An Ansible content Namespace'
+      type: object
+      properties:
+        name:
+          $ref: '#/components/schemas/NamespaceName'
+      required:
+       - name
+
+    NamespaceName:
+      title: 'NamespaceName'
+      description: 'Namespace name. Must be lower case containing only alphanumeric characters and underscores'
+      type: string
+      maxLength: 64
+      example: 'my_namespace'
+      pattern: '^(?!.*__)[a-z]+[0-9a-z_]*$'
+
+    NamespacesPage:
+      description: "A Page of a list of Namespaces"
+      allOf:
+        - $ref: '#/components/schemas/PageInfo'
+        - type: object
+          properties:
+            data:
+              description: 'List of Namespaces for this Page'
+              title: 'Namespaces'
+              type: array
+              items:
+                $ref: '#/components/schemas/Namespace'
+          required:
+            - data
+
     PageCount:
       description: 'The number of items in this Page'
       type: integer
@@ -354,6 +387,18 @@ components:
           $ref: '#/components/schemas/PageCount'
       required:
         - count
+
+    Tenant:
+      title: 'Tenant'
+      description: 'Tenant is a special model that usually represents user or
+                    group (organization). It allows configuring objects permissions
+                    or ownership more flexibly.'
+      type: object
+
+    User:
+      title: 'User'
+      description: 'Automation Hub User'
+      type: object
 
   parameters:
 
