@@ -176,7 +176,7 @@ paths:
         '200':
           description: The requested Collection Import
         'default':
-          description: Error'
+          description: Error
 
   '/namespaces/':
     get:
