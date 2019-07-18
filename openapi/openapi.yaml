@@ -247,6 +247,55 @@ paths:
           description: Error
 components:
   schemas:
+    Error:
+      title: 'Error'
+      description: "A JSON API Error object"
+      type: object
+      externalDocs:
+        description: 'JSON API Error Specification'
+        url: 'https://jsonapi.org/format/#errors'
+      properties:
+        errors:
+          type: array
+          title: 'ErrorItems'
+          items:
+            $ref: '#/components/schemas/ErrorItem'
+          minItems: 1
+      required:
+        - errors
+
+    ErrorItem:
+      title: 'ErrorItem'
+      description: 'An item returned in the Error "errors" value'
+      externalDocs:
+        description: 'JSON API Error Specification'
+        url: 'https://jsonapi.org/format/#errors'
+      type: object
+      properties:
+        code:
+          description: 'Unique identifier for the error'
+          type: string
+          example: 'not_found'
+        detail:
+          type: string
+          description: 'Error detail'
+          example: 'Record not found.'
+        status:
+          type: string
+          description: 'String representation of HTTP status code'
+          example: '404'
+        source:
+          type: object
+          properties:
+            parameter:
+              description: 'A string indicating which URI query parameter caused the error.'
+              type: string
+            pointer:
+              description: 'A JSON Pointer [RFC6901] to the associated entity in the request document '
+              type: string
+      required:
+        - detail
+        - status
 
     PageCount:
       description: 'The number of items in this Page'
@@ -307,6 +356,7 @@ components:
         - count
 
   parameters:
+
     PageLimit:
       description: 'Number of results to return per page.'
       in: query
