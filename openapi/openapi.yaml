@@ -599,7 +599,7 @@ components:
     Collection:
       description: 'A Collection body'
       content:
-        application/json:
+        application/vnd.api+json:
           schema:
             $ref: '#/components/schemas/Collection'
 
@@ -613,7 +613,7 @@ components:
     Namespace:
       description: "A Namespace body"
       content:
-        application/json:
+        application/vnd.api+json:
           schema:
             $ref: '#/components/schemas/Namespace'
 
@@ -621,21 +621,21 @@ components:
     Collections:
       description: 'Response containing a page of Collections'
       content:
-        application/json:
+        application/vnd.api+json:
           schema:
             $ref: '#/components/schemas/CollectionsPage'
 
     CollectionVersion:
       description: 'Response contain a CollectionVersion'
       content:
-        application/json:
+        application/vnd.api+json:
           schema:
             $ref: '#/components/schemas/CollectionVersion'
 
     CollectionVersions:
       description: 'Response containing a page of CollectionVersions'
       content:
-        application/json:
+        application/vnd.api+json:
           schema:
             $ref: '#/components/schemas/CollectionVersionsPage'
 
@@ -652,21 +652,21 @@ components:
     CollectionImportAccepted:
       description: 'Result of an accepted collection import. Includes the url of the import task'
       content:
-        application/json:
+        application/vnd.api+json:
           schema:
             $ref: '#/components/schemas/CollectionCreationResult'
 
     CollectionUpdateAccepted:
       description: 'Result of an accepted collection update.'
       content:
-        application/json:
+        application/vnd.api+json:
           schema:
             $ref: '#/components/schemas/Collection'
 
     Conflict:
       description: 'Conflict Error'
       content:
-        application/json:
+        application/vnd.api+json:
           schema:
             $ref: '#/components/schemas/Error'
 
@@ -676,14 +676,14 @@ components:
     Namespace:
       description: 'Result of creating a Namespace'
       content:
-        application/json:
+        application/vnd.api+json:
           schema:
             $ref: '#/components/schemas/Namespace'
 
     Namespaces:
       description: 'Response containing a Page of a list of Namespaces'
       content:
-        application/json:
+        application/vnd.api+json:
           schema:
             $ref: '#/components/schemas/NamespacesPage'
 
