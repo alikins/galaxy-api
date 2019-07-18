@@ -147,9 +147,11 @@ paths:
       operationId: downloadCollection
       tags:
         - Downloads
+      parameters:
+        - $ref: '#/components/parameters/CollectionVersionArtifactFilename'
       responses:
         '200':
-          description: The requested Collection Artifact file binary
+          $ref: '#/components/responses/CollectionVersionArtifactDownload'
         'default':
           description: Error
 
@@ -629,6 +631,14 @@ components:
       schema:
         type: string
         pattern: ^(?!.*__)[a-z]+[0-9a-z_]*$'
+
+    CollectionVersionArtifactFilename:
+      description: 'CollectionVersion artifact filename'
+      in: path
+      name: filename
+      required: true
+      schema:
+        type: string
 
     PageLimit:
       description: 'Number of results to return per page.'
