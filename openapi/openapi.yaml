@@ -1,0 +1,33 @@
+info:
+  description: 'Automation Hub'
+  title: 'Automation Hub API'
+  version: "0.0.1"
+  contact:
+    url: https://github.com/ansible/galaxy-dev/issues
+    name: 'Ansible galaxy-dev Issues'
+
+openapi: 3.0.0
+
+servers:
+  - url: http://localhost:5001/api/v3
+    description: 'local dev server'
+
+externalDocs:
+  description: 'General docs about Ansible Galaxy'
+  url: https://galaxy.ansible.com/docs/
+
+paths:
+  '/':
+    get:
+      summary: 'Get info about the API'
+      operationId: GetAPI
+      parameters: []
+      responses:
+        '200':
+          description: 'A map of endpoints in the API'
+          content:
+            application/vnd.api+json:
+              schema:
+                type: object
+                additionalProperties:
+                  type: string
