@@ -21,7 +21,7 @@ paths:
         '200':
           description: A paginated list of namespaces
         'default':
-          description: Error
+          $ref: '#/components/responses/Error'
     post:
       summary: Create a namespace
       tags:
@@ -30,7 +30,7 @@ paths:
         '201':
           description: Namespace created successfully
         'default':
-          description: Error
+          $ref: '#/components/responses/Error'
 
   '/namespaces/{name}/':
     get:
@@ -42,7 +42,7 @@ paths:
         '200':
           description: The requested Namespace
         'default':
-          description: Error
+          $ref: '#/components/responses/Error'
     put:
       summary: Update Namespace
       operationId: updateNamespace
@@ -52,7 +52,7 @@ paths:
         '200':
           description: Namespace updated successfully
         'default':
-          description: Error
+          $ref: '#/components/responses/Error'
     delete:
       summary: Delete Namespace
       operationId: deleteNamespace
@@ -62,7 +62,7 @@ paths:
         '204':
           description: Namespace deleted successfully
         'default':
-          description: Error
+          $ref: '#/components/responses/Error'
 
 # -------------------------------------
 # Collections
@@ -77,7 +77,7 @@ paths:
         '200':
           description: A paginated list of collections
         'default':
-          description: Error
+          $ref: '#/components/responses/Error'
     post:
       summary: Upload Collection
       operationId: uploadCollection
@@ -94,8 +94,7 @@ paths:
         '200':
           description: The requested Collection
         'default':
-          description: Error
-
+          $ref: '#/components/responses/Error'
 
     put:
       summary: Update Collection
@@ -113,7 +112,7 @@ paths:
         '200':
           description: A paginated list of Collection Versions
         'default':
-          description: Error
+          $ref: '#/components/responses/Error'
 
   '/collections/{namespace}/{name}/versions/{version}/':
     get:
@@ -125,7 +124,7 @@ paths:
         '200':
           description: The requested Collection Version
         'default':
-          description: Error
+          $ref: '#/components/responses/Error'
 
   '/collections/{namespace}/{name}/versions/{version}/artifact/':
     get:
@@ -137,7 +136,7 @@ paths:
         '200':
           description: The requested Collection Version Artifact
         'default':
-          description: Error
+          $ref: '#/components/responses/Error'
 
 # -------------------------------------
 # Imports
@@ -152,7 +151,7 @@ paths:
         '200':
           description: A paginated list of Collection Imports
         'default':
-          description: Error
+          $ref: '#/components/responses/Error'
 
   '/imports/collections/{id}/':
     get:
@@ -164,7 +163,7 @@ paths:
         '200':
           description: The requested Collection Import
         'default':
-          description: Error
+          $ref: '#/components/responses/Error'
 
 # -------------------------------------
 # Downloads
@@ -189,7 +188,7 @@ paths:
         '200':
           description: A paginated list of Collections
         'default':
-          description: Error
+          $ref: '#/components/responses/Error'
 
   '/search/tags/':
     get:
@@ -201,7 +200,7 @@ paths:
         '200':
           description: A paginated list of Tags
         'default':
-          description: Error
+          $ref: '#/components/responses/Error'
 
 # -------------------------------------
 # Users
@@ -216,7 +215,7 @@ paths:
         '200':
           description: A paginated list of Users
         'default':
-          description: Error
+          $ref: '#/components/responses/Error'
 
 
   '/users/{id}/':
@@ -229,7 +228,7 @@ paths:
         '200':
           description: The requested User
         'default':
-          description: Error
+          $ref: '#/components/responses/Error'
 
 
 # -------------------------------------
@@ -246,4 +245,64 @@ paths:
         '200':
           description: The current User
         'default':
-          description: Error
+          $ref: '#/components/responses/Error'
+
+components:
+  schemas:
+    Error:
+      title: 'Error'
+      description: "A JSON API Error object"
+      type: object
+      externalDocs:
+        description: 'JSON API Error Specification'
+        url: 'https://jsonapi.org/format/#errors'
+      properties:
+        errors:
+          type: array
+          title: 'ErrorItems'
+          items:
+            $ref: '#/components/schemas/ErrorItem'
+          minItems: 1
+      required:
+        - errors
+
+    ErrorItem:
+      title: 'ErrorItem'
+      description: 'An item returned in the Error "errors" value'
+      externalDocs:
+        description: 'JSON API Error Specification'
+        url: 'https://jsonapi.org/format/#errors'
+      type: object
+      properties:
+        code:
+          description: 'Unique identifier for the error'
+          type: string
+          example: 'not_found'
+        detail:
+          type: string
+          description: 'Error detail'
+          example: 'Record not found.'
+        status:
+          type: string
+          description: 'String representation of HTTP status code'
+          example: '404'
+        source:
+          type: object
+          properties:
+            parameter:
+              description: 'A string indicating which URI query parameter caused the error.'
+              type: string
+            pointer:
+              description: 'A JSON Pointer [RFC6901] to the associated entity in the request document '
+              type: string
+      required:
+        - detail
+        - status
+
+  responses:
+    Error:
+      description: 'Error'
+      content:
+        application/vnd.api+json:
+          schema:
+            $ref: '#/components/schemas/Error'
