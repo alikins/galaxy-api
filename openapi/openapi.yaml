@@ -161,7 +161,7 @@ paths:
         - Imports
       responses:
         '200':
-          description: 'A paginated list of Collection Imports'
+          $ref: '#/components/responses/CollectionImports'
         'default':
           description: Error
 
@@ -169,11 +169,13 @@ paths:
     get:
       summary: Get Collection Import
       operationId: getCollectionImport
+      parameters:
+        - $ref: '#/components/parameters/CollectionImportId'
       tags:
         - Imports
       responses:
         '200':
-          description: The requested Collection Import
+          $ref: '#/components/responses/CollectionImport'
         'default':
           description: Error
 
@@ -329,6 +331,27 @@ components:
           description: 'The url for the queued collection import task. Check it for progress and status.'
           type: string
           format: uri
+
+    CollectionImport:
+      description: 'Collection import'
+      title: 'CollectionImport'
+      type: object
+      # TODO: unknown schema yet
+
+    CollectionImportsPage:
+      description: 'A page of a list of CollectionImports'
+      allOf:
+        - $ref: '#/components/schemas/PageInfo'
+        - type: object
+          properties:
+            data:
+              description: 'List of CollectionImports for this Page'
+              title: 'CollectionImports'
+              type: array
+              items:
+                $ref: '#/components/schemas/CollectionImport'
+          required:
+            - data
 
     CollectionsPage:
       description: 'A page of a list of Collections'
@@ -539,6 +562,14 @@ components:
       type: object
 
   parameters:
+    CollectionImportId:
+      description: 'A unique integer value identifying a collection import.'
+      in: path
+      name: id
+      required: true
+      schema:
+        type: string
+
     CollectionNamespaceName:
       description: 'The collection namespace name'
       in: path
@@ -622,6 +653,20 @@ components:
         application/vnd.api+json:
           schema:
             $ref: '#/components/schemas/CollectionsPage'
+
+    CollectionImport:
+      description: The requested Collection Import
+      content:
+        application/vnd.api+json:
+          schema:
+            $ref: '#/components/schemas/CollectionImport'
+
+    CollectionImports:
+      description: Collection Imports
+      content:
+        application/vnd.api+json:
+          schema:
+            $ref: '#/components/schemas/CollectionImportsPage'
 
     CollectionVersion:
       description: 'Response contain a CollectionVersion'
