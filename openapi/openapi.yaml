@@ -157,9 +157,11 @@ paths:
       tags:
         - namespaces
       parameters: []
+      requestBody:
+        $ref: '#/components/requestBodies/Namespace'
       responses:
         '201':
-          description: Result of Namespace creation
+            $ref: '#/components/responses/Namespace'
         'default':
           description: Error
 
@@ -171,16 +173,18 @@ paths:
         - namespaces
       responses:
         '200':
-          description: The requested Namespace
+            $ref: '#/components/responses/Namespace'
         'default':
           description: Error
 
     delete:
       summary: 'Delete a Namespace'
       operationId: deleteNamespace
+      parameters:
+        - $ref: '#/components/parameters/NamespaceName'
       responses:
         '204':
-          description: Succesfule Namespace deletion
+          $ref: '#/components/responses/DeleteSuccessful'
         'default':
           description: Error
       tags:
@@ -299,6 +303,75 @@ components:
         - detail
         - status
 
+    Namespace:
+      title: 'Namespace'
+      description: 'An Ansible content Namespace'
+      type: object
+      properties:
+        name:
+          $ref: '#/components/schemas/NamespaceName'
+        company:
+          description: 'Optional namespace owner company name'
+          type: string
+          maxLength: 64
+          nullable: true
+        email:
+          description: 'Optional namespace contact email'
+          type: string
+          format: email
+          maxLength: 256
+          nullable: true
+        avatar_url:
+          description: 'Namespace brief description'
+          type: string
+          format: uri
+          maxLength: 256
+          nullable: true
+        description:
+          description: 'Namespace brief description'
+          type: string
+          maxLength: 256
+          nullable: true
+        resources_page:
+          description: 'Namespace resources page in markdown format'
+          type: string
+          nullable: true
+        resource_page_html:
+          description: 'HTML representation of a resources Page'
+          type: string
+          nullable: true
+        owners:
+          type: array
+          title: 'Owners'
+          items:
+            $ref: '#/components/schemas/Tenant'
+
+      required:
+       - name
+
+    NamespaceName:
+      title: 'NamespaceName'
+      description: 'Namespace name. Must be lower case containing only alphanumeric characters and underscores'
+      type: string
+      maxLength: 64
+      example: 'my_namespace'
+      pattern: '^(?!.*__)[a-z]+[0-9a-z_]*$'
+
+    NamespacesPage:
+      description: "A Page of a list of Namespaces"
+      allOf:
+        - $ref: '#/components/schemas/PageInfo'
+        - type: object
+          properties:
+            data:
+              description: 'List of Namespaces for this Page'
+              title: 'Namespaces'
+              type: array
+              items:
+                $ref: '#/components/schemas/Namespace'
+          required:
+            - data
+
     PageCount:
       description: 'The number of items in this Page'
       type: integer
@@ -357,6 +430,63 @@ components:
       required:
         - count
 
+    Tenant:
+      title: 'Tenant'
+      description: 'Tenant is a special model that usually represents user or
+                    group (organization). It allows configuring objects permissions
+                    or ownership more flexibly.'
+      type: object
+      properties:
+        name:
+          description: "Tenant name"
+          type: string
+          maxLength: 150
+        users:
+          title: 'Users'
+          description: 'Many to many relationship with users.'
+          type: array
+          items:
+            $ref: '#/components/schemas/User'
+      required:
+        - name
+        - users
+
+    User:
+      title: 'User'
+      description: 'Automation Hub User'
+      type: object
+      properties:
+        email:
+          maxLength: 256
+          nullable: true
+          type: string
+          format: email
+        # TODO: verify these are correct with new API
+        first_name:
+          maxLength: 30
+          type: string
+        last_name:
+          maxLength: 30
+          type: string
+        is_active:
+          readOnly: true
+          type: boolean
+        is_staff:
+          readOnly: true
+          type: boolean
+        is_superuser:
+          readOnly: true
+          type: boolean
+        username:
+          description: >-
+            Required. 30 characters or fewer. Letters, numbers and
+            @/./+/-/_ characters
+          maxLength: 30
+          pattern: '^[a-zA-Z0-9_.@+-]+$'
+          type: string
+      required:
+        - username
+
   parameters:
 
     PageLimit:
@@ -379,3 +509,57 @@ components:
         type: integer
         default: 0
         minimum: 0
+
+    NamespaceName:
+      description: 'Namespace name'
+      in: path
+      name: name
+      required: true
+      schema:
+        type: string
+
+  requestBodies:
+
+    Namespace:
+      description: "A Namespace body"
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Namespace'
+
+  responses:
+
+    DeleteSuccessful:
+      description: 'A DELETE operation was successful'
+
+    Namespace:
+      description: 'Result of creating a Namespace'
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Namespace'
+
+    Namespaces:
+      description: 'Response containing a Page of a list of Namespaces'
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/NamespacesPage'
+
+    NotFound:
+      description: 'Not Found (404)'
+      content:
+        application/vnd.api+json:
+          schema:
+            $ref: '#/components/schemas/Error'
+
+    Unauthorized:
+      description: 'Unauthorized (401)'
+      headers:
+        WWW-Authenticate:
+          schema:
+            type: string
+      content:
+        application/vnd.api+json:
+          schema:
+            $ref: '#/components/schemas/Error'
