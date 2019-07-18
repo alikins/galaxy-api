@@ -265,7 +265,7 @@ paths:
         - Users
       responses:
         '200':
-          description: A paginated list of Users
+          $ref: '#/components/responses/Users'
         'default':
           description: Error
 
@@ -277,7 +277,7 @@ paths:
         - Users
       responses:
         '200':
-          description: The requested User
+          $ref: '#/components/responses/User'
         'default':
           description: Error
 
@@ -290,7 +290,7 @@ paths:
         - Profile
       responses:
         '200':
-          description: The current User
+          $ref: '#/components/responses/User'
         'default':
           description: Error
 components:
@@ -561,6 +561,22 @@ components:
       description: 'Automation Hub User'
       type: object
 
+    UsersPage:
+      description: "A Page of a list of Users"
+      allOf:
+        - $ref: '#/components/schemas/PageInfo'
+        - type: object
+          properties:
+            data:
+              description: 'List of Users for this Page'
+              title: 'Users'
+              type: array
+              items:
+                $ref: '#/components/schemas/User'
+          required:
+            - data
+
+
   parameters:
     CollectionImportId:
       description: 'A unique integer value identifying a collection import.'
@@ -737,6 +753,13 @@ components:
           schema:
             $ref: '#/components/schemas/Error'
 
+    Profile:
+      description: 'Response with the current User'
+      content:
+        application/vnd.api+json:
+          schema:
+            $ref: '#/components/schemas/User'
+
     Unauthorized:
       description: 'Unauthorized (401)'
       headers:
@@ -747,3 +770,17 @@ components:
         application/vnd.api+json:
           schema:
             $ref: '#/components/schemas/Error'
+
+    User:
+      description: 'Response with an User'
+      content:
+        application/vnd.api+json:
+          schema:
+            $ref: '#/components/schemas/User'
+
+    Users:
+      description: 'Response containing a Page of a list of Users'
+      content:
+        application/vnd.api+json:
+          schema:
+            $ref: '#/components/schemas/UsersPage'
