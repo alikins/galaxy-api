@@ -578,3 +578,129 @@ components:
         type: integer
         default: 0
         minimum: 0
+
+    SemanticVersion:
+      description: 'A Semantic Version string'
+      in: path
+      name: version
+      required: true
+      schema:
+        $ref: '#/components/schemas/SemanticVersion'
+
+    NamespaceName:
+      description: 'Namespace name'
+      in: path
+      name: name
+      required: true
+      schema:
+        type: string
+
+  requestBodies:
+    Collection:
+      description: 'A Collection body'
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Collection'
+
+    CollectionVersionArtifactBody:
+      description: "A multipart/form encoded payload including the binary collection artifact file contents and it's sha256sum"
+      content:
+        multipart/form-data:
+          schema:
+            $ref: '#/components/schemas/CollectionVersionArtifactData'
+
+    Namespace:
+      description: "A Namespace body"
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Namespace'
+
+  responses:
+    Collections:
+      description: 'Response containing a page of Collections'
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/CollectionsPage'
+
+    CollectionVersion:
+      description: 'Response contain a CollectionVersion'
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/CollectionVersion'
+
+    CollectionVersions:
+      description: 'Response containing a page of CollectionVersions'
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/CollectionVersionsPage'
+
+    CollectionVersionArtifactDownload:
+      description: 'The collection artifact file binary contents'
+      content:
+        application/octet-stream:
+          schema:
+            title: 'CollectionVersionArtifactDownload'
+            description: 'The collection artifact file binary contents'
+            type: string
+            format: binary
+
+    CollectionImportAccepted:
+      description: 'Result of an accepted collection import. Includes the url of the import task'
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/CollectionCreationResult'
+
+    CollectionUpdateAccepted:
+      description: 'Result of an accepted collection update.'
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Collection'
+
+    Conflict:
+      description: 'Conflict Error'
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+
+    DeleteSuccessful:
+      description: 'A DELETE operation was successful'
+
+    Namespace:
+      description: 'Result of creating a Namespace'
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Namespace'
+
+    Namespaces:
+      description: 'Response containing a Page of a list of Namespaces'
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/NamespacesPage'
+
+    NotFound:
+      description: 'Not Found (404)'
+      content:
+        application/vnd.api+json:
+          schema:
+            $ref: '#/components/schemas/Error'
+
+    Unauthorized:
+      description: 'Unauthorized (401)'
+      headers:
+        WWW-Authenticate:
+          schema:
+            type: string
+      content:
+        application/vnd.api+json:
+          schema:
+            $ref: '#/components/schemas/Error'
