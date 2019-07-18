@@ -49,9 +49,7 @@ paths:
         - collections
       responses:
         '200':
-          description: 'The requested Collection'
-        'default':
-          description: Error
+          $ref: '#/components/responses/Namespaces'
 
     put:
       summary: 'Update Collection'
@@ -144,9 +142,12 @@ paths:
       operationId: listNamespaces
       tags:
         - namespaces
+      parameters:
+        - $ref: '#/components/parameters/PageOffset'
+        - $ref: '#/components/parameters/PageLimit'
       responses:
         '200':
-          description: A paginated list of Namespaces
+          $ref: '#/components/responses/Namespaces'
         'default':
           description: Error
 
@@ -156,9 +157,11 @@ paths:
       tags:
         - namespaces
       parameters: []
+      requestBody:
+        $ref: '#/components/requestBodies/Namespace'
       responses:
         '201':
-          description: Result of Namespace creation
+            $ref: '#/components/responses/Namespace'
         'default':
           description: Error
 
@@ -170,16 +173,18 @@ paths:
         - namespaces
       responses:
         '200':
-          description: The requested Namespace
+            $ref: '#/components/responses/Namespace'
         'default':
           description: Error
 
     delete:
       summary: 'Delete a Namespace'
       operationId: deleteNamespace
+      parameters:
+        - $ref: '#/components/parameters/NamespaceName'
       responses:
         '204':
-          description: Succesfule Namespace deletion
+          $ref: '#/components/responses/DeleteSuccessful'
         'default':
           description: Error
       tags:
@@ -423,3 +428,56 @@ components:
         default: 0
         minimum: 0
 
+    NamespaceName:
+      description: 'Namespace name'
+      in: path
+      name: name
+      required: true
+      schema:
+        type: string
+
+  requestBodies:
+
+    Namespace:
+      description: "A Namespace body"
+      content:
+        application/vnd.api+json:
+          schema:
+            $ref: '#/components/schemas/Namespace'
+
+  responses:
+
+    DeleteSuccessful:
+      description: 'A DELETE operation was successful'
+
+    Namespace:
+      description: 'Result of creating a Namespace'
+      content:
+        application/vnd.api+json:
+          schema:
+            $ref: '#/components/schemas/Namespace'
+
+    Namespaces:
+      description: 'Response containing a Page of a list of Namespaces'
+      content:
+        application/vnd.api+json:
+          schema:
+            $ref: '#/components/schemas/NamespacesPage'
+
+    NotFound:
+      description: 'Not Found (404)'
+      content:
+        application/vnd.api+json:
+          schema:
+            $ref: '#/components/schemas/Error'
+
+    Unauthorized:
+      description: 'Unauthorized (401)'
+      headers:
+        WWW-Authenticate:
+          schema:
+            type: string
+      content:
+        application/vnd.api+json:
+          schema:
+            $ref: '#/components/schemas/Error'
