@@ -17,17 +17,232 @@ externalDocs:
   url: https://galaxy.ansible.com/docs/
 
 paths:
-  '/':
+
+  '/collections/':
     get:
-      summary: 'Get info about the API'
-      operationId: GetAPI
+      summary: 'Get a list of the Collections'
+      operationId: getCollections
+      tags:
+        - collections
+      responses:
+        '200':
+          description: The requested Collections
+        'default':
+          description: Error
+
+    post:
+      summary: 'Upload Collection Artifact'
+      operationId: uploadCollectionVersionArtifact
+      tags:
+        - collections
+      parameters: []
+      responses:
+        '202':
+          description: Upload Collection result
+        'default':
+          description: Error
+
+  '/collections/{namespace}/{name}/':
+    get:
+      summary: 'Get Collection'
+      operationId: getCollection
+      tags:
+        - collections
+      responses:
+        '200':
+          description: 'The requested Collection'
+        'default':
+          description: Error
+
+    put:
+      summary: 'Update Collection'
+      operationId: updateCollection
+      tags:
+        - collections
       parameters: []
       responses:
         '200':
-          description: 'A map of endpoints in the API'
-          content:
-            application/vnd.api+json:
-              schema:
-                type: object
-                additionalProperties:
-                  type: string
+          description: Update Collection Result
+        'default':
+          description: Error
+
+  '/collections/{namespace}/{name}/versions/':
+    get:
+      summary: 'List Collection Versions'
+      operationId: listCollectionVersions
+      tags:
+        - collections
+      responses:
+        '200':
+          description: A paginated list of CollectionVersions
+        'default':
+          description: Error
+
+  '/collections/{namespace}/{name}/versions/{version}/':
+    get:
+      summary: 'Get a CollectionVersion by namespace, name, and version'
+      operationId: getCollectionVersion
+      tags:
+        - collections
+      responses:
+        '200':
+          description: The requested CollectionVersion
+        'default':
+          description: Error
+
+  '/collections/{namespace}/{name}/versions/{version}/artifact/':
+    get:
+      summary: 'Get Collection Version Artifact'
+      operationId: getCollectionVersionArtifact
+      tags:
+        - collections
+      parameters: []
+      responses:
+        '200':
+          description: The requested Collection Version Artifact
+        'default':
+          description: Error
+
+  '/downloads/collections/{filename}':
+    get:
+      summary: Download Collection Artifact
+      operationId: downloadCollection
+      tags:
+        - Downloads
+      responses:
+        '200':
+          description: The requested Collection Artifact file binary
+        'default':
+          description: Error
+
+  '/imports/collections/':
+    get:
+      summary: List Collection Imports
+      operationId: listCollectionImports
+      tags:
+        - Imports
+      responses:
+        '200':
+          description: 'A paginated list of Collection Imports'
+        'default':
+          description: Error
+
+  '/imports/collections/{id}/':
+    get:
+      summary: Get Collection Import
+      operationId: getCollectionImport
+      tags:
+        - Imports
+      responses:
+        '200':
+          description: The requested Collection Import
+        'default':
+          description: Error
+
+  '/namespaces/':
+    get:
+      summary: 'List Namespaces'
+      operationId: listNamespaces
+      tags:
+        - namespaces
+      responses:
+        '200':
+          description: A paginated list of Namespaces
+        'default':
+          description: Error
+
+    post:
+      summary: 'Create a Namespace'
+      operationId: createNamespace
+      tags:
+        - namespaces
+      parameters: []
+      responses:
+        '201':
+          description: Result of Namespace creation
+        'default':
+          description: Error
+
+  '/namespaces/{name}/':
+    get:
+      summary: 'Get a Namespace'
+      operationId: getNamespace
+      tags:
+        - namespaces
+      responses:
+        '200':
+          description: The requested Namespace
+        'default':
+          description: Error
+
+    delete:
+      summary: 'Delete a Namespace'
+      operationId: deleteNamespace
+      responses:
+        '204':
+          description: Succesfule Namespace deletion
+        'default':
+          description: Error
+      tags:
+        - namespaces
+
+  '/search/collections/':
+    get:
+      summary: Search Collections
+      operationId: searchCollections
+      tags:
+        - Search
+      responses:
+        '200':
+          description: A paginated list of Collections
+        'default':
+          description: Error
+
+  '/search/tags/':
+    get:
+      summary: Search Tags
+      operationId: searchTags
+      tags:
+        - Search
+      responses:
+        '200':
+          description: A paginated list of Tags
+        'default':
+          description: Error
+
+  '/users/':
+    get:
+      summary: List Users
+      operationId: listUsers
+      tags:
+        - Users
+      responses:
+        '200':
+          description: A paginated list of Users
+        'default':
+          description: Error
+
+  '/users/{id}/':
+    get:
+      summary: Get User
+      operationId: getUser
+      tags:
+        - Users
+      responses:
+        '200':
+          description: The requested User
+        'default':
+          description: Error
+
+  '/profile/':
+    get:
+      summary: Get Profile
+      operationId: getProfile
+      description: Returns information about the current User.
+      tags:
+        - Profile
+      responses:
+        '200':
+          description: The current User
+        'default':
+          description: Error
