@@ -438,42 +438,6 @@ components:
       properties:
         name:
           $ref: '#/components/schemas/NamespaceName'
-        company:
-          description: 'Optional namespace owner company name'
-          type: string
-          maxLength: 64
-          nullable: true
-        email:
-          description: 'Optional namespace contact email'
-          type: string
-          format: email
-          maxLength: 256
-          nullable: true
-        avatar_url:
-          description: 'Namespace brief description'
-          type: string
-          format: uri
-          maxLength: 256
-          nullable: true
-        description:
-          description: 'Namespace brief description'
-          type: string
-          maxLength: 256
-          nullable: true
-        resources_page:
-          description: 'Namespace resources page in markdown format'
-          type: string
-          nullable: true
-        resource_page_html:
-          description: 'HTML representation of a resources Page'
-          type: string
-          nullable: true
-        owners:
-          type: array
-          title: 'Owners'
-          items:
-            $ref: '#/components/schemas/Tenant'
-
       required:
        - name
 
@@ -570,56 +534,11 @@ components:
                     group (organization). It allows configuring objects permissions
                     or ownership more flexibly.'
       type: object
-      properties:
-        name:
-          description: "Tenant name"
-          type: string
-          maxLength: 150
-        users:
-          title: 'Users'
-          description: 'Many to many relationship with users.'
-          type: array
-          items:
-            $ref: '#/components/schemas/User'
-      required:
-        - name
-        - users
 
     User:
       title: 'User'
       description: 'Automation Hub User'
       type: object
-      properties:
-        email:
-          maxLength: 256
-          nullable: true
-          type: string
-          format: email
-        # TODO: verify these are correct with new API
-        first_name:
-          maxLength: 30
-          type: string
-        last_name:
-          maxLength: 30
-          type: string
-        is_active:
-          readOnly: true
-          type: boolean
-        is_staff:
-          readOnly: true
-          type: boolean
-        is_superuser:
-          readOnly: true
-          type: boolean
-        username:
-          description: >-
-            Required. 30 characters or fewer. Letters, numbers and
-            @/./+/-/_ characters
-          maxLength: 30
-          pattern: '^[a-zA-Z0-9_.@+-]+$'
-          type: string
-      required:
-        - username
 
   parameters:
     CollectionNamespaceName:
