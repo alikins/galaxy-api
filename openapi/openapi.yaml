@@ -30,7 +30,7 @@ paths:
         '200':
           $ref: '#/components/responses/Collections'
         'default':
-          description: Error
+          $ref: '#/components/responses/Error'
 
     post:
       summary: 'Upload Collection Artifact'
@@ -48,11 +48,7 @@ paths:
         '409':
           $ref: '#/components/responses/Conflict'
         default:
-          description: 'Unexpected Error'
-          content:
-            application/vnd.api+json:
-              schema:
-                $ref: '#/components/schemas/Error'
+          $ref: '#/components/responses/Error'
 
   '/collections/{namespace}/{name}/':
     parameters:
@@ -71,7 +67,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/Collection'
         'default':
-          description: Error
+          $ref: '#/components/responses/Error'
 
     put:
       summary: 'Update Collection'
@@ -87,7 +83,7 @@ paths:
         '401':
           $ref: '#/components/responses/Unauthorized'
         'default':
-          description: Error
+          $ref: '#/components/responses/Error'
 
   '/collections/{namespace}/{name}/versions/':
     parameters:
@@ -105,7 +101,7 @@ paths:
         '200':
           $ref: '#/components/responses/CollectionVersions'
         'default':
-          description: Error
+          $ref: '#/components/responses/Error'
 
   '/collections/{namespace}/{name}/versions/{version}/':
     parameters:
@@ -122,7 +118,7 @@ paths:
         '200':
           $ref: '#/components/responses/CollectionVersion'
         'default':
-          description: Error
+          $ref: '#/components/responses/Error'
 
   '/collections/{namespace}/{name}/versions/{version}/artifact/':
     parameters:
@@ -139,7 +135,7 @@ paths:
         '200':
           description: The requested Collection Version Artifact
         'default':
-          description: Error
+          $ref: '#/components/responses/Error'
 
   '/downloads/collections/{filename}':
     get:
@@ -153,7 +149,7 @@ paths:
         '200':
           $ref: '#/components/responses/CollectionVersionArtifactDownload'
         'default':
-          description: Error
+          $ref: '#/components/responses/Error'
 
   '/imports/collections/':
     get:
@@ -165,7 +161,7 @@ paths:
         '200':
           $ref: '#/components/responses/CollectionImports'
         'default':
-          description: Error
+          $ref: '#/components/responses/Error'
 
   '/imports/collections/{id}/':
     get:
@@ -179,7 +175,7 @@ paths:
         '200':
           $ref: '#/components/responses/CollectionImport'
         'default':
-          description: Error
+          $ref: '#/components/responses/Error'
 
   '/namespaces/':
     get:
@@ -194,7 +190,7 @@ paths:
         '200':
           $ref: '#/components/responses/Namespaces'
         'default':
-          description: Error
+          $ref: '#/components/responses/Error'
 
     post:
       summary: 'Create a Namespace'
@@ -208,7 +204,7 @@ paths:
         '201':
             $ref: '#/components/responses/Namespace'
         'default':
-          description: Error
+          $ref: '#/components/responses/Error'
 
   '/namespaces/{name}/':
     get:
@@ -220,7 +216,7 @@ paths:
         '200':
             $ref: '#/components/responses/Namespace'
         'default':
-          description: Error
+          $ref: '#/components/responses/Error'
 
     delete:
       summary: 'Delete a Namespace'
@@ -231,7 +227,7 @@ paths:
         '204':
           $ref: '#/components/responses/DeleteSuccessful'
         'default':
-          description: Error
+          $ref: '#/components/responses/Error'
       tags:
         - namespaces
 
@@ -248,7 +244,7 @@ paths:
         '200':
           $ref: '#/components/responses/Collections'
         'default':
-          description: Error
+          $ref: '#/components/responses/Error'
 
   '/search/tags/':
     get:
@@ -263,7 +259,7 @@ paths:
         '200':
           $ref: '#/components/responses/Tags'
         'default':
-          description: Error
+          $ref: '#/components/responses/Error'
 
   '/users/':
     get:
@@ -275,7 +271,7 @@ paths:
         '200':
           $ref: '#/components/responses/Users'
         'default':
-          description: Error
+          $ref: '#/components/responses/Error'
 
   '/users/{id}/':
     get:
@@ -287,7 +283,7 @@ paths:
         '200':
           $ref: '#/components/responses/User'
         'default':
-          description: Error
+          $ref: '#/components/responses/Error'
 
   '/profile/':
     get:
@@ -300,7 +296,8 @@ paths:
         '200':
           $ref: '#/components/responses/User'
         'default':
-          description: Error
+          $ref: '#/components/responses/Error'
+
 components:
   schemas:
     Collection:
@@ -768,6 +765,13 @@ components:
 
     DeleteSuccessful:
       description: 'A DELETE operation was successful'
+
+    Error:
+      description: 'Error'
+      content:
+        application/vnd.api+json:
+          schema:
+            $ref: '#/components/schemas/Error'
 
     Namespace:
       description: 'Result of creating a Namespace'
