@@ -83,6 +83,11 @@ paths:
       operationId: uploadCollection
       tags:
         - Collections
+      responses:
+        '202':
+          description: Upload Collection result
+        'default':
+          $ref: '#/components/responses/Error'
 
   '/collections/{namespace}/{name}/':
     get:
@@ -101,6 +106,12 @@ paths:
       operationId: updateCollection
       tags:
         - Collections
+      responses:
+        '200':
+          description: Update Collection Result
+        'default':
+          $ref: '#/components/responses/Error'
+
 
   '/collections/{namespace}/{name}/versions/':
     get:
