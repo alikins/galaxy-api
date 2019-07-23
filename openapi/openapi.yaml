@@ -307,6 +307,6 @@ components:
     Errors:
       description: 'Errors'
       content:
-        application/vnd.api+json:
+        application/json:
           schema:
             $ref: '#/components/schemas/Errors'
