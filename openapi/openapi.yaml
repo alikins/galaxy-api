@@ -558,7 +558,7 @@ components:
       name: namespace
       required: true
       schema:
-        type: string
+        $ref: '#/components/schemas/NamespaceName'
 
     CollectionName:
       description: 'The collection name'
@@ -613,7 +613,7 @@ components:
       name: name
       required: true
       schema:
-        type: string
+        $ref: '#/components/schemas/NamespaceName'
 
   requestBodies:
     Collection:
