@@ -177,7 +177,7 @@ paths:
       - $ref: '#/components/parameters/CollectionName'
       - $ref: '#/components/parameters/SemanticVersion'
     get:
-      summary: Get Collection Version
+      summary: Get Collection Version Artifact
       operationId: getCollectionVersionArtifact
       tags:
         - Collections
