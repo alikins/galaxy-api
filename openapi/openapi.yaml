@@ -39,6 +39,13 @@ paths:
           $ref: '#/components/responses/Errors'
 
   '/namespaces/{name}/':
+    parameters:
+      - description: 'Namespace name'
+        in: path
+        name: name
+        required: true
+        schema:
+          $ref: '#/components/schemas/NamespaceName'
     get:
       summary: Get Namespace
       operationId: getNamespace
@@ -606,14 +613,6 @@ components:
       required: true
       schema:
         $ref: '#/components/schemas/SemanticVersion'
-
-    NamespaceName:
-      description: 'Namespace name'
-      in: path
-      name: name
-      required: true
-      schema:
-        $ref: '#/components/schemas/NamespaceName'
 
   requestBodies:
     Collection:
