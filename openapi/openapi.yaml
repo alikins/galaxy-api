@@ -93,7 +93,7 @@ paths:
         - Collections
       responses:
         '200':
-          $ref: '#/components/responses/Collections'
+          $ref: '#/components/responses/CollectionList'
         'default':
           $ref: '#/components/responses/Errors'
     post:
@@ -157,7 +157,7 @@ paths:
         - $ref: '#/components/parameters/PageLimit'
       responses:
         '200':
-          $ref: '#/components/responses/CollectionVersions'
+          $ref: '#/components/responses/CollectionVersionList'
         'default':
           $ref: '#/components/responses/Errors'
 
@@ -642,12 +642,6 @@ components:
             $ref: '#/components/schemas/Namespace'
 
   responses:
-    Collections:
-      description: 'Response containing a page of Collections'
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/CollectionsPage'
 
     Collection:
       description: 'Response containing a Collection'
@@ -656,6 +650,13 @@ components:
           schema:
             $ref: '#/components/schemas/Collection'
 
+    CollectionList:
+      description: 'Response containing a page of Collections'
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/CollectionsPage'
+
     CollectionVersion:
       description: 'Response contain a CollectionVersion'
       content:
@@ -663,7 +664,7 @@ components:
           schema:
             $ref: '#/components/schemas/CollectionVersion'
 
-    CollectionVersions:
+    CollectionVersionList:
       description: 'Response containing a page of CollectionVersions'
       content:
         application/json:
