@@ -324,11 +324,6 @@ components:
           type: string
           maxLength: 64
           readOnly: true
-        remote_id:
-          description: 'Collection ID in remote database'
-          type: string
-          format: uuid
-          readOnly: true
         namespace:
           $ref: '#/components/schemas/Namespace'
       required:
