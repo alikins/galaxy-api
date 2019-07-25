@@ -329,10 +329,6 @@ components:
           type: string
           format: uuid
           readOnly: true
-        quality_score:
-          type: number
-          format: float
-          nullable: true
         namespace:
           $ref: '#/components/schemas/Namespace'
       required:
