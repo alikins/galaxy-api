@@ -314,17 +314,7 @@ paths:
 # -------------------------------------
 # Search
 # -------------------------------------
-  '/search/collections/':
-    get:
-      summary: Search Collections
-      operationId: searchCollections
-      tags:
-        - Search
-      responses:
-        '200':
-          description: A paginated list of Collections
-        'default':
-          $ref: '#/components/responses/Errors'
+
 
   '/search/tags/':
     get:
