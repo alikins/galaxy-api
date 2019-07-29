@@ -264,7 +264,7 @@ paths:
   '/_ui/collections/':
     get:
       summary: List Collections (UI)
-      operationId: listCollectionsUi
+      operationId: listUiCollections
       parameters:
         - $ref: '#/components/parameters/PageOffset'
         - $ref: '#/components/parameters/PageLimit'
@@ -276,7 +276,7 @@ paths:
         - Collections
       responses:
         '200':
-          $ref: '#/components/responses/CollectionUiList'
+          $ref: '#/components/responses/UiCollectionList'
         'default':
           $ref: '#/components/responses/Errors'
 
@@ -286,25 +286,25 @@ paths:
       - $ref: '#/components/parameters/CollectionName'
     get:
       summary: Get Collection (UI)
-      operationId: getCollectionUi
+      operationId: getUiCollection
       tags:
         - Collections
       responses:
         '200':
-          description: 'A detailed collection object for the ui'
+          $ref: '#/components/responses/UiCollection'
         'default':
             $ref: '#/components/responses/Errors'
     put:
       summary: Update Collection (UI)
-      operationId: updateCollectionUi
+      operationId: updateUiCollection
       tags:
         - Collections
       parameters: []
       requestBody:
-        $ref: '#/components/requestBodies/CollectionUi'
+        $ref: '#/components/requestBodies/UiCollection'
       responses:
         '200':
-          $ref: '#/components/responses/CollectionUiUpdateAccepted'
+          $ref: '#/components/responses/UiCollectionUpdateAccepted'
         '401':
           $ref: '#/components/responses/Unauthorized'
         'default':
@@ -543,8 +543,6 @@ components:
       example: 'my_collection'
       pattern: '^(?!.*__)[a-z]+[0-9a-z_]*$'
 
-
-
     CollectionsPage:
       description: 'A page of a list of Collections'
       allOf:
@@ -557,27 +555,6 @@ components:
               type: array
               items:
                 $ref: '#/components/schemas/Collection'
-          required:
-            - data
-
-    CollectionUi:
-      title: 'CollectionUi'
-      description: 'Detailed info about a collection used by the ui'
-      type: object
-      # TODO: add the properties
-
-    CollectionUisPage:
-      description: 'A page of a list of CollectionUis'
-      allOf:
-        - $ref: '#/components/schemas/PageInfo'
-        - type: object
-          properties:
-            data:
-              description: 'List of CollectionUi for this page'
-              title: 'CollectionUis'
-              type: array
-              items:
-                $ref: '#/components/schemas/CollectionUi'
           required:
             - data
 
@@ -999,6 +976,176 @@ components:
           required:
             - data
 
+    UiCollection:
+      title: 'UiCollection'
+      description: 'Detailed info about a collection used by the ui'
+      type: object
+      properties:
+        all_versions:
+          readOnly: true
+          type: array
+          items:
+            $ref: '#/components/schemas/UiCollectionVersion'
+        community_score:
+          nullable: true
+          type: number
+        community_survey_count:
+          type: integer
+        deprecated:
+          type: boolean
+        download_count:
+          type: integer
+        id:
+          readOnly: true
+          type: integer
+        latest_version:
+          $ref: '#/components/schemas/UiCollectionVersionDetail'
+        name:
+          maxLength: 64
+          type: string
+        namespace:
+          readOnly: true
+          $ref: '#/components/schemas/UiCollectionNamespace'
+        created:
+          format: date-time
+          readOnly: true
+          type: string
+        modified:
+          format: date-time
+          readOnly: true
+          type: string
+      required:
+        - name
+        - latest_version
+
+    UiCollectionContent:
+      description: 'The collection content returned by _ui'
+      type: object
+      properties:
+        module:
+          type: array
+          items:
+            type: object
+        role:
+          type: array
+          items:
+            type: object
+        plugin:
+          type: array
+          items:
+            type: object
+      required:
+        - module
+        - role
+        - plugin
+
+    UiCollectionNamespace:
+      description: 'The v1 style namespace returned by _ui'
+      type: object
+      properties:
+        active:
+          type: boolean
+        avatar_url:
+          maxLength: 256
+          nullable: true
+          type: string
+          format: uri
+        company:
+          maxLength: 256
+          nullable: true
+          type: string
+        description:
+          maxLength: 255
+          type: string
+        email:
+          maxLength: 256
+          nullable: true
+          type: string
+          format: email
+        html_url:
+          maxLength: 256
+          nullable: true
+          type: string
+          format: uri
+        id:
+          readOnly: true
+          type: integer
+        is_vendor:
+          type: boolean
+        location:
+          maxLength: 256
+          nullable: true
+          type: string
+        name:
+          maxLength: 512
+          type: string
+        owners:
+          items:
+            type: integer
+          type: array
+        created:
+          format: date-time
+          readOnly: true
+          type: string
+        modified:
+          format: date-time
+          readOnly: true
+          type: string
+      required:
+      - name
+      - owners
+
+    UiCollectionsPage:
+      description: 'A page of a list of UiCollections'
+      allOf:
+        - $ref: '#/components/schemas/PageInfo'
+        - type: object
+          properties:
+            data:
+              description: 'List of UiCollection for this page'
+              title: 'UiCollections'
+              type: array
+              items:
+                # TODO: get /_ui/collections returns a UiCollection with 'latest_version' as a list of VersionDetailSummary
+                # and get /ui/collections/{namespace}/{name} returns a UiCollection-ish object with 'latest_version' a list of VersionDetail
+                $ref: '#/components/schemas/UiCollection'
+          required:
+            - data
+
+    UiCollectionVersion:
+      type: object
+      properties:
+        pk:
+          type: integer
+        version:
+          type: string
+        quality_score:
+          type: number
+        modified:
+          description: 'Timestamp when this object was last modified.'
+          readOnly: true
+          type: string
+        created:
+          description: 'Timestamp when this object was created.'
+          readOnly: true
+          type: string
+
+    UiCollectionVersionDetail:
+      allOf:
+        - $ref: '#/components/schemas/UiCollectionVersion'
+        - type: object
+          properties:
+            contents:
+              type: object
+            metadata:
+              $ref: '#/components/schemas/CollectionVersionMetadata'
+            readme_html:
+              type: string
+          required:
+            - version
+            - metadata
+            - contents
+
     User:
       title: 'User'
       description: 'Automation Hub User'
@@ -1132,13 +1279,6 @@ components:
           schema:
             $ref: '#/components/schemas/Collection'
 
-    CollectionUi:
-      description: 'A CollectionUi body'
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/CollectionUi'
-
     CollectionVersionArtifactBody:
       description: >
         A multipart/form encoded payload including the binary
@@ -1155,6 +1295,13 @@ components:
           schema:
             $ref: '#/components/schemas/Namespace'
 
+    UiCollection:
+      description: 'A UiCollection body'
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/UiCollection'
+
   responses:
 
     Collection:
@@ -1170,13 +1317,6 @@ components:
         application/json:
           schema:
             $ref: '#/components/schemas/CollectionsPage'
-
-    CollectionUiList:
-      description: 'Response containing a page of CollectionUi'
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/CollectionUisPage'
 
     CollectionVersion:
       description: 'Response contain a CollectionVersion'
@@ -1224,13 +1364,6 @@ components:
         application/json:
           schema:
             $ref: '#/components/schemas/Collection'
-
-    CollectionUiUpdateAccepted:
-      description: 'Result of an accepted collection ui update.'
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/CollectionUi'
 
     Conflict:
       description: 'Conflict Error'
@@ -1287,6 +1420,27 @@ components:
         application/json:
           schema:
             $ref: '#/components/schemas/TagsPage'
+
+    UiCollection:
+      description: 'Response containing a UiCollection'
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/UiCollection'
+
+    UiCollectionList:
+      description: 'Response containing a page of UiCollection'
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/UiCollectionsPage'
+
+    UiCollectionUpdateAccepted:
+      description: 'Result of an accepted collection ui update.'
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/UiCollection'
 
     Unauthorized:
       description: 'Unauthorized (401)'
