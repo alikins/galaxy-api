@@ -160,6 +160,7 @@ paths:
       parameters:
         - $ref: '#/components/parameters/PageOffset'
         - $ref: '#/components/parameters/PageLimit'
+        - $ref: '#/components/parameters/Search'
       tags:
         - Collections
       responses:
@@ -803,6 +804,14 @@ components:
         type: integer
         default: 0
         minimum: 0
+
+    Search:
+      description: 'Term to search for'
+      in: query
+      name: search
+      required: false
+      schema:
+        type: string
 
     SemanticVersion:
       description: 'A Semantic Version string'
