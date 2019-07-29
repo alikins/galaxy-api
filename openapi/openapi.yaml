@@ -435,6 +435,12 @@ paths:
 
 components:
   schemas:
+    Author:
+      description: 'Author of a collection or role'
+      type: string
+      format: email
+      # TODO: add author validation pattern
+      example: 'Adrian Likins <alikins@redhat.com>'
 
     Collection:
       title: 'Collection'
@@ -448,7 +454,7 @@ components:
           maxLength: 64
           readOnly: true
         namespace:
-          $ref: '#/components/schemas/CollectionNamespace'
+          $ref: '#/components/schemas/NamespaceSummary'
         latest_version:
           $ref: '#/components/schemas/CollectionVersionLink'
         created:
@@ -484,18 +490,48 @@ components:
           type: string
           format: uri
 
-    CollectionNamespace:
+    CollectionImport:
+      description: 'Collection import'
+      title: 'CollectionImport'
       type: object
-      title: 'CollectionNamespace'
+      # TODO: unknown schema yet
+
+    CollectionSummary:
+      title: 'Collection Summary'
+      description: "A link to the collection summary"
+      type: object
       properties:
         name:
-          $ref: '#/components/schemas/NamespaceName'
+          $ref: '#/components/schemas/CollectionName'
         id:
           type: integer
         href:
-          description: 'link to the Namespace'
+          description: 'link to the Collection'
           type: string
           format: uri
+
+    CollectionImportsPage:
+      description: 'A page of a list of CollectionImports'
+      allOf:
+        - $ref: '#/components/schemas/PageInfo'
+        - type: object
+          properties:
+            data:
+              description: 'List of CollectionImports for this Page'
+              title: 'CollectionImports'
+              type: array
+              items:
+                $ref: '#/components/schemas/CollectionImport'
+          required:
+            - data
+
+    CollectionName:
+      description: 'The name of a Collection'
+      type: string
+      example: 'my_collection'
+      pattern: '^(?!.*__)[a-z]+[0-9a-z_]*$'
+
+
 
     CollectionsPage:
       description: 'A page of a list of Collections'
@@ -534,16 +570,45 @@ components:
             - data
 
     CollectionVersion:
-      description: 'Collection Version'
-      title: 'Collection Version'
       type: object
-      # TODO: unknown schema yet
+      properties:
+        artifact:
+          $ref: '#/components/schemas/CollectionVersionArtifact'
+        metadata:
+          $ref: '#/components/schemas/CollectionVersionMetadata'
+        hidden:
+          type: boolean
+        download_url:
+          type: string
+          format: uri
+        namespace:
+          $ref: '#/components/schemas/NamespaceSummary'
+        id:
+          type: integer
+        href:
+          type: string
+          format: uri
+        collection:
+          $ref: '#/components/schemas/CollectionSummary'
 
     CollectionVersionArtifact:
       description: 'Collection Version Artifact Details'
       title: 'Collection Version Artifact'
       type: object
-      # TODO: unknown schema yet
+      properties:
+        filename:
+          description: The artifacts filename
+          type: string
+        size:
+          description: The artifacts file size in bytes
+          type: integer
+        sha256:
+          description: 'The sha256sum of the collection artifact file'
+          type: string
+      required:
+        - filename
+        - size
+        - sha256
 
     CollectionVersionArtifactData:
       description: >
@@ -558,6 +623,15 @@ components:
           description: 'The binary contents of a collection artifact'
           type: string
           format: binary
+      required:
+        - file
+        - sha256
+
+    CollectionVersionDependencies:
+      description: 'A map of collection namespace.name to a semantic version'
+      type: object
+      additionalProperties:
+        $ref: '#/components/schemas/SemanticVersionSpec'
 
     CollectionVersionLink:
       title: 'Collection Version Link'
@@ -568,6 +642,70 @@ components:
           type: string
         version:
           $ref: '#/components/schemas/SemanticVersion'
+
+    CollectionVersionMetadata:
+      title: 'Metadata'
+      description: "The Collection Version metadata from collections galaxy.yml or MANIFEST.JSON"
+      type: object
+      properties:
+        documentation:
+          description: 'Documentation URL'
+          type: string
+          format: uri
+          nullable: true
+        description:
+          description: 'Description of the collection'
+          type: string
+          nullable: true
+        readme:
+          description: 'Name of file to use for README'
+          type: string
+          format: relative-file-path
+        repository:
+          description: 'SCM repository for collection'
+          type: string
+          format: uri
+          nullable: true
+        issues:
+          description: 'URL of issues or bug tracking'
+          type: string
+          format: uri
+          nullable: true
+        version:
+          $ref: '#/components/schemas/SemanticVersion'
+        license_file:
+          description: 'Name of file where license info can be found'
+          type: string
+          format: relative-file-path
+          nullable: true
+        tags:
+          type: array
+          items:
+            type: string
+        dependencies:
+          $ref: '#/components/schemas/CollectionVersionDependencies'
+        license:
+          description: 'A list of SPDX license ids'
+          type: array
+          items:
+            $ref: '#/components/schemas/SPDXLicenseId'
+        name:
+          $ref: '#/components/schemas/CollectionName'
+        namespace:
+          $ref: '#/components/schemas/NamespaceName'
+        authors:
+          title: 'Authors'
+          description: 'A list of collection authors'
+          type: array
+          items:
+            $ref: '#/components/schemas/Author'
+        homepage:
+          type: string
+          format: uri
+      required:
+        - namespace
+        - name
+        - version
 
     CollectionVersionsPage:
       description: 'A page of a list of CollectionVersions'
@@ -583,28 +721,6 @@ components:
                 $ref: '#/components/schemas/CollectionVersion'
           required:
             - data
-
-    CollectionImport:
-      description: 'Collection import'
-      title: 'CollectionImport'
-      type: object
-      # TODO: unknown schema yet
-
-    CollectionImportsPage:
-      description: 'A page of a list of CollectionImports'
-      allOf:
-        - $ref: '#/components/schemas/PageInfo'
-        - type: object
-          properties:
-            data:
-              description: 'List of CollectionImports for this Page'
-              title: 'CollectionImports'
-              type: array
-              items:
-                $ref: '#/components/schemas/CollectionImport'
-          required:
-            - data
-
 
     Errors:
       title: 'Errors'
@@ -741,6 +857,19 @@ components:
           required:
             - data
 
+    NamespaceSummary:
+      type: object
+      title: 'Namespace Summary'
+      properties:
+        name:
+          $ref: '#/components/schemas/NamespaceName'
+        id:
+          type: integer
+        href:
+          description: 'Link to the Namespace'
+          type: string
+          format: uri
+
     PageInfo:
       description: 'Pagination info'
       title: 'Page Info'
@@ -801,6 +930,23 @@ components:
       type: string
       pattern: ^((([0-9]+)\.([0-9]+)\.([0-9]+)(?:-([0-9a-zA-Z-]+(?:\.[0-9a-zA-Z-]+)*))?)(?:\+([0-9a-zA-Z-]+(?:\.[0-9a-zA-Z-]+)*))?)$
       example: '1.0.1'
+
+    SemanticVersionSpec:
+      description: 'A string to match against SemanticVersion'
+      type: string
+      example: '>=1.0.0'
+
+    SPDXLicenseId:
+      description: 'A SPDX license id'
+      type: string
+      # TODO: This could in theory be an enum
+
+    TagName:
+      description: 'A Tag'
+      type: string
+      pattern: '^[a-z0-9]+$'
+      maxLength: 512
+      example: 'development'
 
     User:
       title: 'User'
@@ -1055,6 +1201,7 @@ components:
         application/json:
           schema:
             $ref: '#/components/schemas/CollectionImportsPage'
+
     Errors:
       description: 'Errors'
       content:
