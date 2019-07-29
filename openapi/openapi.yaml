@@ -160,7 +160,10 @@ paths:
       parameters:
         - $ref: '#/components/parameters/PageOffset'
         - $ref: '#/components/parameters/PageLimit'
-        - $ref: '#/components/parameters/Search'
+        - $ref: '#/components/parameters/SearchKeyword'
+        - $ref: '#/components/parameters/SearchName'
+        - $ref: '#/components/parameters/SearchNamespace'
+        - $ref: '#/components/parameters/SearchTag'
       tags:
         - Collections
       responses:
@@ -532,6 +535,7 @@ components:
           required:
             - data
 
+
     Errors:
       title: 'Errors'
       description: "A list of JSON API Error objects"
@@ -809,6 +813,38 @@ components:
       description: 'Term to search for'
       in: query
       name: search
+      required: false
+      schema:
+        type: string
+
+    SearchKeyword:
+      description: 'Search for a keyword'
+      in: query
+      name: keywords
+      required: false
+      schema:
+        type: string
+
+    SearchName:
+      description: 'Search for a name'
+      in: query
+      name: names
+      required: false
+      schema:
+        type: string
+
+    SearchNamespace:
+      description: 'Search for a namespace'
+      in: query
+      name: namespaces
+      required: false
+      schema:
+        type: string
+
+    SearchTag:
+      description: 'Search for a tag'
+      in: query
+      name: tags
       required: false
       schema:
         type: string
