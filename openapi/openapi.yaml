@@ -332,6 +332,55 @@ paths:
         'default':
           $ref: '#/components/responses/Errors'
 
+  '/_ui/collections/':
+    get:
+      summary: List Collections (UI)
+      operationId: listCollectionsUi
+      parameters:
+        - $ref: '#/components/parameters/PageOffset'
+        - $ref: '#/components/parameters/PageLimit'
+        - $ref: '#/components/parameters/SearchKeyword'
+        - $ref: '#/components/parameters/SearchName'
+        - $ref: '#/components/parameters/SearchNamespace'
+        - $ref: '#/components/parameters/SearchTag'
+      tags:
+        - Collections
+      responses:
+        '200':
+          $ref: '#/components/responses/CollectionUiList'
+        'default':
+          $ref: '#/components/responses/Errors'
+
+  '/_ui/collections/{namespace}/{name}/':
+    parameters:
+      - $ref: '#/components/parameters/CollectionNamespaceName'
+      - $ref: '#/components/parameters/CollectionName'
+    get:
+      summary: Get Collection (UI)
+      operationId: getCollectionUi
+      tags:
+        - Collections
+      responses:
+        '200':
+          description: 'A detailed collection object for the ui'
+        'default':
+            $ref: '#/components/responses/Errors'
+    put:
+      summary: Update Collection (UI)
+      operationId: updateCollectionUi
+      tags:
+        - Collections
+      parameters: []
+      requestBody:
+        $ref: '#/components/requestBodies/CollectionUi'
+      responses:
+        '200':
+          $ref: '#/components/responses/CollectionUiUpdateAccepted'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        'default':
+            $ref: '#/components/responses/Errors'
+
 # -------------------------------------
 # Users
 # -------------------------------------
@@ -460,6 +509,27 @@ components:
               type: array
               items:
                 $ref: '#/components/schemas/Collection'
+          required:
+            - data
+
+    CollectionUi:
+      title: 'CollectionUi'
+      description: 'Detailed info about a collection used by the ui'
+      type: object
+      # TODO: add the properties
+
+    CollectionUisPage:
+      description: 'A page of a list of CollectionUis'
+      allOf:
+        - $ref: '#/components/schemas/PageInfo'
+        - type: object
+          properties:
+            data:
+              description: 'List of CollectionUi for this page'
+              title: 'CollectionUis'
+              type: array
+              items:
+                $ref: '#/components/schemas/CollectionUi'
           required:
             - data
 
@@ -865,6 +935,13 @@ components:
           schema:
             $ref: '#/components/schemas/Collection'
 
+    CollectionUi:
+      description: 'A CollectionUi body'
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/CollectionUi'
+
     CollectionVersionArtifactBody:
       description: >
         A multipart/form encoded payload including the binary
@@ -896,6 +973,13 @@ components:
         application/json:
           schema:
             $ref: '#/components/schemas/CollectionsPage'
+
+    CollectionUiList:
+      description: 'Response containing a page of CollectionUi'
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/CollectionUisPage'
 
     CollectionVersion:
       description: 'Response contain a CollectionVersion'
@@ -943,6 +1027,13 @@ components:
         application/json:
           schema:
             $ref: '#/components/schemas/Collection'
+
+    CollectionUiUpdateAccepted:
+      description: 'Result of an accepted collection ui update.'
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/CollectionUi'
 
     Conflict:
       description: 'Conflict Error'
