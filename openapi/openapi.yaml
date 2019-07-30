@@ -107,6 +107,9 @@ paths:
         - Collections
       requestBody:
         $ref: '#/components/requestBodies/CollectionVersionArtifactBody'
+      security:
+        - ApiKeyAuth: []
+        - BasicAuth: []
       responses:
         '202':
           $ref: '#/components/responses/CollectionImportAccepted'
@@ -139,6 +142,9 @@ paths:
       parameters: []
       requestBody:
         $ref: '#/components/requestBodies/Collection'
+      security:
+        - ApiKeyAuth: []
+        - BasicAuth: []
       responses:
         '200':
           $ref: '#/components/responses/CollectionUpdateAccepted'
@@ -207,6 +213,9 @@ paths:
       operationId: listCollectionImports
       tags:
         - Imports
+      security:
+        - ApiKeyAuth: []
+        - BasicAuth: []
       responses:
         '200':
           $ref: '#/components/responses/CollectionImportList'
@@ -221,6 +230,9 @@ paths:
         - $ref: '#/components/parameters/CollectionImportId'
       tags:
         - Imports
+      security:
+        - ApiKeyAuth: []
+        - BasicAuth: []
       responses:
         '200':
           $ref: '#/components/responses/CollectionImport'
@@ -238,6 +250,9 @@ paths:
         - Downloads
       parameters:
         - $ref: '#/components/parameters/CollectionVersionArtifactFilename'
+      security:
+        - ApiKeyAuth: []
+        - BasicAuth: []
       responses:
         '200':
           $ref: '#/components/responses/CollectionVersionArtifactDownload'
@@ -302,6 +317,9 @@ paths:
       parameters: []
       requestBody:
         $ref: '#/components/requestBodies/CollectionUi'
+      security:
+        - ApiKeyAuth: []
+        - BasicAuth: []
       responses:
         '200':
           $ref: '#/components/responses/CollectionUiUpdateAccepted'
@@ -319,6 +337,9 @@ paths:
       operationId: listNamespaces
       tags:
         - Namespaces
+      security:
+        - ApiKeyAuth: []
+        - BasicAuth: []
       responses:
         '200':
           description: 'Paginated list of Namespaces'
@@ -334,6 +355,9 @@ paths:
         - Namespaces
       requestBody:
         $ref: '#/components/requestBodies/Namespace'
+      security:
+        - ApiKeyAuthInternal: []
+        - BasicAuth: []
       responses:
         '201':
           $ref: '#/components/responses/Namespace'
@@ -353,6 +377,9 @@ paths:
       operationId: getNamespace
       tags:
         - Namespaces
+      security:
+        - ApiKeyAuth: []
+        - BasicAuth: []
       responses:
         '200':
           $ref: '#/components/responses/Namespace'
@@ -365,6 +392,9 @@ paths:
         - Namespaces
       requestBody:
         $ref: '#/components/requestBodies/Namespace'
+      security:
+        - ApiKeyAuthInternal: []
+        - BasicAuth: []
       responses:
         '200':
           $ref: '#/components/responses/Namespace'
@@ -375,6 +405,9 @@ paths:
       operationId: deleteNamespace
       tags:
         - Namespaces
+      security:
+        - ApiKeyAuthInternal: []
+        - BasicAuth: []
       responses:
         '204':
           description: 'Namespace deletion was successful'
@@ -402,12 +435,14 @@ paths:
       operationId: listUsers
       tags:
         - Users
+      security:
+        - ApiKeyAuthInternal: []
+        - BasicAuth: []
       responses:
         '200':
           $ref: '#/components/responses/UserList'
         'default':
           $ref: '#/components/responses/Errors'
-
 
   '/users/{id}/':
     get:
@@ -422,6 +457,9 @@ paths:
           required: true
           schema:
             type: string
+      security:
+        - ApiKeyAuth: []
+        - BasicAuth: []
       responses:
         '200':
           $ref: '#/components/responses/User'
@@ -439,6 +477,9 @@ paths:
       description: Returns information about the current User.
       tags:
         - Profile
+      security:
+        - ApiKeyAuth: []
+        - BasicAuth: []
       responses:
         '200':
           $ref: '#/components/responses/User'
@@ -1312,3 +1353,21 @@ components:
         application/json:
           schema:
             $ref: '#/components/schemas/UsersPage'
+
+  securitySchemes:
+    BasicAuth:
+      type: http
+      scheme: basic
+      description: Username and password login.
+
+    ApiKeyAuth:
+      type: apiKey
+      in: header
+      name: x-rh-identity
+      description: Identity header provided by 3scale (for non-prod testing only).
+
+    ApiKeyAuthInternal:
+      type: apiKey
+      in: header
+      name: x-rh-identity
+      description: Identity header provided by 3scale (for non-prod testing only).
