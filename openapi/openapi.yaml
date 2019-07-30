@@ -970,22 +970,6 @@ components:
           readOnly: true
           type: string
           format: uri
-        related:
-          description: 'Data structure with URLs of related resources.'
-          readOnly: true
-          type: object
-          additionalProperties:
-            type: string
-        summary_fields:
-          description: >-
-            Data structure with name/description for related
-            resources.
-          readOnly: true
-          type: object
-          additionalProperties: {}
-        active:
-          readOnly: true
-          type: string
         modified:
           description: 'Timestamp when this object was last modified.'
           readOnly: true
