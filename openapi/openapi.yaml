@@ -212,10 +212,7 @@ paths:
       parameters:
         - $ref: '#/components/parameters/PageOffset'
         - $ref: '#/components/parameters/PageLimit'
-        - $ref: '#/components/parameters/SearchKeyword'
-        - $ref: '#/components/parameters/SearchName'
         - $ref: '#/components/parameters/SearchNamespace'
-        - $ref: '#/components/parameters/SearchTag'
         - $ref: '#/components/parameters/Sort'
       responses:
         '200':
