@@ -93,6 +93,7 @@ paths:
         - $ref: '#/components/parameters/SearchName'
         - $ref: '#/components/parameters/SearchNamespace'
         - $ref: '#/components/parameters/SearchTag'
+        - $ref: '#/components/parameters/Sort'
       tags:
         - Collections
       responses:
@@ -159,6 +160,7 @@ paths:
       parameters:
         - $ref: '#/components/parameters/PageOffset'
         - $ref: '#/components/parameters/PageLimit'
+        - $ref: '#/components/parameters/Sort'
       responses:
         '200':
           $ref: '#/components/responses/CollectionVersionList'
@@ -207,6 +209,14 @@ paths:
       operationId: listCollectionImports
       tags:
         - Imports
+      parameters:
+        - $ref: '#/components/parameters/PageOffset'
+        - $ref: '#/components/parameters/PageLimit'
+        - $ref: '#/components/parameters/SearchKeyword'
+        - $ref: '#/components/parameters/SearchName'
+        - $ref: '#/components/parameters/SearchNamespace'
+        - $ref: '#/components/parameters/SearchTag'
+        - $ref: '#/components/parameters/Sort'
       responses:
         '200':
           $ref: '#/components/responses/CollectionImportList'
@@ -248,7 +258,6 @@ paths:
 # Search
 # -------------------------------------
 
-
   '/search/tags/':
     get:
       summary: Search Tags
@@ -272,6 +281,7 @@ paths:
         - $ref: '#/components/parameters/SearchName'
         - $ref: '#/components/parameters/SearchNamespace'
         - $ref: '#/components/parameters/SearchTag'
+        - $ref: '#/components/parameters/Sort'
       tags:
         - Collections
       responses:
@@ -319,6 +329,11 @@ paths:
       operationId: listNamespaces
       tags:
         - Namespaces
+      parameters:
+        - $ref: '#/components/parameters/PageOffset'
+        - $ref: '#/components/parameters/PageLimit'
+        - $ref: '#/components/parameters/SearchName'
+        - $ref: '#/components/parameters/Sort'
       responses:
         '200':
           description: 'Paginated list of Namespaces'
@@ -387,6 +402,11 @@ paths:
       operationId: listTags
       tags:
         - Tags
+      parameters:
+        - $ref: '#/components/parameters/PageOffset'
+        - $ref: '#/components/parameters/PageLimit'
+        - $ref: '#/components/parameters/SearchName'
+        - $ref: '#/components/parameters/Sort'
       responses:
         '200':
           $ref: '#/components/responses/TagList'
@@ -402,6 +422,11 @@ paths:
       operationId: listUsers
       tags:
         - Users
+      parameters:
+        - $ref: '#/components/parameters/PageOffset'
+        - $ref: '#/components/parameters/PageLimit'
+        - $ref: '#/components/parameters/SearchName'
+        - $ref: '#/components/parameters/Sort'
       responses:
         '200':
           $ref: '#/components/responses/UserList'
@@ -1123,6 +1148,15 @@ components:
       required: true
       schema:
         $ref: '#/components/schemas/SemanticVersion'
+
+    Sort:
+      description: Sorting used for response.
+      in: query
+      name: sort
+      required: false
+      schema:
+        type: string
+      example: -name
 
   requestBodies:
     Collection:
