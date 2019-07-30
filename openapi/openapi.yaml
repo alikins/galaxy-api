@@ -75,6 +75,9 @@ info:
     }
     ```
 
+servers:
+  - url: http://localhost:5001/api/v3
+    description: 'local sandbox'
 
 
 paths:
