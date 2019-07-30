@@ -965,11 +965,6 @@ components:
           description: 'Database ID for this object.'
           readOnly: true
           type: integer
-        url:
-          description: 'URL for this resource.'
-          readOnly: true
-          type: string
-          format: uri
         modified:
           description: 'Timestamp when this object was last modified.'
           readOnly: true
