@@ -1080,6 +1080,43 @@ components:
       title: 'Collection Import (UI)'
       type: object
       # TODO: add the properties
+      properties:
+        id:
+          type: integer
+        href:
+          type: string
+          format: uri
+        type:
+          description: The type of content that was imported
+          type: string
+          example: 'collection'
+          # TODO: could be enum
+        state:
+          type: string
+          # TODO: could be enum
+        started_at:
+          type: string
+          format: date-time
+          example: '2019-07-23T09:33:15.236371-04:00'
+        finished_at:
+          type: string
+          format: date-time
+          example: '2019-07-23T09:33:22.387688-04:00'
+        namespace:
+          $ref: '#/components/schemas/NamespaceSummary'
+        name:
+          $ref: '#/components/schemas/CollectionName'
+        version:
+          $ref: '#/components/schemas/SemanticVersion'
+      required:
+        - id
+        - href
+        - state
+        - name
+        - namespace
+        - version
+        - started_at
+        - finished_at
 
     UiCollectionImportPage:
       description: "Paginated list of collection imports (UI)"
