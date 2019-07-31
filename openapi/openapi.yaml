@@ -489,8 +489,77 @@ components:
       description: 'Collection import'
       title: 'CollectionImport'
       type: object
-      # TODO: unknown schema yet
+      properties:
+        error:
+          $ref: '#/components/schemas/CollectionImportError'
+        finished_at:
+          type: string
+          format: date-time
+        id:
+          type: integer
+        imported_version:
+          type: string
+          readOnly: true
+        job_id:
+          type: string
+          format: uuid
+        messages:
+          type: array
+          items:
+            $ref: '#/components/schemas/CollectionImportMessage'
+        name:
+          maxLength: 64
+          type: string
+        namespace:
+          type: string
+        started_at:
+          type: string
+          format: date-time
+        state:
+          type: string
+        version:
+          maxLength: 64
+          type: string
+      required:
+        - error
+        - finished_at
+        - id
+        - job_id
+        - messages
+        - name
+        - namespace
+        - started_at
+        - state
+        - version
 
+    CollectionImportError:
+      description: 'Error reported from collection importer'
+      title: Collection Import Error
+      type: object
+      properties:
+        code:
+          type: string
+        description:
+          type: string
+        traceback:
+          type: string
+
+    CollectionImportMessage:
+      description: 'Message from collection importer'
+      title: Collection Import Message
+      type: object
+      properties:
+        level:
+          type: string
+        message:
+          type: string
+        time:
+          type: string
+          format: date-time
+      required:
+        - level
+        - message
+        - time
     CollectionSummary:
       title: 'Collection Summary'
       description: "A link to the collection summary"
