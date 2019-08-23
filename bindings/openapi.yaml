@@ -9,7 +9,7 @@ paths:
   # Pulp Collections API
   "/pulp/api/v3/content/ansible/collections/":
     get:
-      operationId: "list"
+      operationId: "pulp.collections.list"
       tags: ["pulp: collections"]
       security:
         - BasicAuth: []
@@ -67,7 +67,7 @@ paths:
         schema:
           type: string
     get:
-      operationId: "get"
+      operationId: "pulp.collections.get"
       tags: ["pulp: collections"]
       security:
         - BasicAuth: []
@@ -82,7 +82,7 @@ paths:
   # Pulp Imports API
   "/pulp/api/v3/pulp_ansible/imports/":
     get:
-      operationId: "list"
+      operationId: "pulp_ansible.imports.list"
       tags: ["pulp: imports"]
       security:
         - BasicAuth: []
@@ -123,7 +123,7 @@ paths:
         schema:
           type: string
     get:
-      operationId: "get"
+      operationId: "pulp_ansible.imports.get"
       tags: ["pulp: imports"]
       security:
         - BasicAuth: []
@@ -144,7 +144,7 @@ paths:
         schema:
           type: string
     get:
-      operationId: "list"
+      operationId: "collections.list"
       tags: ["galaxy: collections"]
       parameters:
         - in: query
@@ -181,7 +181,7 @@ paths:
         schema:
           type: string
     get:
-      operationId: "get"
+      operationId: "collections.get"
       tags: ["galaxy: collections"]
       responses:
         200:
@@ -209,7 +209,7 @@ paths:
         schema:
           type: string
     get:
-      operationId: "list_versions"
+      operationId: "collection.list_versions"
       tags: ["galaxy: collections"]
       responses:
         200:
@@ -242,7 +242,7 @@ paths:
         schema:
           type: string
     get:
-      operationId: "get_version"
+      operationId: "collection.get_version"
       tags: ["galaxy: collections"]
       responses:
         200:
@@ -260,7 +260,7 @@ paths:
         schema:
           type: string
     post:
-      operationId: upload
+      operationId: artifacts.collections.post
       tags: ["galaxy: artifacts"]
       requestBody:
         content:
