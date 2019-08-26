@@ -9,8 +9,9 @@ paths:
   # Pulp Collections API
   "/pulp/api/v3/content/ansible/collections/":
     get:
-      operationId: "list"
+      operationId: "listCollections"
       tags: ["pulp: collections"]
+      summary: "list"
       security:
         - BasicAuth: []
       parameters:
@@ -123,8 +124,9 @@ paths:
         schema:
           type: string
     get:
-      operationId: "get"
+      operationId: "getImports"
       tags: ["pulp: imports"]
+      summary: "get"
       security:
         - BasicAuth: []
       responses:
@@ -144,8 +146,9 @@ paths:
         schema:
           type: string
     get:
-      operationId: "list"
+      operationId: "listGalaxyCollections"
       tags: ["galaxy: collections"]
+      summary: "list"
       parameters:
         - in: query
           name: limit
@@ -181,8 +184,9 @@ paths:
         schema:
           type: string
     get:
-      operationId: "get"
+      operationId: "getCollection"
       tags: ["galaxy: collections"]
+      summary: "get"
       responses:
         200:
           description: 'OK'
