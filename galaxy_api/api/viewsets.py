@@ -11,7 +11,7 @@ class ApiRootViewset(viewsets.ViewSet):
 
     def retrieve(self, request, *args, **kwargs):
         # list supported API versions
-        current = reverse('api:api_root_view', args=[])
+        current = reverse('api:v3:api_view', args=[])
         data = dict(
             description='Automation Hub REST API',
             current_version='v3',
