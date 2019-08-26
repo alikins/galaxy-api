@@ -7,6 +7,7 @@ from . import viewsets
 
 app_name = 'api'
 urlpatterns = [
+    path('', viewsets.ApiV3Viewset.as_view({'get': 'retrieve'}), name='api_root_view'),
     path(
         'collections/',
         viewsets.CollectionViewSet.as_view({'get': 'list'}),

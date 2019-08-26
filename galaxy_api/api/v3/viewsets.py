@@ -11,7 +11,13 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
+from collections import OrderedDict
+
+from django.urls import reverse
+
 from rest_framework import viewsets
+from rest_framework.permissions import AllowAny
+from rest_framework.response import Response
 
 from galaxy_api.pulp.galaxy import CollectionApi, CollectionVersionApi
 from galaxy_api.pulp.galaxy import make_galaxy_client, make_response
@@ -56,3 +62,13 @@ class CollectionArtifactViewSet(viewsets.ViewSet):
 
     def download(self, request, *args, **kwargs):
         pass
+
+
+class ApiV3Viewset(viewsets.ViewSet):
+    permission_classes = (AllowAny,)
+    view_name = 'Version 3'
+
+    def retrieve(self, request, *args, **kwargs):
+        # list supported API versions
+        data = OrderedDict()
+        return Response(data)
