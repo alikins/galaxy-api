@@ -20,6 +20,9 @@ from rest_framework.response import Response
 from rest_framework import viewsets
 
 from galaxy_api.common import pulp
+import logging
+
+log = logging.getLogger(__name__)
 
 
 class CollectionViewSet(viewsets.GenericViewSet):
@@ -84,30 +87,41 @@ class CollectionArtifactViewSet(viewsets.ViewSet):
         # TODO: Validate namespace
         # TODO: Validate namespace permissions
 
-        file = request.data['file']
-        mimetype = (mimetypes.guess_type(file.name)[0] or 'application/octet-stream')
-        post_params = [
-            ('file', (file.name, file.read(), mimetype))
-        ]
+        file_data = request.data['file']
+        # mimetype = (mimetypes.guess_type(file_data.name)[0] or 'application/octet-stream')
+        # mimetype = (mimetypes.guess_type(file_data.name)[0] or 'application/octet-stream')
+        # post_params = [
+        #   # ('file', (file_data.name, file_data.read(), mimetype))
+        # ]
 
+        # file_tup = ('file', (file_data.name, file_data.read(), mimetype))
+
+        file_data.content_type = 'application/octet-stream'
         sha256 = request.data.get('sha256')
-        if sha256:
-            post_params.append(('sha256', sha256))
+#        if sha256:
+#            post_params.append(('sha256', sha256))
 
-        api = pulp.get_client()
-        url = '{host}/{prefix}{path}'.format(
-            host=api.configuration.host,
-            prefix=settings.API_PATH_PREFIX,
-            path='/v3/artifacts/collections/',
-        )
+        api_client = pulp.get_client()
+        # url = '{host}/{prefix}{path}'.format(
+        #     host=api.configuration.host,
+        #     prefix=settings.API_PATH_PREFIX,
+        #     path='/v3/artifacts/collections/',
+        # )
+        api = galaxy_pulp.GalaxyArtifactsApi(api_client)
+
         try:
-            response = api.request(
-                'POST',
-                url,
-                headers={'Content-Type': 'multipart/form-data'},
-                post_params=post_params,
-            )
+            response = api.upload(prefix=settings.API_PATH_PREFIX,
+                                  # Read InMemoryUploadedFile into a string
+                                  file=file_data,
+                                  sha256=sha256)
+            # response = api.request(
+            #     'POST',
+            #     url,
+            #     headers={'Content-Type': 'multipart/form-data'},
+            #     post_params=post_params,
+            # )
         except galaxy_pulp.ApiException as exc:
+            raise
             status = exc.status
             data = exc.body
             headers = exc.headers
