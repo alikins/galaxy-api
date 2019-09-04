@@ -1,3 +1,5 @@
+import logging
+
 import galaxy_pulp
 from django.conf import settings
 from rest_framework import viewsets
@@ -10,15 +12,22 @@ from galaxy_api.api import models
 from galaxy_api.api.ui import serializers
 from galaxy_api.common import pulp
 
+log = logging.getLogger(__name__)
 
 class CollectionViewSet(viewsets.GenericViewSet):
     lookup_url_kwarg = 'collection'
     lookup_value_regex = r'[0-9a-z_]+/[0-9a-z_]+'
 
+    QUERY_PARAMS = ['keywords', 'sort', 'tags', 'namespace']
+
     def list(self, request, *args, **kwargs):
         self.paginator.init_from_request(request)
 
         params = self.request.query_params.dict()
+
+        log.debug('query params: %s', params)
+        log.debug('query param .lists(): %s', list(self.request.query_params.lists()))
+        
         params.update({
             'offset': self.paginator.offset,
             'limit': self.paginator.limit,
