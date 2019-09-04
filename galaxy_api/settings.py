@@ -45,6 +45,9 @@ MIDDLEWARE = [
 
 ]
 
+FILE_UPLOAD_HANDLERS = ["django.core.files.uploadhandler.TemporaryFileUploadHandler"]
+
+
 ROOT_URLCONF = 'galaxy_api.urls'
 
 AUTH_USER_MODEL = 'galaxy_auth.user'
