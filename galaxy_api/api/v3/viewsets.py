@@ -95,16 +95,25 @@ class CollectionArtifactViewSet(viewsets.ViewSet):
             post_params.append(('sha256', sha256))
 
         api = pulp.get_client()
+        # api.configuration.debug = True
+
         url = '{host}/{prefix}{path}'.format(
             host=api.configuration.host,
             prefix=settings.API_PATH_PREFIX,
             path='/v3/artifacts/collections/',
         )
+
+        headers = {}
+        headers.update(api.default_headers)
+        headers.update({'Content-Type': 'multipart/form-data'})
+
+        api.update_params_for_auth(headers, tuple(), api.configuration.auth_settings())
+
         try:
             response = api.request(
                 'POST',
                 url,
-                headers={'Content-Type': 'multipart/form-data'},
+                headers=headers,
                 post_params=post_params,
             )
         except galaxy_pulp.ApiException as exc:
