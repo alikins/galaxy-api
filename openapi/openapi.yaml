@@ -601,9 +601,10 @@ components:
           readOnly: true
           type: array
           items:
-            $ref: '#/components/schemas/CollectionUiVersion'
+            $ref: '#/components/schemas/CollectionUiVersionSummary'
         download_count:
           type: integer
+          readOnly: true
         id:
           readOnly: true
           type: integer
@@ -619,33 +620,19 @@ components:
         - name
         - latest_version
 
-    CollectionUiContent:
-      description: 'The collection content returned by _ui'
-      type: object
-      properties:
-        module:
-          type: array
-          items:
-            type: object
-        role:
-          type: array
-          items:
-            type: object
-        plugin:
-          type: array
-          items:
-            type: object
-      required:
-        - module
-        - role
-        - plugin
-
     CollectionUiNamespace:
       description: 'The v1 style namespace returned by _ui'
       type: object
       properties:
-        active:
-          type: boolean
+        id:
+          readOnly: true
+          type: integer
+        description:
+          maxLength: 255
+          type: string
+        name:
+          maxLength: 512
+          type: string
         avatar_url:
           maxLength: 256
           nullable: true
@@ -655,49 +642,12 @@ components:
           maxLength: 256
           nullable: true
           type: string
-        description:
-          maxLength: 255
-          type: string
-        email:
-          maxLength: 256
-          nullable: true
-          type: string
-          format: email
-        html_url:
-          maxLength: 256
-          nullable: true
-          type: string
-          format: uri
-        id:
-          readOnly: true
-          type: integer
-        is_vendor:
-          type: boolean
-        location:
-          maxLength: 256
-          nullable: true
-          type: string
-        name:
-          maxLength: 512
-          type: string
-        owners:
-          items:
-            type: integer
-          type: array
-        created:
-          format: date-time
-          readOnly: true
-          type: string
-        modified:
-          format: date-time
-          readOnly: true
-          type: string
       required:
       - name
-      - owners
 
-    CollectionUiVersion:
+    CollectionUiVersionSummary:
       type: object
+      title: "Version Summary"
       properties:
         id:
           type: integer
@@ -709,20 +659,140 @@ components:
           type: string
 
     CollectionUiVersionDetail:
+      title: "Version Detail"
       allOf:
-        - $ref: '#/components/schemas/CollectionUiVersion'
+        - $ref: '#/components/schemas/CollectionUiVersionSummary'
         - type: object
           properties:
             contents:
-              type: object
+              type: array
+              items:
+                $ref: '#/components/schemas/ContentSummary'
             metadata:
-              $ref: '#/components/schemas/CollectionVersionMetadata'
-            readme_html:
-              type: string
+              $ref: '#/components/schemas/CollectionUiVersionMetadata'
+            docs_blob:
+              type: object
+              properties:
+                collection_readme:
+                  $ref: '#/components/schemas/RenderedDocumentation'
+                documentation_files:
+                  type: array
+                  items:
+                    $ref: '#/components/schemas/RenderedDocumentation'
+                contents:
+                  type: array
+                  items:
+                    oneOf:
+                      - $ref: '#/components/schemas/PluginContent'
+                      - $ref: '#/components/schemas/RoleContent'
+                      - $ref: '#/components/schemas/PlaybookContent'
+
           required:
             - version
             - metadata
             - contents
+
+    CollectionUiVersionMetadata:
+      title: 'Metadata (UI)'
+      description: "The Collection Version metadata from collections galaxy.yml or MANIFEST.JSON"
+      type: object
+      properties:
+        tags:
+          type: array
+          items:
+            type: string
+        authors:
+          title: 'Authors'
+          description: 'A list of collection authors'
+          type: array
+          items:
+            $ref: '#/components/schemas/Author'
+        license:
+          $ref: '#/components/schemas/SPDXLicenseId'
+        description:
+          description: 'Description of the collection'
+          type: string
+          nullable: true
+        homepage:
+          type: string
+          format: uri
+        documentation:
+          description: 'Documentation URL'
+          type: string
+          format: uri
+          nullable: true
+        issues:
+          description: 'URL of issues or bug tracking'
+          type: string
+          format: uri
+          nullable: true
+        repository:
+          description: 'SCM repository for collection'
+          type: string
+          format: uri
+          nullable: true
+
+    PluginContent:
+      description: "Info about Plugins"
+      title: "Plugin"
+      type: object
+      properties:
+        content_type:
+          type: string
+        content_name:
+          type: string
+        readme_filename:
+          type: string
+        readme_html:
+          type: string
+        docs_strings:
+          type: object
+          description: "The doc strings from a plugin"
+          properties:
+            doc:
+              type: object
+            metadata:
+              type: object
+            return:
+              type: object
+            examples:
+              type: string
+
+    RoleContent:
+      description: "Info about a Role"
+      type: object
+      title: "Role"
+      properties:
+        content_type:
+          type: string
+        content_name:
+          type: string
+        readme_filename:
+          type: string
+        readme_html:
+          type: string
+
+    PlaybookContent:
+      description: "Info about a playbook"
+      type: object
+      title: "Playbook"
+
+    RenderedDocumentation:
+      description: "Documentation in html rendered from markdown or rst"
+      title: "Rendered Documentation File"
+      type: string
+
+    ContentSummary:
+      description: "Summary of info about a plugin, role, or other content"
+      title: "Content Summary"
+      type: object
+      properties:
+        name:
+          type: string
+        content_type:
+          type: string
+        description:
+          type: string
 
     CollectionPageUi:
       description: 'A page of a list of CollectionItems (UI)'
