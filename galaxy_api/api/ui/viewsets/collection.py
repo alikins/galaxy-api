@@ -41,11 +41,9 @@ class CollectionViewSet(viewsets.GenericViewSet):
 
             # use 'q' instead of 'keywords' for now
             if param_key == 'keywords':
-                param_key = 'q'
-
-            for param_value in param_values:
-                # FIXME: only uses the last param value
-                param_kwargs[param_key] = param_value
+                param_kwargs['q'] = ' '.join(param_values)
+            else:
+                param_kwargs[param_key] = param_values
 
         for param_key in param_kwargs:
             log.debug('Final param_kwarg: %s=%s', param_key, param_kwargs[param_key])
