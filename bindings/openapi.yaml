@@ -42,6 +42,10 @@ paths:
           name: q
           schema:
             type: string
+        - in: query
+          name: version
+          schema:
+            type: string
       responses:
         200:
           description: 'OK'
