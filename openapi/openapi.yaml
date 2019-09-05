@@ -593,20 +593,136 @@ components:
             - data
 
     CollectionUi:
-      title: 'Collection (UI)'
+      title: 'CollectionUi'
       description: 'Detailed info about a collection used by the ui'
       type: object
       properties:
-        id:
-          type: string
-        namespace:
-          type: object
-        name:
-          type: string
+        all_versions:
+          readOnly: true
+          type: array
+          items:
+            $ref: '#/components/schemas/CollectionUiVersion'
         download_count:
           type: integer
+        id:
+          readOnly: true
+          type: integer
         latest_version:
-          type: object
+          $ref: '#/components/schemas/CollectionUiVersionDetail'
+        name:
+          maxLength: 64
+          type: string
+        namespace:
+          readOnly: true
+          $ref: '#/components/schemas/CollectionUiNamespace'
+      required:
+        - name
+        - latest_version
+
+    CollectionUiContent:
+      description: 'The collection content returned by _ui'
+      type: object
+      properties:
+        module:
+          type: array
+          items:
+            type: object
+        role:
+          type: array
+          items:
+            type: object
+        plugin:
+          type: array
+          items:
+            type: object
+      required:
+        - module
+        - role
+        - plugin
+
+    CollectionUiNamespace:
+      description: 'The v1 style namespace returned by _ui'
+      type: object
+      properties:
+        active:
+          type: boolean
+        avatar_url:
+          maxLength: 256
+          nullable: true
+          type: string
+          format: uri
+        company:
+          maxLength: 256
+          nullable: true
+          type: string
+        description:
+          maxLength: 255
+          type: string
+        email:
+          maxLength: 256
+          nullable: true
+          type: string
+          format: email
+        html_url:
+          maxLength: 256
+          nullable: true
+          type: string
+          format: uri
+        id:
+          readOnly: true
+          type: integer
+        is_vendor:
+          type: boolean
+        location:
+          maxLength: 256
+          nullable: true
+          type: string
+        name:
+          maxLength: 512
+          type: string
+        owners:
+          items:
+            type: integer
+          type: array
+        created:
+          format: date-time
+          readOnly: true
+          type: string
+        modified:
+          format: date-time
+          readOnly: true
+          type: string
+      required:
+      - name
+      - owners
+
+    CollectionUiVersion:
+      type: object
+      properties:
+        id:
+          type: integer
+        version:
+          type: string
+        created:
+          description: 'Timestamp when this object was created.'
+          readOnly: true
+          type: string
+
+    CollectionUiVersionDetail:
+      allOf:
+        - $ref: '#/components/schemas/CollectionUiVersion'
+        - type: object
+          properties:
+            contents:
+              type: object
+            metadata:
+              $ref: '#/components/schemas/CollectionVersionMetadata'
+            readme_html:
+              type: string
+          required:
+            - version
+            - metadata
+            - contents
 
     CollectionPageUi:
       description: 'A page of a list of CollectionItems (UI)'
@@ -707,6 +823,70 @@ components:
               description: 'link to the Collection'
               type: string
               format: uri
+
+    CollectionVersionMetadata:
+      title: 'Metadata'
+      description: "The Collection Version metadata from collections galaxy.yml or MANIFEST.JSON"
+      type: object
+      properties:
+        documentation:
+          description: 'Documentation URL'
+          type: string
+          format: uri
+          nullable: true
+        description:
+          description: 'Description of the collection'
+          type: string
+          nullable: true
+        readme:
+          description: 'Name of file to use for README'
+          type: string
+          format: relative-file-path
+        repository:
+          description: 'SCM repository for collection'
+          type: string
+          format: uri
+          nullable: true
+        issues:
+          description: 'URL of issues or bug tracking'
+          type: string
+          format: uri
+          nullable: true
+        version:
+          $ref: '#/components/schemas/SemanticVersion'
+        license_file:
+          description: 'Name of file where license info can be found'
+          type: string
+          format: relative-file-path
+          nullable: true
+        tags:
+          type: array
+          items:
+            type: string
+        dependencies:
+          $ref: '#/components/schemas/CollectionVersionDependencies'
+        license:
+          description: 'A list of SPDX license ids'
+          type: array
+          items:
+            $ref: '#/components/schemas/SPDXLicenseId'
+        name:
+          $ref: '#/components/schemas/CollectionName'
+        namespace:
+          $ref: '#/components/schemas/NamespaceName'
+        authors:
+          title: 'Authors'
+          description: 'A list of collection authors'
+          type: array
+          items:
+            $ref: '#/components/schemas/Author'
+        homepage:
+          type: string
+          format: uri
+      required:
+        - namespace
+        - name
+        - version
 
     CollectionVersionListItem:
       type: object
