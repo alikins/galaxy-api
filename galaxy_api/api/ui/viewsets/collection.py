@@ -14,27 +14,44 @@ from galaxy_api.common import pulp
 
 log = logging.getLogger(__name__)
 
+
 class CollectionViewSet(viewsets.GenericViewSet):
     lookup_url_kwarg = 'collection'
     lookup_value_regex = r'[0-9a-z_]+/[0-9a-z_]+'
-
-    QUERY_PARAMS = ['keywords', 'sort', 'tags', 'namespace']
 
     def list(self, request, *args, **kwargs):
         self.paginator.init_from_request(request)
 
         params = self.request.query_params.dict()
 
+        param_tuples = self.request.query_params.lists()
+
         log.debug('query params: %s', params)
-        log.debug('query param .lists(): %s', list(self.request.query_params.lists()))
-        
+        log.debug('query param .lists(): %s', param_tuples)
+
         params.update({
             'offset': self.paginator.offset,
             'limit': self.paginator.limit,
         })
 
+        # [('q', ['ordered_by']), ('namespace', ['bar', 'sdfsd'])]
+        param_kwargs = {}
+        for param_tuple in param_tuples:
+            param_key, param_values = param_tuple
+
+            # use 'q' instead of 'keywords' for now
+            if param_key == 'keywords':
+                param_key = 'q'
+
+            for param_value in param_values:
+                # FIXME: only uses the last param value
+                param_kwargs[param_key] = param_value
+
+        for param_key in param_kwargs:
+            log.debug('Final param_kwarg: %s=%s', param_key, param_kwargs[param_key])
+
         api = galaxy_pulp.PulpCollectionsApi(pulp.get_client())
-        response = api.list(is_highest=True, **params)
+        response = api.list(is_highest=True, **param_kwargs)
 
         namespaces = set(collection['namespace'] for collection in response.results)
         namespaces = self._query_namespaces(namespaces)
