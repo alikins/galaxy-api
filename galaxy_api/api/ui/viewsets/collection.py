@@ -39,11 +39,14 @@ class CollectionViewSet(viewsets.GenericViewSet):
         for param_tuple in param_tuples:
             param_key, param_values = param_tuple
 
+            # space separate values if a list
+            param_value = ' '.join(param_values)
+
             # use 'q' instead of 'keywords' for now
             if param_key == 'keywords':
-                param_kwargs['q'] = ' '.join(param_values)
-            else:
-                param_kwargs[param_key] = param_values
+                param_key = 'q'
+
+            param_kwargs[param_key] = param_value
 
         for param_key in param_kwargs:
             log.debug('Final param_kwarg: %s=%s', param_key, param_kwargs[param_key])
