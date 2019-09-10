@@ -7,7 +7,7 @@ from rest_framework.response import Response
 class ApiRootView(views.APIView):
     def get(self, request):
         data = {
-            "available_versions": {"v3": f"v3/"},
+            "available_versions": {"v3": "v3/"},
         }
         return Response(data)
 
