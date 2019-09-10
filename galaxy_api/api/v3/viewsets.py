@@ -84,6 +84,11 @@ class CollectionVersionViewSet(viewsets.GenericViewSet):
             version=self.kwargs['version'],
         )
         response['download_url'] = request.build_absolute_uri(response['download_url'])
+
+        namespace_name = response['namespace']
+        response['namespace'] = {'name': namespace_name}
+        response['metadata']['namespace'] = namespace_name
+        response['metadata']['name'] = response['name']
         return Response(response)
 
 
