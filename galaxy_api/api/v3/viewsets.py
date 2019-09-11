@@ -85,10 +85,15 @@ class CollectionVersionViewSet(viewsets.GenericViewSet):
         )
         response['download_url'] = request.build_absolute_uri(response['download_url'])
 
-        namespace_name = response['namespace']
-        response['namespace'] = {'name': namespace_name}
-        response['metadata']['namespace'] = namespace_name
-        response['metadata']['name'] = response['name']
+        namespace_name = response.get('namespace')
+        response['metadata'] = response.get('metadata', {})
+
+        if namespace_name:
+            response['namespace'] = {'name': namespace_name}
+            response['metadata']['namespace'] = namespace_name
+        collection_name = response.get('name')
+        if collection_name:
+            response['metadata']['name'] = response['name']
         return Response(response)
 
 

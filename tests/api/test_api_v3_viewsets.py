@@ -83,12 +83,11 @@ class TestCollectionVersionViewSet(BaseTestCase):
         )
 
     def test_retrieve(self):
-        self.versions_api.get.return_value = {
-            'namespace': 'ansible',
-            'name': 'nginx',
-            'version': '1.2.3',
-            'download_url': '/v3/artifacts/collections/ansible-nginx-1.2.3.tar.gz',
-        }
+        self.versions_api.get.return_value = {'namespace': 'ansible',
+                                              'name': 'nginx',
+                                              'artifact':
+                                              {'filename': 'ansible-nginx-1.2.3.tar.gz'},
+                                              'metadata': {}}
         response = self.client.get(
             f"/{API_PREFIX}/v3/collections/ansible/nginx/versions/1.2.3/"
         )
