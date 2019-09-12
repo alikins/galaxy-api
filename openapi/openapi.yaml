@@ -249,6 +249,7 @@ paths:
         - $ref: '#/components/parameters/SearchName'
         - $ref: '#/components/parameters/SearchNamespace'
         - $ref: '#/components/parameters/SearchTag'
+        - $ref: '#/components/parameters/SearchVersion'
       tags:
         - 'UI: Collections'
       responses:
@@ -270,6 +271,8 @@ paths:
       operationId: getCollectionUi
       tags:
         - 'UI: Collections'
+      parameters:
+        - $ref: '#/components/parameters/SearchVersion'
       responses:
         '200':
           description: 'A collection object'
@@ -299,6 +302,25 @@ paths:
         'default':
           $ref: '#/components/responses/Errors'
 
+  '/_ui/collections/{namespace}/{name}/versions/{version}':
+    parameters:
+      - $ref: '#/components/parameters/CollectionNamespaceName'
+      - $ref: '#/components/parameters/CollectionName'
+      - $ref: '#/components/parameters/SemanticVersion'
+    get:
+      summary: Get Collection version summarys(UI)
+      operationId: getCollectionUiVersionSummary
+      tags:
+        - 'UI: Collections'
+      responses:
+        '200':
+          description: 'A collection version for UI'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CollectionUi'
+        'default':
+          $ref: '#/components/responses/Errors'
 
 # -------------------------------------
 # UI: Imports
@@ -713,6 +735,15 @@ components:
       required:
         - metadata
         - contents
+
+    CollectionUiVersionUiDetail:
+      type: object
+      title: "Version details for ui for a specific collection version"
+      properties:
+        metadata:
+          $ref: '#/components/schemas/CollectionUiVersionMetadata'
+        docs_blob:
+          $ref: '#/components/schemas/CollectionUiDocsBlob'
 
     CollectionUiVersionUiSummary:
       type: object
@@ -1534,6 +1565,14 @@ components:
       required: false
       schema:
         type: string
+
+    SearchVersion:
+      description: 'Search for a version'
+      in: query
+      name: version
+      required: false
+      schema:
+        $ref: '#/components/schemas/SemanticVersion'
 
     SemanticVersion:
       description: 'A Semantic Version string'
