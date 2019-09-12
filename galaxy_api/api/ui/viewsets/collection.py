@@ -13,6 +13,10 @@ from galaxy_api.api import models, permissions
 from galaxy_api.api.ui import serializers
 from galaxy_api.common import pulp
 
+import logging
+import pprint
+log = logging.getLogger(__name__)
+
 
 class CollectionViewSet(viewsets.GenericViewSet):
     lookup_url_kwarg = 'collection'
@@ -28,13 +32,25 @@ class CollectionViewSet(viewsets.GenericViewSet):
         })
 
         api = galaxy_pulp.PulpCollectionsApi(pulp.get_client())
-        response = api.list(is_highest=True, **params)
+        # response = api.list(is_highest=True, **params)
+        response = api.list(**params)
+
+        log.debug('response: %s', pprint.pformat(response))
 
         namespaces = set(collection['namespace'] for collection in response.results)
         namespaces = self._query_namespaces(namespaces)
 
+        # FIXME: need all_versions for each collection namespace.name
+        all_versions = [{'version': collection['version'],
+                         'id': collection['id'],
+                         'created': collection['_created']} for collection in response.results]
+
         data = serializers.CollectionListSerializer(
-            response.results, many=True, context={'namespaces': namespaces}
+            response.results, many=True,
+            context={'namespaces': namespaces,
+                     # FIXME: find all versions, this supplies just latest version
+                     'all_versions': all_versions,
+                     }
         ).data
         return self.paginator.paginate_proxy_response(data, response.count)
 
@@ -42,14 +58,27 @@ class CollectionViewSet(viewsets.GenericViewSet):
         namespace, name = self.kwargs['collection'].split('/')
         namespace_obj = get_object_or_404(models.Namespace, name=namespace)
 
+        version = self.kwargs.get('version', '')
         api = galaxy_pulp.PulpCollectionsApi(pulp.get_client())
         # TODO: When limit offset pagination lands to pulp add limit=1
-        response = api.list(namespace=namespace, name=name, is_highest=True)
+        # response = api.list(namespace=namespace, name=name, is_highest=True)
+        list_kwargs = {}
+        if version != '':
+            list_kwargs['version'] = version
+        response = api.list(namespace=namespace, name=name, **list_kwargs)
+
+        log.debug('response: %s', pprint.pformat(response))
+
         if not response.results:
             raise NotFound()
 
+        all_versions = [{'version': collection['version'],
+                         'id': collection['id'],
+                         'created': collection['_created']} for collection in response.results]
+
         data = serializers.CollectionDetailSerializer(
-            response.results[0], context={'namespace': namespace_obj}
+            response.results[0], context={'namespace': namespace_obj,
+                                          'all_versions': all_versions}
         ).data
 
         return Response(data)
@@ -81,6 +110,9 @@ class CollectionVersionViewSet(viewsets.GenericViewSet):
 
         api = galaxy_pulp.PulpCollectionsApi(pulp.get_client())
         response = api.list(namespace=namespace, name=name, **params)
+
+        log.debug('response: %s', pprint.pformat(response))
+
         if response.count == 0:
             raise NotFound()
 
@@ -93,6 +125,9 @@ class CollectionVersionViewSet(viewsets.GenericViewSet):
 
         api = galaxy_pulp.PulpCollectionsApi(pulp.get_client())
         response = api.list(namespace=namespace, name=name, version=version, limit=1)
+
+        log.debug('response: %s', pprint.pformat(response))
+
         if not response.results:
             raise NotFound()
 
