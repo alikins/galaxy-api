@@ -34,6 +34,7 @@ class CollectionViewSet(viewsets.GenericViewSet):
         api = galaxy_pulp.PulpCollectionsApi(pulp.get_client())
         response = api.list(**params)
 
+        log.debug('response: %s', pf(response))
         namespaces = set(collection['namespace'] for collection in response.results)
         namespaces = self._query_namespaces(namespaces)
 

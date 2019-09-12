@@ -61,19 +61,18 @@ class CollectionVersionBaseSerializer(serializers.Serializer):
     namespace = serializers.CharField()
     name = serializers.CharField()
     version = serializers.CharField()
-    docs_blob = serializers.JSONField()
+
     created_at = serializers.DateTimeField(source='_created')
-
-    contents = serializers.ListField(ContentSerializer())
-
 
 class CollectionLatestVersionSerializer(CollectionVersionBaseSerializer):
     metadata = CollectionMetadataBaseSerializer(source='*')
 
+class CollectionLatestVersionDetailSerializer(CollectionLatestVersionSerializer):
+    docs_blob = serializers.JSONField()
+    contents = serializers.ListField(ContentSerializer())
 
 class CollectionVersionSerializer(CollectionMetadataBaseSerializer):
     metadata = CollectionMetadataSerializer(source="*")
-    docs_blob = serializers.JSONField()
 
 
 class _CollectionSerializer(serializers.Serializer):
@@ -81,7 +80,6 @@ class _CollectionSerializer(serializers.Serializer):
     namespace = serializers.SerializerMethodField()
     name = serializers.CharField()
     download_count = serializers.IntegerField(default=0)
-
     latest_version = CollectionLatestVersionSerializer(source='*')
     all_versions = serializers.SerializerMethodField()
 
@@ -106,6 +104,7 @@ class CollectionListSerializer(_CollectionSerializer):
 
 
 class CollectionDetailSerializer(_CollectionSerializer):
+    latest_version = CollectionLatestVersionDetailSerializer(source='*')
 
     def _get_namespace(self, obj):
         return self.context['namespace']
