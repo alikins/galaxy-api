@@ -14,8 +14,9 @@ from galaxy_api.api.ui import serializers
 from galaxy_api.common import pulp
 
 import logging
+import pprint
 log = logging.getLogger(__name__)
-
+pf = pprint.pformat
 
 class CollectionViewSet(viewsets.GenericViewSet):
     lookup_url_kwarg = 'collection'
@@ -63,6 +64,7 @@ class CollectionViewSet(viewsets.GenericViewSet):
             list_kwargs['version'] = version
         response = api.list(namespace=namespace, name=name, **list_kwargs)
 
+        log.debug('response: %s', pf(response))
         if not response.results:
             raise NotFound()
 
@@ -70,8 +72,9 @@ class CollectionViewSet(viewsets.GenericViewSet):
                          'id': collection['id'],
                          'created': collection['_created']} for collection in response.results]
 
+        latest_collection_version = response.results[-1]
         data = serializers.CollectionDetailSerializer(
-            response.results[0], context={'namespace': namespace_obj,
+            latest_collection_version, context={'namespace': namespace_obj,
                                           'all_versions': all_versions}
         ).data
 
