@@ -35,20 +35,13 @@ class CollectionViewSet(viewsets.GenericViewSet):
         response = api.list(**params)
 
         log.debug('response: %s', pf(response))
+
         namespaces = set(collection['namespace'] for collection in response.results)
         namespaces = self._query_namespaces(namespaces)
 
-        # FIXME: need all_versions for each collection namespace.name
-        all_versions = [{'version': collection['version'],
-                         'id': collection['id'],
-                         'created': collection['_created']} for collection in response.results]
-
         data = serializers.CollectionListSerializer(
             response.results, many=True,
-            context={'namespaces': namespaces,
-                     # FIXME: find all versions, this supplies just latest version
-                     'all_versions': all_versions,
-                     }
+            context={'namespaces': namespaces}
         ).data
         return self.paginator.paginate_proxy_response(data, response.count)
 
@@ -60,25 +53,29 @@ class CollectionViewSet(viewsets.GenericViewSet):
 
         version = self.kwargs.get('version', params_dict.get('version', ''))
         api = galaxy_pulp.PulpCollectionsApi(pulp.get_client())
-        # TODO: When limit offset pagination lands to pulp add limit=1
-        # response = api.list(namespace=namespace, name=name, is_highest=True)
+
         list_kwargs = {}
         if version != '':
             list_kwargs['version'] = version
+
+        # TODO: When limit offset pagination lands to pulp add limit=1
+        # response = api.list(namespace=namespace, name=name, is_highest=True)
         response = api.list(namespace=namespace, name=name, **list_kwargs)
 
         log.debug('response: %s', pf(response))
+
         if not response.results:
             raise NotFound()
+
+        latest_collection = response.results[-1]
 
         all_versions = [{'version': collection['version'],
                          'id': collection['id'],
                          'created': collection['_created']} for collection in response.results]
 
-        latest_collection_version = response.results[-1]
         data = serializers.CollectionDetailSerializer(
-            latest_collection_version, context={'namespace': namespace_obj,
-                                          'all_versions': all_versions}
+            latest_collection, context={'namespace': namespace_obj,
+                                        'all_versions': all_versions}
         ).data
 
         return Response(data)

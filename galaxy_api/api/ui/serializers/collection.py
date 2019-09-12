@@ -81,7 +81,6 @@ class _CollectionSerializer(serializers.Serializer):
     name = serializers.CharField()
     download_count = serializers.IntegerField(default=0)
     latest_version = CollectionLatestVersionSerializer(source='*')
-    all_versions = serializers.SerializerMethodField()
 
     def _get_namespace(self, obj):
         raise NotImplementedError
@@ -89,13 +88,6 @@ class _CollectionSerializer(serializers.Serializer):
     def get_namespace(self, obj):
         namespace = self._get_namespace(obj)
         return NamespaceSerializer(namespace).data
-
-    def _get_all_versions(self, obj):
-        return self.context['all_versions']
-
-    def get_all_versions(self, obj):
-        all_versions_data = self._get_all_versions(obj)
-        return [CollectionVersionSummarySerializer(version).data for version in all_versions_data]
 
 class CollectionListSerializer(_CollectionSerializer):
     def _get_namespace(self, obj):
@@ -105,6 +97,10 @@ class CollectionListSerializer(_CollectionSerializer):
 
 class CollectionDetailSerializer(_CollectionSerializer):
     latest_version = CollectionLatestVersionDetailSerializer(source='*')
+    all_versions = serializers.SerializerMethodField()
 
     def _get_namespace(self, obj):
         return self.context['namespace']
+
+    def get_all_versions(self, obj):
+        return [CollectionVersionSummarySerializer(version).data for version in self.context['all_versions']]
