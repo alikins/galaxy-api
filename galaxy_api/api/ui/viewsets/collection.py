@@ -31,6 +31,9 @@ class CollectionViewSet(viewsets.GenericViewSet):
             'limit': self.paginator.limit,
         })
 
+        if params.get('version', '') == '':
+            params['is_highest'] = True
+
         api = galaxy_pulp.PulpCollectionsApi(pulp.get_client())
         response = api.list(**params)
 
@@ -52,9 +55,9 @@ class CollectionViewSet(viewsets.GenericViewSet):
         params_dict = self.request.query_params.dict()
 
         version = self.kwargs.get('version', params_dict.get('version', ''))
+
         api = galaxy_pulp.PulpCollectionsApi(pulp.get_client())
 
-        list_kwargs = {}
         if version != '':
             list_kwargs['version'] = version
 
