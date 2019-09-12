@@ -55,7 +55,9 @@ class CollectionViewSet(viewsets.GenericViewSet):
         namespace, name = self.kwargs['collection'].split('/')
         namespace_obj = get_object_or_404(models.Namespace, name=namespace)
 
-        version = self.kwargs.get('version', '')
+        params_dict = self.request.query_params.dict()
+
+        version = self.kwargs.get('version', params_dict.get('version', ''))
         api = galaxy_pulp.PulpCollectionsApi(pulp.get_client())
         # TODO: When limit offset pagination lands to pulp add limit=1
         # response = api.list(namespace=namespace, name=name, is_highest=True)
