@@ -14,7 +14,6 @@ from galaxy_api.api.ui import serializers
 from galaxy_api.common import pulp
 
 import logging
-import pprint
 log = logging.getLogger(__name__)
 
 
@@ -32,10 +31,7 @@ class CollectionViewSet(viewsets.GenericViewSet):
         })
 
         api = galaxy_pulp.PulpCollectionsApi(pulp.get_client())
-        # response = api.list(is_highest=True, **params)
         response = api.list(**params)
-
-        log.debug('response: %s', pprint.pformat(response))
 
         namespaces = set(collection['namespace'] for collection in response.results)
         namespaces = self._query_namespaces(namespaces)
@@ -66,8 +62,6 @@ class CollectionViewSet(viewsets.GenericViewSet):
         if version != '':
             list_kwargs['version'] = version
         response = api.list(namespace=namespace, name=name, **list_kwargs)
-
-        log.debug('response: %s', pprint.pformat(response))
 
         if not response.results:
             raise NotFound()
@@ -111,8 +105,6 @@ class CollectionVersionViewSet(viewsets.GenericViewSet):
         api = galaxy_pulp.PulpCollectionsApi(pulp.get_client())
         response = api.list(namespace=namespace, name=name, **params)
 
-        log.debug('response: %s', pprint.pformat(response))
-
         if response.count == 0:
             raise NotFound()
 
@@ -125,8 +117,6 @@ class CollectionVersionViewSet(viewsets.GenericViewSet):
 
         api = galaxy_pulp.PulpCollectionsApi(pulp.get_client())
         response = api.list(namespace=namespace, name=name, version=version, limit=1)
-
-        log.debug('response: %s', pprint.pformat(response))
 
         if not response.results:
             raise NotFound()

@@ -3,7 +3,6 @@ from rest_framework import serializers
 from .namespace import NamespaceSerializer
 
 import logging
-import pprint
 log = logging.getLogger(__name__)
 
 class ContentSummarySerializer(serializers.Serializer):
@@ -63,7 +62,6 @@ class CollectionVersionBaseSerializer(serializers.Serializer):
     name = serializers.CharField()
     version = serializers.CharField()
     docs_blob = serializers.JSONField()
-    # content_summary = ContentSummarySerializer(source='contents')
     created_at = serializers.DateTimeField(source='_created')
 
     contents = serializers.ListField(ContentSerializer())
@@ -85,28 +83,21 @@ class _CollectionSerializer(serializers.Serializer):
     download_count = serializers.IntegerField(default=0)
 
     latest_version = CollectionLatestVersionSerializer(source='*')
-    # all_versions = serializers.ListField(CollectionVersionSummarySerializer())
     all_versions = serializers.SerializerMethodField()
-    # all_versions = serializers.ListField(child=serializers.DictField())
-    # content_summary = ContentSummarySerializer(source='contents')
 
     def _get_namespace(self, obj):
         raise NotImplementedError
 
     def get_namespace(self, obj):
-        log.debug('obj: %s', pprint.pformat(obj))
         namespace = self._get_namespace(obj)
         return NamespaceSerializer(namespace).data
 
     def _get_all_versions(self, obj):
-        #log.debug('obj: %s', pprint.pformat(obj))
-        log.debug('self.context: %s', pprint.pformat(self.context))
         return self.context['all_versions']
 
     def get_all_versions(self, obj):
         all_versions_data = self._get_all_versions(obj)
         return [CollectionVersionSummarySerializer(version).data for version in all_versions_data]
-        # return serializers.ListField(child=CollectionVersionSummarySerializer())
 
 class CollectionListSerializer(_CollectionSerializer):
     def _get_namespace(self, obj):
