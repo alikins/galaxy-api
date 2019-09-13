@@ -1,6 +1,6 @@
 from rest_framework import serializers
 
-from .namespace import NamespaceSerializer
+from .namespace import NamespaceSummarySerializer
 
 import logging
 log = logging.getLogger(__name__)
@@ -87,7 +87,7 @@ class _CollectionSerializer(serializers.Serializer):
 
     def get_namespace(self, obj):
         namespace = self._get_namespace(obj)
-        return NamespaceSerializer(namespace).data
+        return NamespaceSummarySerializer(namespace).data
 
 class CollectionListSerializer(_CollectionSerializer):
     def _get_namespace(self, obj):
