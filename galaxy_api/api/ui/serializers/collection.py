@@ -66,10 +66,10 @@ class CollectionVersionBaseSerializer(serializers.Serializer):
 
 class CollectionLatestVersionSerializer(CollectionVersionBaseSerializer):
     metadata = CollectionMetadataBaseSerializer(source='*')
+    contents = serializers.ListField(ContentSerializer())
 
 class CollectionLatestVersionDetailSerializer(CollectionLatestVersionSerializer):
     docs_blob = serializers.JSONField()
-    contents = serializers.ListField(ContentSerializer())
 
 class CollectionVersionSerializer(CollectionMetadataBaseSerializer):
     metadata = CollectionMetadataSerializer(source="*")
