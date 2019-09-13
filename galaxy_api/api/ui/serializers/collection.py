@@ -5,6 +5,7 @@ from .namespace import NamespaceSummarySerializer
 import logging
 log = logging.getLogger(__name__)
 
+
 class ContentSummarySerializer(serializers.Serializer):
 
     def to_representation(self, contents):
@@ -26,15 +27,18 @@ class ContentSummarySerializer(serializers.Serializer):
         else:
             return "plugin"
 
+
 class ContentSerializer(serializers.Serializer):
     name = serializers.CharField()
     content_type = serializers.CharField()
     description = serializers.CharField()
 
+
 class CollectionVersionSummarySerializer(serializers.Serializer):
     id = serializers.UUIDField()
     version = serializers.CharField()
     created = serializers.CharField()
+
 
 class CollectionMetadataBaseSerializer(serializers.Serializer):
     description = serializers.CharField()
@@ -64,12 +68,15 @@ class CollectionVersionBaseSerializer(serializers.Serializer):
 
     created_at = serializers.DateTimeField(source='_created')
 
+
 class CollectionLatestVersionSerializer(CollectionVersionBaseSerializer):
     metadata = CollectionMetadataBaseSerializer(source='*')
     contents = serializers.ListField(ContentSerializer())
 
+
 class CollectionLatestVersionDetailSerializer(CollectionLatestVersionSerializer):
     docs_blob = serializers.JSONField()
+
 
 class CollectionVersionSerializer(CollectionMetadataBaseSerializer):
     metadata = CollectionMetadataSerializer(source="*")
@@ -89,6 +96,7 @@ class _CollectionSerializer(serializers.Serializer):
         namespace = self._get_namespace(obj)
         return NamespaceSummarySerializer(namespace).data
 
+
 class CollectionListSerializer(_CollectionSerializer):
     def _get_namespace(self, obj):
         name = obj['namespace']
@@ -103,4 +111,5 @@ class CollectionDetailSerializer(_CollectionSerializer):
         return self.context['namespace']
 
     def get_all_versions(self, obj):
-        return [CollectionVersionSummarySerializer(version).data for version in self.context['all_versions']]
+        return [CollectionVersionSummarySerializer(version).data
+                for version in self.context['all_versions']]
