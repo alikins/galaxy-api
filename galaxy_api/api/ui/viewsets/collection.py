@@ -18,6 +18,7 @@ import pprint
 log = logging.getLogger(__name__)
 pf = pprint.pformat
 
+
 class CollectionViewSet(viewsets.GenericViewSet):
     lookup_url_kwarg = 'collection'
     lookup_value_regex = r'[0-9a-z_]+/[0-9a-z_]+'
@@ -36,8 +37,6 @@ class CollectionViewSet(viewsets.GenericViewSet):
 
         api = galaxy_pulp.PulpCollectionsApi(pulp.get_client())
         response = api.list(**params)
-
-        log.debug('response: %s', pf(response))
 
         namespaces = set(collection['namespace'] for collection in response.results)
         namespaces = self._query_namespaces(namespaces)
@@ -58,6 +57,7 @@ class CollectionViewSet(viewsets.GenericViewSet):
 
         api = galaxy_pulp.PulpCollectionsApi(pulp.get_client())
 
+        list_kwargs = {}
         if version != '':
             list_kwargs['version'] = version
 
