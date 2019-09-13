@@ -53,32 +53,33 @@ class CollectionViewSet(viewsets.GenericViewSet):
 
         params_dict = self.request.query_params.dict()
 
-        version = self.kwargs.get('version', params_dict.get('version', ''))
+        version = params_dict.get('version', '')
 
         api = galaxy_pulp.PulpCollectionsApi(pulp.get_client())
 
-        list_kwargs = {}
-        if version != '':
-            list_kwargs['version'] = version
-
-        # TODO: When limit offset pagination lands to pulp add limit=1
-        # response = api.list(namespace=namespace, name=name, is_highest=True)
-        response = api.list(namespace=namespace, name=name, **list_kwargs)
-
-        log.debug('response: %s', pf(response))
+        response = api.list(namespace=namespace, name=name)
 
         if not response.results:
             raise NotFound()
-
-        latest_collection = response.results[-1]
 
         all_versions = [{'version': collection['version'],
                          'id': collection['id'],
                          'created': collection['_created']} for collection in response.results]
 
+        if version != '':
+            matching_collections = [collection for collection in response.results
+                                    if collection['version'] == version]
+        else:
+            matching_collections = response.results
+
+        if not matching_collections:
+            raise NotFound()
+
+        highest_matching_collection = matching_collections[-1]
+
         data = serializers.CollectionDetailSerializer(
-            latest_collection, context={'namespace': namespace_obj,
-                                        'all_versions': all_versions}
+            highest_matching_collection, context={'namespace': namespace_obj,
+                                                  'all_versions': all_versions}
         ).data
 
         return Response(data)
