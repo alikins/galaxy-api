@@ -76,8 +76,36 @@ info:
     ```
 
 
-
 paths:
+  '/':
+    get:
+      summary: API Introspection
+      operationId: getRootApi
+      tags:
+        - API
+      responses:
+        '200':
+          $ref: '#/components/responses/APIRoot'
+        'default':
+          $ref: '#/components/responses/Errors'
+
+  '/api/':
+    get:
+      summary: Redirect to API Introspection
+      operationId: getRootApiRedirect
+      tags:
+        - API
+      responses:
+        '302':
+          description: 'Redirect to API Introspection'
+          headers:
+            Location:
+              schema:
+                type: string
+                format: uri
+                example: '/'
+        'default':
+          $ref: '#/components/responses/Errors'
 
 # -------------------------------------
 # Collections
@@ -467,6 +495,34 @@ paths:
 
 components:
   schemas:
+    APIRoot:
+      title: 'API'
+      description: 'API root introspection'
+      type: object
+      properties:
+        available_versions:
+          description: 'The available API versions and their URLS'
+          type: object
+          readOnly: true
+          additionalProperties:
+            type: string
+          example:
+            v2: 'v2/'
+            v3: 'v3/'
+        token_refresh:
+          description: 'Info about where and how to refresh authentication tokens'
+          type: object
+          readOnly: True
+          properties:
+            url:
+              description: 'The URL to POST to to get a session token'
+              type: string
+              format: uri
+              example: 'https://sso.redhat.com/auth/realms/redhat-external/protocol/openid-connect/token'
+      required:
+        - available_versions
+        - token_refresh
+
     Author:
       description: 'Author of a collection or role'
       type: string
@@ -1605,6 +1661,12 @@ components:
             $ref: '#/components/schemas/Namespace'
 
   responses:
+    APIRoot:
+      description: 'Response containing an APIRoot'
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/APIRoot'
 
     Collection:
       description: 'Response containing a Collection'
