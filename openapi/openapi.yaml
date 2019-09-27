@@ -75,6 +75,17 @@ info:
     }
     ```
 
+servers:
+  - url: http://localhost:5001/api/automation-hub/
+    description: 'local dev server'
+  - url: https://cloud.redhat.com/api/automation-hub/
+    description: 'clould.redhat.com Automation Hub'
+
+security:
+  - redhat_external:
+    # scopes_supported from https://sso.redhat.com/auth/realms/redhat-external/.well-known/openid-configuration
+    - openid
+    - offline_access
 
 paths:
   '/':
@@ -1813,3 +1824,8 @@ components:
         application/json:
           schema:
             $ref: '#/components/schemas/UsersPage'
+
+  securitySchemes:
+    redhat_external:
+      type: openIdConnect
+      openIdConnectUrl: https://sso.redhat.com/auth/realms/redhat-external/.well-known/openid-configuration
