@@ -1,3 +1,4 @@
+from django.conf import settings
 from django.http import HttpResponseRedirect
 
 from rest_framework import views
@@ -9,6 +10,7 @@ class ApiRootView(views.APIView):
     def get(self, request):
         data = {
             "available_versions": {"v3": "v3/"},
+            "token_refresh": {"url": settings.TOKEN_REFRESH_URL}
         }
         return Response(data)
 
