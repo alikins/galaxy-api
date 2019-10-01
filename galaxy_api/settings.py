@@ -134,7 +134,8 @@ PULP_CONTENT_HOST = 'pulp-content-app'
 PULP_CONTENT_PORT = 24816
 PULP_CONTENT_PATH_PREFIX = '/api/automation-hub/v3/artifacts/collections/'
 
-TOKEN_REFRESH_URL = 'https://sso.redhat.com/auth/realms/redhat-external/protocol/openid-connect/token'
+TOKEN_REFRESH_URL = \
+    'https://sso.redhat.com/auth/realms/redhat-external/protocol/openid-connect/token'
 
 ################################################################################
 #                                   FOOTER                                     #
