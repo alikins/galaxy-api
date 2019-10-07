@@ -79,6 +79,61 @@ info:
 
 paths:
 
+# SSO auth
+  '/auth/realms/redhat-external/protocol/openid-connect/auth':
+    servers:
+      - https://sso.redhat.com/
+    post:
+      summary: Get Authentication token
+      operationId: getAuthToken
+      tags:
+        - Authentication
+      requestBody:
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              properties:
+                client_id:
+                  type: string
+                  description: 'The Client ID of the OAuth client.'
+                client_secret:
+                  type: string
+                grant_type:
+                  type: string
+                  description: 'The OAuth grant type. Currently this parameter must be `refresh_token`.'
+      responses:
+        '202':
+          description: 'Success'
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  access_token:
+                    description: The generated token.
+                    type: string
+                  expires_in:
+                    description: How many seconds until the token expires.
+                    type: number
+                  jti:
+                    description: Unique identifier for the token.
+                    type: string
+                  scope:
+                    description: List of scopes.
+                    type: string
+                  token_type:
+                    description: The type of token (for ex, `bearer`).
+                    type: string
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '409':
+          $ref: '#/components/responses/Conflict'
+        default:
+          $ref: '#/components/responses/Errors'
+
+
+
 # -------------------------------------
 # Collections
 # -------------------------------------
