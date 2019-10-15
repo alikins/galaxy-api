@@ -1,6 +1,8 @@
+import json
+
 import galaxy_pulp
 from django.core.exceptions import PermissionDenied
-from django.http import Http404, HttpResponse
+from django.http import Http404
 
 from rest_framework import exceptions
 from rest_framework.response import Response
@@ -43,7 +45,20 @@ def _handle_drf_api_exception(exc):
 
 
 def _handle_api_client_exception(exc):
-    return HttpResponse(exc.body, status=exc.status, content_type=exc.headers['Content-Type'])
+    try:
+        error_list = json.loads(exc.body)
+        errors = []
+        for error in error_list:
+            errors.append({'code': 'unknown_galaxy_pulp_error',
+                           'status': exc.status,
+                           'detail': error})
+    except ValueError:
+        errors = [{'code': 'unknown_galaxy_pulp_error',
+                   'status': exc.status,
+                   'detail': exc.reason}]
+
+    data = {'errors': list(errors)}
+    return Response(data, status=exc.status, content_type=exc.headers['Content-Type'])
 
 
 def exception_handler(exc, context):
