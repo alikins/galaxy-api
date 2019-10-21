@@ -167,7 +167,7 @@ paths:
       tags: ["galaxy: collections"]
       requestBody:
         content:
-          appication/json:
+          application/json:
             schema:
               $ref: '#/components/schemas/Collection'
       responses:
