@@ -115,7 +115,7 @@ class CollectionViewSet(viewsets.GenericViewSet):
 
         log.debug('collection: %s', collection)
 
-        response = api.get(
+        response = api.put(
             prefix=settings.API_PATH_PREFIX,
             namespace=namespace,
             name=name,
