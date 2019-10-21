@@ -13,6 +13,9 @@ from galaxy_api.api import models, permissions
 from galaxy_api.api.ui import serializers
 from galaxy_api.common import pulp
 
+import logging
+log = logging.getLogger(__name__)
+
 
 class CollectionViewSet(viewsets.GenericViewSet):
     lookup_url_kwarg = 'collection'
@@ -98,8 +101,29 @@ class CollectionViewSet(viewsets.GenericViewSet):
 
         return Response(data)
 
-    def set_deprecated(self):
-        pass
+    def set_deprecated(self, request, *args, **kwargs):
+        namespace, name = self.kwargs['collection'].split('/')
+        # namespace_obj = get_object_or_404(models.Namespace, name=namespace)
+
+        # params_dict = self.request.query_params.dict()
+        log.debug('namespace: %s name: %s', namespace, name)
+
+        api = galaxy_pulp.GalaxyCollectionsApi(pulp.get_client())
+
+        collection = galaxy_pulp.models.Collection(name=name, namespace=namespace, deprecated=True)
+
+        log.debug('collection: %s', collection)
+
+        response = api.get(
+            prefix=settings.API_PATH_PREFIX,
+            namespace=namespace,
+            name=name,
+            collection=collection,
+        )
+
+        log.debug('response: %s', response)
+
+        return Response(response)
 
     @staticmethod
     def _query_namespaces(names):
