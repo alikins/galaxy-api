@@ -101,11 +101,12 @@ class CollectionViewSet(viewsets.GenericViewSet):
 
         return Response(data)
 
-    def set_deprecated(self, request, *args, **kwargs):
+    def update(self, request, *args, **kwargs):
         namespace, name = self.kwargs['collection'].split('/')
-        # namespace_obj = get_object_or_404(models.Namespace, name=namespace)
+        namespace_obj = get_object_or_404(models.Namespace, name=namespace)
 
-        # params_dict = self.request.query_params.dict()
+        self.check_object_permissions(request, namespace_obj)
+
         log.debug('namespace: %s name: %s', namespace, name)
 
         api = galaxy_pulp.GalaxyCollectionsApi(pulp.get_client())

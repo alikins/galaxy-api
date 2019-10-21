@@ -3,7 +3,6 @@ from rest_framework import routers
 
 from . import viewsets
 
-
 router = routers.SimpleRouter()
 router.register('namespaces', viewsets.NamespaceViewSet, basename='namespaces')
 router.register('my-namespaces', viewsets.MyNamespaceViewSet, basename='namespaces')
