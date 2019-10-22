@@ -13,9 +13,6 @@ from galaxy_api.api import models, permissions
 from galaxy_api.api.ui import serializers
 from galaxy_api.common import pulp
 
-import logging
-log = logging.getLogger(__name__)
-
 
 class CollectionViewSet(viewsets.GenericViewSet):
     lookup_url_kwarg = 'collection'
@@ -107,13 +104,9 @@ class CollectionViewSet(viewsets.GenericViewSet):
 
         self.check_object_permissions(request, namespace_obj)
 
-        log.debug('namespace: %s name: %s', namespace, name)
-
         api = galaxy_pulp.GalaxyCollectionsApi(pulp.get_client())
 
         collection = galaxy_pulp.models.Collection(name=name, namespace=namespace, deprecated=True)
-
-        log.debug('collection: %s', collection)
 
         response = api.put(
             prefix=settings.API_PATH_PREFIX,
@@ -121,8 +114,6 @@ class CollectionViewSet(viewsets.GenericViewSet):
             name=name,
             collection=collection,
         )
-
-        log.debug('response: %s', response)
 
         return Response(response)
 

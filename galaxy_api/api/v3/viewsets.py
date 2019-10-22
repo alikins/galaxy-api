@@ -20,12 +20,13 @@ from django.core.exceptions import ValidationError
 from django.http import StreamingHttpResponse, HttpResponseRedirect
 from rest_framework import views
 from rest_framework.exceptions import APIException, NotFound
+from rest_framework.generics import get_object_or_404
 from rest_framework.response import Response
 from rest_framework import viewsets
 from rest_framework.settings import api_settings
 
 from galaxy_api.api.models import Namespace
-from galaxy_api.api.v3.serializers import CollectionUploadSerializer
+from galaxy_api.api.v3.serializers import CollectionUploadSerializer, CollectionUpdateSerializer
 from galaxy_api.common import pulp
 from galaxy_api.api import permissions, models
 
@@ -34,6 +35,8 @@ log = logging.getLogger(__name__)
 
 
 class CollectionViewSet(viewsets.GenericViewSet):
+    permission_classes = api_settings.DEFAULT_PERMISSION_CLASSES + \
+        [permissions.IsNamespaceOwnerOrPartnerEngineer]
 
     def list(self, request, *args, **kwargs):
         self.paginator.init_from_request(request)
@@ -56,6 +59,56 @@ class CollectionViewSet(viewsets.GenericViewSet):
             name=self.kwargs['name']
         )
         return Response(response)
+
+    def update(self, request, *args, **kwargs):
+        log.debug('update request: %s args:%r kwargs: %r', request, args, kwargs)
+        log.debug('request: %s', request)
+        import pprint
+        log.debug('request.META: %s', pprint.pformat(request.META))
+        log.debug('request.headers: %s', pprint.pformat(request.headers))
+        log.debug('request.body: %s', pprint.pformat(request.body))
+        log.debug('request.accepted_media_type: %s', request.accepted_media_type)
+        log.debug('request.accepted_renderer: %s', request.accepted_renderer)
+        log.debug('request.content_type: %s', request.content_type)
+        log.debug('request.user: %s', request.user)
+        log.debug('request.auth: %s', request.auth)
+        log.debug('request.session: %s', request.session)
+        log.debug('args %r', args)
+        log.debug('kwargs: %r', kwargs)
+        log.debug('self.kwargs: %r', self.kwargs)
+
+        namespace = self.kwargs['namespace']
+        name = self.kwargs['name']
+
+        log.debug('namespace: %s name: %s', namespace, name)
+
+        namespace_obj = get_object_or_404(models.Namespace, name=namespace)
+        log.debug('namespace_obj: %s', namespace_obj)
+        self.check_object_permissions(self.request, namespace_obj)
+
+        serializer = CollectionUpdateSerializer(data=request.data, context={'request': request})
+        serializer.is_valid(raise_exception=True)
+        data = serializer.validated_data
+
+        collection = galaxy_pulp.models.Collection(name=name,
+                                                   namespace=namespace,
+                                                   deprecated=data.get('deprecated', False))
+
+        log.debug('collection: %s', collection)
+
+        api = galaxy_pulp.GalaxyCollectionsApi(pulp.get_client())
+
+        response = api.put(
+            prefix=settings.API_PATH_PREFIX,
+            namespace=namespace,
+            name=name,
+            collection=collection,
+        )
+
+        log.debug('response: %s', type(response))
+        log.debug('response: %s', response)
+
+        return Response(response.to_dict())
 
 
 class CollectionVersionViewSet(viewsets.GenericViewSet):
