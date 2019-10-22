@@ -5,6 +5,14 @@ from rest_framework import serializers
 from galaxy_api.api.utils import parse_collection_filename
 
 
+class CollectionUpdateSerializer(serializers.Serializer):
+    """A serializer for a Collection update."""
+
+    deprecated = serializers.BooleanField(required=False)
+    namespace = serializers.CharField(required=True)
+    name = serializers.CharField(required=True)
+
+
 class CollectionUploadSerializer(serializers.Serializer):
     """
     A serializer for the Collection One Shot Upload API.
