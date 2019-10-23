@@ -98,25 +98,6 @@ class CollectionViewSet(viewsets.GenericViewSet):
 
         return Response(data)
 
-    def update(self, request, *args, **kwargs):
-        namespace, name = self.kwargs['collection'].split('/')
-        namespace_obj = get_object_or_404(models.Namespace, name=namespace)
-
-        self.check_object_permissions(request, namespace_obj)
-
-        api = galaxy_pulp.GalaxyCollectionsApi(pulp.get_client())
-
-        collection = galaxy_pulp.models.Collection(name=name, namespace=namespace, deprecated=True)
-
-        response = api.put(
-            prefix=settings.API_PATH_PREFIX,
-            namespace=namespace,
-            name=name,
-            collection=collection,
-        )
-
-        return Response(response)
-
     @staticmethod
     def _query_namespaces(names):
         queryset = models.Namespace.objects.filter(name__in=names)
