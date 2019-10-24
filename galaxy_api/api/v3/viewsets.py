@@ -30,9 +30,6 @@ from galaxy_api.api.v3.serializers import CollectionUploadSerializer, Collection
 from galaxy_api.common import pulp
 from galaxy_api.api import permissions, models
 
-import logging
-log = logging.getLogger(__name__)
-
 
 class CollectionViewSet(viewsets.GenericViewSet):
     permission_classes = api_settings.DEFAULT_PERMISSION_CLASSES + \
@@ -61,22 +58,16 @@ class CollectionViewSet(viewsets.GenericViewSet):
         return Response(response)
 
     def update(self, request, *args, **kwargs):
-        log.debug('request.META: %s', request.META)
-        log.debug('request.headers: %s', request.headers)
-        log.debug('update')
         namespace = self.kwargs['namespace']
         name = self.kwargs['name']
 
         namespace_obj = get_object_or_404(models.Namespace, name=namespace)
         self.check_object_permissions(self.request, namespace_obj)
 
-        log.debug('perms okay for user=%s', request.user)
-
         serializer = CollectionUpdateSerializer(data=request.data, context={'request': request})
         serializer.is_valid(raise_exception=True)
         data = serializer.validated_data
 
-        log.debug('data: %s', data)
         collection = galaxy_pulp.models.Collection(name=name,
                                                    namespace=namespace,
                                                    deprecated=data.get('deprecated', False))
