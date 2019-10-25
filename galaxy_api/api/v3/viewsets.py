@@ -129,13 +129,18 @@ class CollectionArtifactUploadView(views.APIView):
             host=api.configuration.host,
             path='ansible/collections/',
         )
+        headers = {}
+        headers.update(api.default_headers)
+        headers.update({'Content-Type': 'multipart/form-data'})
+
+        api.update_params_for_auth(headers, tuple(), api.configuration.auth_settings())
 
         post_params = self._prepare_post_params(data)
         try:
             upload_response = api.request(
                 'POST',
                 url,
-                headers={'Content-Type': 'multipart/form-data'},
+                headers=headers,
                 post_params=post_params,
             )
         except galaxy_pulp.ApiException:
