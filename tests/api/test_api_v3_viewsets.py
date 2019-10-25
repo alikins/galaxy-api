@@ -1,6 +1,8 @@
 import base64
 from unittest import mock
 
+import pytest
+
 from rest_framework.test import APIClient
 import galaxy_pulp
 
@@ -11,24 +13,29 @@ from .base import BaseTestCase, API_PREFIX
 import logging
 log = logging.getLogger(__name__)
 
-b_test_user_token_json = b"""{
-    "entitlements":
-        {"insights":
-            {"is_entitled": true}
-        },
-    "identity":
-        {"account_number": "12345",
-         "user":
-            {"username": "test",
-             "email": "test@example.invalid",
-             "first_name": "Test",
-             "last_name": "User"
-             },
-         "internal": {"org_id": "54321"}
-         }
-}"""
 
-test_user_token_b64 = base64.b64encode(b_test_user_token_json)
+@pytest.fixture
+def user_x_rh_identity():
+    b_test_user_token_json = b"""{
+        "entitlements":
+            {"insights":
+                {"is_entitled": true}
+            },
+        "identity":
+            {"account_number": "12345",
+            "user":
+                {"username": "test",
+                "email": "test@example.invalid",
+                "first_name": "Test",
+                "last_name": "User"
+                },
+            "internal": {"org_id": "54321"}
+            }
+    }"""
+
+    token_b64 = base64.b64encode(b_test_user_token_json)
+
+    return token_b64
 
 
 class TestCollectionViewSet(BaseTestCase):
@@ -122,6 +129,25 @@ class TestCollectionViewSet(BaseTestCase):
         partner_group = self._create_group('system', 'partner-engineers', users=self.user)
         namespace = self._create_namespace('test', partner_group)
         log.debug('namespace: %s', namespace)
+
+        b_test_user_token_json = b"""{
+            "entitlements":
+                {"insights":
+                    {"is_entitled": true}
+                },
+            "identity":
+                {"account_number": "12345",
+                "user":
+                    {"username": "test",
+                    "email": "test@example.invalid",
+                    "first_name": "Test",
+                    "last_name": "User"
+                    },
+                "internal": {"org_id": "54321"}
+                }
+        }"""
+
+        test_user_token_b64 = base64.b64encode(b_test_user_token_json)
 
         client = APIClient()
         client.credentials(**{"HTTP_X_RH_IDENTITY": test_user_token_b64})
