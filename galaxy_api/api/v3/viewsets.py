@@ -127,8 +127,7 @@ class CollectionArtifactUploadView(views.APIView):
         api = pulp.get_client()
         url = '{host}/{prefix}{path}'.format(
             host=api.configuration.host,
-            prefix=settings.API_PATH_PREFIX,
-            path='/v3/artifacts/collections/',
+            path='ansible/collections/',
         )
 
         post_params = self._prepare_post_params(data)
