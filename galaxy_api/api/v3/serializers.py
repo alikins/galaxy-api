@@ -9,8 +9,6 @@ class CollectionUpdateSerializer(serializers.Serializer):
     """A serializer for a Collection update."""
 
     deprecated = serializers.BooleanField(required=False)
-    namespace = serializers.CharField(required=True)
-    name = serializers.CharField(required=True)
 
 
 class CollectionUploadSerializer(serializers.Serializer):

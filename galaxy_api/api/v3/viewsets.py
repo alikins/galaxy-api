@@ -68,9 +68,7 @@ class CollectionViewSet(viewsets.GenericViewSet):
         serializer.is_valid(raise_exception=True)
         data = serializer.validated_data
 
-        collection = galaxy_pulp.models.Collection(name=name,
-                                                   namespace=namespace,
-                                                   deprecated=data.get('deprecated', False))
+        collection = galaxy_pulp.models.Collection(deprecated=data.get('deprecated', False))
 
         api = galaxy_pulp.GalaxyCollectionsApi(pulp.get_client())
 
