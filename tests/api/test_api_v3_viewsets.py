@@ -1,8 +1,6 @@
 import base64
 from unittest import mock
 
-import pytest
-
 from rest_framework.test import APIClient
 import galaxy_pulp
 
@@ -14,9 +12,9 @@ import logging
 log = logging.getLogger(__name__)
 
 
-@pytest.fixture
-def user_x_rh_identity():
-    b_test_user_token_json = b"""{
+def user_x_rh_identity(username):
+    title_username = username.title()
+    token_json = """{
         "entitlements":
             {"insights":
                 {"is_entitled": true}
@@ -24,16 +22,16 @@ def user_x_rh_identity():
         "identity":
             {"account_number": "12345",
             "user":
-                {"username": "test",
-                "email": "test@example.invalid",
-                "first_name": "Test",
-                "last_name": "User"
+                {"username": "%(username)s",
+                "email": "%(username)s@example.invalid",
+                "first_name": "%(title_username)s",
+                "last_name": "%(title_username)sington"
                 },
             "internal": {"org_id": "54321"}
             }
-    }"""
+            }""" % {'username': username, 'title_username': title_username}
 
-    token_b64 = base64.b64encode(b_test_user_token_json)
+    token_b64 = base64.b64encode(token_json.encode())
 
     return token_b64
 
@@ -87,24 +85,7 @@ class TestCollectionViewSet(BaseTestCase):
         namespace = self._create_namespace('some_namespace', namespace_group)
         log.debug('namespace: %s', namespace)
 
-        b_some_namespace_member_token_json = b"""{
-            "entitlements":
-                {"insights":
-                    {"is_entitled": true}
-                },
-            "identity":
-                {"account_number": "12345",
-                "user":
-                    {"username": "some_namespace_member",
-                    "email": "some_namespace_member@example.invalid",
-                    "first_name": "SomeName",
-                    "last_name": "SpaceMember"
-                    },
-                "internal": {"org_id": "54321"}
-                }
-        }"""
-
-        some_namespace_member_token_b64 = base64.b64encode(b_some_namespace_member_token_json)
+        some_namespace_member_token_b64 = user_x_rh_identity(username)
 
         client = APIClient()
         client.credentials(**{"HTTP_X_RH_IDENTITY": some_namespace_member_token_b64})
@@ -125,29 +106,11 @@ class TestCollectionViewSet(BaseTestCase):
         assert response.status_code == 200
 
     def test_update_for_partner(self):
-        # partner_group = self._create_group('system', 'partner-engineers', users=self.user)
         partner_group = self._create_group('system', 'partner-engineers', users=self.user)
         namespace = self._create_namespace('test', partner_group)
         log.debug('namespace: %s', namespace)
 
-        b_test_user_token_json = b"""{
-            "entitlements":
-                {"insights":
-                    {"is_entitled": true}
-                },
-            "identity":
-                {"account_number": "12345",
-                "user":
-                    {"username": "test",
-                    "email": "test@example.invalid",
-                    "first_name": "Test",
-                    "last_name": "User"
-                    },
-                "internal": {"org_id": "54321"}
-                }
-        }"""
-
-        test_user_token_b64 = base64.b64encode(b_test_user_token_json)
+        test_user_token_b64 = user_x_rh_identity('test')
 
         client = APIClient()
         client.credentials(**{"HTTP_X_RH_IDENTITY": test_user_token_b64})
@@ -180,24 +143,7 @@ class TestCollectionViewSet(BaseTestCase):
         bad_namespace = self._create_namespace('bad_namespace', bad_namespace_group)
         log.debug('bad_namespace: %s', bad_namespace)
 
-        b_not_namespace_member_token_json = b"""{
-            "entitlements":
-                {"insights":
-                    {"is_entitled": true}
-                },
-            "identity":
-                {"account_number": "12345",
-                "user":
-                    {"username": "not_namespace_member",
-                    "email": "bad_namespace_member@example.invalid",
-                    "first_name": "NotYourName",
-                    "last_name": "SpaceMember"
-                    },
-                "internal": {"org_id": "54321"}
-                }
-        }"""
-
-        not_namespace_member_token_b64 = base64.b64encode(b_not_namespace_member_token_json)
+        not_namespace_member_token_b64 = user_x_rh_identity('not_namespace_member')
 
         # creds for a user in a different namespace
         client = APIClient()
