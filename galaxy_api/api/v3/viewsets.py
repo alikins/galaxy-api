@@ -26,7 +26,7 @@ from rest_framework import viewsets
 from rest_framework.settings import api_settings
 
 from galaxy_api.api.models import Namespace
-from galaxy_api.api.v3.serializers import CollectionUploadSerializer, CollectionUpdateSerializer
+from galaxy_api.api.v3.serializers import CollectionSerializer, CollectionUploadSerializer
 from galaxy_api.common import pulp
 from galaxy_api.api import permissions, models
 
@@ -34,6 +34,8 @@ from galaxy_api.api import permissions, models
 class CollectionViewSet(viewsets.GenericViewSet):
     permission_classes = api_settings.DEFAULT_PERMISSION_CLASSES + \
         [permissions.IsNamespaceOwnerOrPartnerEngineer]
+
+    serializer_class = CollectionSerializer
 
     def list(self, request, *args, **kwargs):
         self.paginator.init_from_request(request)
@@ -50,11 +52,13 @@ class CollectionViewSet(viewsets.GenericViewSet):
 
     def retrieve(self, request, *args, **kwargs):
         api = galaxy_pulp.GalaxyCollectionsApi(pulp.get_client())
+
         response = api.get(
             prefix=settings.API_PATH_PREFIX,
             namespace=self.kwargs['namespace'],
             name=self.kwargs['name']
         )
+
         return Response(response)
 
     def update(self, request, *args, **kwargs):
@@ -64,7 +68,7 @@ class CollectionViewSet(viewsets.GenericViewSet):
         namespace_obj = get_object_or_404(models.Namespace, name=namespace)
         self.check_object_permissions(self.request, namespace_obj)
 
-        serializer = CollectionUpdateSerializer(data=request.data, context={'request': request})
+        serializer = CollectionSerializer(data=request.data, context={'request': request})
         serializer.is_valid(raise_exception=True)
         data = serializer.validated_data
 
