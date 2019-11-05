@@ -156,7 +156,7 @@ class CollectionArtifactUploadView(views.APIView):
         self.check_object_permissions(request, namespace)
 
         api = pulp.get_client()
-        url = '{host}/{prefix}{path}'.format(
+        url = '{host}/{path}'.format(
             host=api.configuration.host,
             path='ansible/collections/',
         )
