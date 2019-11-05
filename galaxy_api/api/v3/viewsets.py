@@ -30,6 +30,9 @@ from galaxy_api.api.v3.serializers import CollectionSerializer, CollectionUpload
 from galaxy_api.common import pulp
 from galaxy_api.api import permissions, models
 
+import logging
+log = logging.getLogger(__name__)
+
 
 class CollectionViewSet(viewsets.GenericViewSet):
     permission_classes = api_settings.DEFAULT_PERMISSION_CLASSES + \
@@ -153,7 +156,7 @@ class CollectionArtifactUploadView(views.APIView):
         self.check_object_permissions(request, namespace)
 
         api = pulp.get_client()
-        url = '{host}/{prefix}{path}'.format(
+        url = '{host}/{path}'.format(
             host=api.configuration.host,
             path='ansible/collections/',
         )
