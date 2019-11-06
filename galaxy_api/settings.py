@@ -29,6 +29,7 @@ INSTALLED_APPS = [
 
     'rest_framework',
     'django_filters',
+    'django_extensions',
 
     'galaxy_api.api',
     'galaxy_api.auth',
