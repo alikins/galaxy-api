@@ -1,5 +1,20 @@
 from django.contrib import admin
+from django.contrib.contenttypes.models import ContentType
+from django.contrib.auth.models import Permission
+
 from galaxy_api.api import models as api_models
+
+
+@admin.register(Permission)
+class PermissionAdmin(admin.ModelAdmin):
+    list_display = ('id', 'name', 'content_type', 'codename')
+    raw_id_fields = ('content_type',)
+    search_fields = ('name',)
+
+
+@admin.register(ContentType)
+class ContentTypeAdmin(admin.ModelAdmin):
+    list_display = ('id', 'app_label', 'model')
 
 
 @admin.register(api_models.Namespace)
