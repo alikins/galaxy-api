@@ -21,6 +21,7 @@ class ContentTypeAdmin(admin.ModelAdmin):
 class NamespaceAdmin(admin.ModelAdmin):
     fields = ('name', 'company', 'email', 'avatar_url', 'description', 'groups')
     autocomplete_fields = ['groups']
+    search_fields = ['groups__name', 'name', 'company', 'email']
 
 
 @admin.register(api_models.NamespaceLink)
