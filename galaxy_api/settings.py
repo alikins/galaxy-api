@@ -75,7 +75,8 @@ WSGI_APPLICATION = 'galaxy_api.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.postgresql',
+        # Gather metrics for 'django.db.backends.postgresql',
+        'ENGINE': 'django_prometheus.db.backends.postgresql',
         'NAME': settings.get('DB_NAME', 'galaxy'),
         'USER': settings.get('DB_USER', 'galaxy'),
         'PASSWORD': settings.get('DB_PASSWORD', ''),
