@@ -8,7 +8,7 @@ from rest_framework.exceptions import AuthenticationFailed
 from rest_framework.permissions import BasePermission
 
 from galaxy_api.auth.models import Group, User
-
+from galaxy_api.common import metrics
 
 RH_ACCOUNT_SCOPE = 'rh-identity-account'
 
@@ -30,6 +30,9 @@ class RHIdentityAuthentication(BaseAuthentication):
         Raises:
             AuthenticationFailed: If invalid identity header provided.
         """
+
+        metrics.auth_by_rh_id_attempts.inc()
+
         if self.header not in request.META:
             return None
 
@@ -42,6 +45,7 @@ class RHIdentityAuthentication(BaseAuthentication):
             user = identity['user']
             username = user['username']
         except KeyError:
+            metrics.auth_by_rh_id_failures.inc()
             raise AuthenticationFailed
 
         email = user.get('email', '')
@@ -77,6 +81,7 @@ class RHIdentityAuthentication(BaseAuthentication):
             json_string = base64.b64decode(raw)
             return json.loads(json_string)
         except ValueError:
+            metrics.auth_by_rh_id_failures.inc()
             raise AuthenticationFailed
 
 
@@ -87,11 +92,25 @@ class RHEntitlementRequired(BasePermission):
     """
 
     def has_permission(self, request, view):
+        metrics.auth_rh_entitlement_required_perm_attempts.inc()
+
         if not isinstance(request.auth, dict):
+            metrics.auth_rh_entitlement_required_perm_failures.inc()
+
             return False
+
         header = request.auth.get('rh_identity')
+
         if not header:
+            metrics.auth_rh_entitlement_required_perm_failures.inc()
             return False
+
         entitlements = header.get('entitlements', {})
         entitlement = entitlements.get(settings.RH_ENTITLEMENT_REQUIRED, {})
-        return entitlement.get('is_entitled', False)
+
+        if entitlement.get('is_entitled'):
+            metrics.auth_rh_entitlement_required_perm_successes.inc()
+            return True
+
+        metrics.auth_rh_entitlement_required_perm_failures.inc()
+        return False
