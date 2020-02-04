@@ -49,7 +49,7 @@ def _handle_api_client_exception(exc):
 def _handle_openapi_exception(exc, context=None):
     error = {'status': 400,
              'code': 'galaxy_pulp_api_error',
-             'detail': "{0}".format(exc)}
+             'detail': str(exc)}
 
     data = {'errors': [error]}
 
