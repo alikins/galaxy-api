@@ -1,9 +1,4 @@
-import logging
-
 from prometheus_client import Counter
-# Histogram, Gauge
-
-log = logging.getLogger(__name__)
 
 collection_import_attempts = Counter(
     "galaxy_api_collection_import_attempts", "count of collection import attempts"
